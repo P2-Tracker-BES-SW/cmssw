@@ -1,7 +1,8 @@
+<flags CXXFLAGS="-Wno-unused-but-set-variable"/>
 <use name="DataFormats/Common"/>
-<use name="DataFormats/FEDRawData"/>
 <use name="FWCore/Utilities"/>
-<use name="FWCore/MessageLogger"/>
+<use name="DataFormats/FEDRawData"/>
+
 <export>
   <lib name="1"/>
 </export>

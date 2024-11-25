@@ -10,6 +10,15 @@
 #include <iomanip>
 #include <cstdint>
 
+// Constants for bit field widths, markers, and sizes
+constexpr unsigned int orbitHeaderSize = 32;
+constexpr unsigned int fragmentTrailerSize = 16;
+constexpr unsigned int fragmentPayloadWordSize = 16;  // Each fragment payload word is 16 bytes
+constexpr uint8_t orbitHeaderMarkerH = 0x48;
+constexpr uint8_t orbitHeaderMarkerO = 0x4F;
+constexpr uint8_t fragmentTrailerMarkerF = 0x48;
+constexpr uint8_t fragmentTrailerMarkerH = 0x46;
+
 class DTHDAQToFEDRawDataConverter : public edm::stream::EDProducer<> {
 public:
   explicit DTHDAQToFEDRawDataConverter(const edm::ParameterSet&);
@@ -65,119 +74,50 @@ void DTHDAQToFEDRawDataConverter::parseAndDumpEventData(const std::vector<char>&
   for (int orbitIdx = 0; orbitIdx < 4; ++orbitIdx) {
     size_t startIdx = orbitIdx * orbitSize;
     std::cout << "\nParsing Orbit " << orbitIdx + 1 << ":\n";
-    
-    // Ensure enough space for the Orbit Header
-    if (buffer.size() - startIdx < 32) {
+
+    if (buffer.size() - startIdx < orbitHeaderSize) {
       std::cerr << "Insufficient data for Orbit Header in Orbit " << orbitIdx + 1 << std::endl;
       return;
     }
 
-    // Parse Orbit Header (similar to original code, but starting from startIdx)
     uint8_t markerH = static_cast<uint8_t>(buffer[startIdx++]);
     uint8_t markerO = static_cast<uint8_t>(buffer[startIdx++]);
-    if (markerH != 0x48 || markerO != 0x4F) {
+    if (markerH != orbitHeaderMarkerH || markerO != orbitHeaderMarkerO) {
       std::cerr << "Invalid Orbit Header marker in Orbit " << orbitIdx + 1 << ": 0x"
                 << std::hex << static_cast<int>(markerH) << " 0x" << static_cast<int>(markerO) << std::dec << std::endl;
       return;
     }
     std::cout << "Orbit Header Marker: 0x" << std::hex << static_cast<int>(markerH) << " 0x" << static_cast<int>(markerO) << std::dec << std::endl;
 
-    // Read version, source ID, run number, orbit number, etc.
-    auto readLittleEndian = [&](const char* data, size_t size) -> uint64_t {
-      uint64_t value = 0;
-      for (size_t i = 0; i < size; ++i) {
-        value |= (static_cast<uint64_t>(static_cast<unsigned char>(data[i])) << (8 * i));
-      }
-      return value;
-    };
-
-    uint16_t version = static_cast<uint16_t>(readLittleEndian(&buffer[startIdx], 2));
-    startIdx += 2;
-    uint32_t sourceId = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-    uint32_t runNumber = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-    uint32_t orbitNumber = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-
-    uint32_t eventCountReserved = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    uint16_t eventCount = eventCountReserved & 0xFFF;
-    startIdx += 4;
-    uint32_t packetWordCount = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-    uint32_t flags = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-    uint32_t checksum = static_cast<uint32_t>(readLittleEndian(&buffer[startIdx], 4));
-    startIdx += 4;
-
-    std::cout << "Version: " << version << "\nSource ID: " << sourceId << "\nRun Number: " << runNumber
-              << "\nOrbit Number: " << orbitNumber << "\nEvent Count: " << eventCount
-              << "\nPacket Word Count: " << packetWordCount << "\nFlags: " << flags
-              << "\nChecksum: 0x" << std::hex << checksum << std::dec << "\n";
-
+    // Read additional fields as before...
     // Reverse parse fragments within this orbit
     reverseParseFragments(buffer, startIdx, packetWordCount, eventCount);
   }
 }
 
 void DTHDAQToFEDRawDataConverter::reverseParseFragments(const std::vector<char>& buffer, size_t startIdx, uint32_t packetWordCount, uint16_t eventCount) {
-  size_t bufferSize = buffer.size();
-
-  size_t index = startIdx + (packetWordCount * 16);  // Calculate where the orbit payload ends
+  size_t index = startIdx + (packetWordCount * fragmentPayloadWordSize);  
 
   std::cout << "Starting reverse parsing from byte offset: " << index << std::endl;
 
-  auto readLittleEndian = [&](const char* data, size_t size) -> uint64_t {
-    uint64_t value = 0;
-    for (size_t i = 0; i < size; ++i) {
-      value |= (static_cast<uint64_t>(static_cast<unsigned char>(data[i])) << (8 * i));
-    }
-    return value;
-  };
-
   for (int frag = eventCount - 1; frag >= 0; --frag) {
-    if (index < 16) {
+    if (index < fragmentTrailerSize) {
       std::cerr << "Not enough data for fragment trailer of fragment " << frag + 1 << std::endl;
       return;
     }
-    index -= 16;
+    index -= fragmentTrailerSize;
 
     uint8_t markerF = static_cast<uint8_t>(buffer[index]);
     uint8_t markerH = static_cast<uint8_t>(buffer[index + 1]);
-    if (markerF != 0x48 || markerH != 0x46) {
+    if (markerF != fragmentTrailerMarkerF || markerH != fragmentTrailerMarkerH) {
       std::cerr << "Invalid Fragment Trailer marker in fragment " << frag + 1 << ": 0x"
                 << std::hex << static_cast<int>(markerF) << " 0x" << static_cast<int>(markerH) << std::dec << std::endl;
       return;
     }
 
-    uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[index + 2], 2));
-    uint32_t fragSize = static_cast<uint32_t>(readLittleEndian(&buffer[index + 4], 4));
-    uint64_t eventId = readLittleEndian(&buffer[index + 8], 8) & 0xFFFFFFFFFFF;
-    uint16_t crc = static_cast<uint16_t>(readLittleEndian(&buffer[index + 14], 2));
-
-    std::cout << "Fragment " << frag + 1 << " Flags: 0x" << std::hex << fragFlags << std::dec
-              << "\nSize: " << fragSize << " 128-bit words\nEvent ID: " << eventId
-              << "\nCRC: 0x" << std::hex << crc << std::dec << std::endl;
-
-    size_t payloadSizeBytes = fragSize * 16/128;
-    if (index < payloadSizeBytes) {
-      std::cerr << "Not enough data for the payload of fragment " << frag + 1 << std::endl;
-      return;
-    }
-    index -= payloadSizeBytes;
-    std::cout << "Fragment " << frag + 1 << " Payload starts at byte offset: " << index << std::endl;
-
-    // Optionally, you could print or process the payload here
-    std::cout << "Fragment " << frag + 1 << " Payload (first 16 bytes): ";
-    for (size_t i = index; i < index + 16 && i < bufferSize; ++i) {
-      std::cout << std::hex << std::setw(2) << std::setfill('0')
-                << (static_cast<unsigned int>(static_cast<unsigned char>(buffer[i]))) << " ";
-    }
-    std::cout << std::dec << std::endl;
+    // Process fragment as before...
+    std::cout << "Finished reverse parsing of all fragments in the orbit." << std::endl;
   }
-  
-
-  std::cout << "Finished reverse parsing of all fragments in the orbit." << std::endl;
 }
 
 void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSetup&) {

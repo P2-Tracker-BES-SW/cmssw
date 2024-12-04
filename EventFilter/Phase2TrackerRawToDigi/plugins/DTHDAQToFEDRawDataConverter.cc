@@ -19,7 +19,7 @@ constexpr uint8_t orbitHeaderMarkerO = 0x4F;
 constexpr uint8_t fragmentTrailerMarkerF = 0x48;
 constexpr uint8_t fragmentTrailerMarkerH = 0x46;
 
-class DTHDAQToFEDRawDataConverter : public edm::stream::EDProducer<> {
+class DTHDAQToFEDRawDataConverter : public edm::one::EDProducer<> {
 public:
   explicit DTHDAQToFEDRawDataConverter(const edm::ParameterSet&);
   ~DTHDAQToFEDRawDataConverter() override = default;

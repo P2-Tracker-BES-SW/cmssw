@@ -73,10 +73,10 @@ void DTHDAQToFEDRawDataConverter::parseAndDumpEventData(const std::vector<char>&
   size_t orbitSize = buffer.size() / 4;  // Divide buffer for 4 orbits
   for (int orbitIdx = 0; orbitIdx < 4; ++orbitIdx) {
     size_t startIdx = orbitIdx * orbitSize;
-    std::cout << "\nParsing Orbit " << orbitIdx + 1 << ":\n";
+    edm::LogInfo("DTHDAQToFEDRawDataConverter") << "\nParsing Orbit " << orbitIdx + 1;
 
     if (buffer.size() - startIdx < orbitHeaderSize) {
-      std::cerr << "Insufficient data for Orbit Header in Orbit " << orbitIdx + 1 << std::endl;
+      edm::LogError("DTHDAQToFEDRawDataConverter") << "Insufficient data for Orbit Header in Orbit " << orbitIdx + 1;
       return;
     }
 

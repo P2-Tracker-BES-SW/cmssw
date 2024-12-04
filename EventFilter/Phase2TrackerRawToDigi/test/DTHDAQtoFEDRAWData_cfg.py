@@ -1,8 +1,10 @@
+# CMS job to run the DTHDAQToFEDRawDataConverter module
+# It converts .raw files containg orbits bitstream raw data from the TIF to FEDRawDataCollection
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("FEDRAW")
 
-# Load the necessary services (message logger for printouts, etc.)
+
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
 # Set the logging output for debugging
@@ -12,7 +14,7 @@ process.MessageLogger.cerr.threshold = 'INFO'
 # Define an empty source because this is a producer that reads from a file
 process.source = cms.Source("EmptySource")
 
-# Limit the number of events processed (since you're reading from a file, 1 is fine)
+# Limit the number of events processed (since we are reading from a file, 1 is fine)
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1)
 )

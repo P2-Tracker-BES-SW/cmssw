@@ -1,5 +1,7 @@
-#!/cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_0_0_pre2/bin/el9_amd64_gcc12/cmsRun
-## Stub Occupancy Script
+## cfg file to run the packing and unpacking steps for Phase2 OT clusters
+## optionally, also run EDAnalyzer to dump the FEDRawData into a text file
+## outputs an EDM file containing the original FEDRawData and the unpacked clusters
+
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import FWCore.Utilities.FileUtils as FileUtils
@@ -32,7 +34,6 @@ options.register('process',
 # Parse command-line arguments
 options.parseArguments()
 
-#GEOMETRY = "D88"
 GEOMETRY = "D98"
 
 process.load('Configuration.StandardSequences.Services_cff')
@@ -52,22 +53,10 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 from Configuration.AlCa.GlobalTag import GlobalTag
-# process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
-# process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
-
-DatasetDatabase = "/home/hep/am2023/cmssw_el9_amd64_gcc12/CMSSW_14_0_0_pre2/src/Datasets/Phase2Spring23Track1GeVL1TFix.list"
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
 
-# try:
-#     InputMC = [get_input_mc_line(DatasetDatabase, options.process)]
-# except Exception as e:
-#     print(f"Error: {e}")
-#     InputMC = []
-# 
-# print(f"InputMC: {InputMC}")
-# process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(*InputMC))
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     "/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root"
@@ -96,15 +85,15 @@ process.ClustersFromPhase2TrackerDigis = cms.EDProducer("Phase2TrackerClusterize
     src = cms.InputTag("mix","Tracker"),
 )
 
-process.Experimental = cms.EDProducer("ClusterToRawProducer",
+process.Packer = cms.EDProducer("ClusterToRawProducer",
     Phase2Clusters = cms.InputTag("ClustersFromPhase2TrackerDigis"),
 )
 
 process.Analyzer = cms.EDAnalyzer("RawAnalyzer",
-    fedRawDataCollection = cms.InputTag("Experimental"),
+    fedRawDataCollection = cms.InputTag("Packer"),
 )
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedRawDataCollection = cms.InputTag("Experimental"),
+    fedRawDataCollection = cms.InputTag("Packer"),
 )
 
 process.out = cms.OutputModule("PoolOutputModule",
@@ -113,7 +102,7 @@ process.out = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring('drop *',
       'keep FEDRawDataCollection_*_*_*',
       'keep *_ClustersFromPhase2TrackerDigis_*_*',
-      'keep *_Experimental_*_*',
+      'keep *_Packer_*_*',
       'keep *_Unpacker_*_*',
       'keep *_mix_Tracker_*',
       ),
@@ -130,8 +119,7 @@ process.Timing = cms.Service("Timing",
     useJobReport = cms.untracked.bool(True)  # This will also log timings in the job report.
 )
 
-process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Experimental * process.Unpacker)
+process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Packer * process.Unpacker)
 process.output = cms.EndPath(process.out)
-# process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Experimental * process.Analyzer)
-# process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Experimental * process.Analyzer * process.Unpacker)
+# process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Packer * process.Analyzer * process.Unpacker)
 

@@ -1,7 +1,9 @@
-import FWCore.ParameterSet.Config as cms
-import sys
+## Cfg file to run the Phase2TrackerDumpClusters plugin:
+## will produce ntuples with cluster properties
 
-process = cms.Process("DumpDigi")
+import FWCore.ParameterSet.Config as cms
+
+process = cms.Process("DumpClusters")
 
 # Enable summary at the end of the job
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
@@ -10,14 +12,14 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 # Define the EDAnalyzer with the correct product label
-process.Phase2TrackerDumpDigi = cms.EDAnalyzer(
-    'Phase2TrackerDumpDigi',
+process.Phase2TrackerDumpClusters = cms.EDAnalyzer(
+    'Phase2TrackerDumpClusters',
     ProductLabel = cms.InputTag("siPhase2Clusters")
 )
 
 # process.TFileService = cms.Service('TFileService', 
 #     fileName = cms.string(
-#         'Phase2TrackerDumpDigi_original_TTBar.root'
+#         'Phase2TrackerDumpClusters_original_TTBar.root'
 #     ), 
 #     closeFileFast = cms.untracked.bool(True)
 # )
@@ -31,7 +33,7 @@ process.Phase2TrackerDumpDigi = cms.EDAnalyzer(
 
 process.TFileService = cms.Service('TFileService', 
     fileName = cms.string(
-        'Phase2TrackerDumpDigi_redigi_PSstripsAndPixels_TTBar.root'
+        'Phase2TrackerDumpClusters_redigi_PSstripsAndPixels_TTBar.root'
     ), 
     closeFileFast = cms.untracked.bool(True)
 )
@@ -40,12 +42,12 @@ process.TFileService = cms.Service('TFileService',
 ### Set up the source for testing with the output file from digi-raw-digi
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-    "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/fetch_unpacker/CMSSW_14_2_0_pre3/src/EventFilter/Phase2TrackerRawToDigi/test/raw2clusters_PSstripsAndPixels.root"
+    "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/fetch_unpacker/CMSSW_14_2_0_pre3/src/EventFilter/Phase2TrackerRawToDigi/test/raw2clusters.root"
     )    
 )
 # 
 # ## #Update the ProductLabel to match the output from the digi-raw-digi process
-process.Phase2TrackerDumpDigi.ProductLabel = cms.InputTag("Unpacker", "", "PACKANDUNPACK")
+process.Phase2TrackerDumpClusters.ProductLabel = cms.InputTag("Unpacker", "", "PACKANDUNPACK")
 #End test digis after digi-raw-digi process ###
 
 
@@ -74,4 +76,4 @@ process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
 
 
 # Define the path to run the EDAnalyzer
-process.p = cms.EndPath(process.Phase2TrackerDumpDigi)
+process.p = cms.EndPath(process.Phase2TrackerDumpClusters)

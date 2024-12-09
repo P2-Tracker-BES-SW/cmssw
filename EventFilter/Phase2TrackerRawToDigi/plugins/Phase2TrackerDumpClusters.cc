@@ -1,3 +1,6 @@
+// EDAnalyzer producing a small ntuple containing properties of Phase2TrackerCluster1D, 
+// to be used to debug the clusters-to-raw and raw-to-cluster steps
+
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/DetId/interface/DetIdCollection.h"
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
@@ -31,10 +34,10 @@
 
 using namespace std;
 
-class Phase2TrackerDumpDigi : public edm::one::EDAnalyzer<edm::one::WatchRuns> {
+class Phase2TrackerDumpClusters : public edm::one::EDAnalyzer<edm::one::WatchRuns> {
 public:
-  Phase2TrackerDumpDigi(const edm::ParameterSet& pset);
-  ~Phase2TrackerDumpDigi() override;
+  Phase2TrackerDumpClusters(const edm::ParameterSet& pset);
+  ~Phase2TrackerDumpClusters() override;
   void beginRun(edm::Run const&, edm::EventSetup const&) override;
   void endRun(edm::Run const& iEvent, edm::EventSetup const&) override {};
   void analyze(const edm::Event&, const edm::EventSetup&);
@@ -54,7 +57,7 @@ private:
   edm::Service<TFileService> fs_;
   TTree* outTree_;
   ofstream logfile_;
-  
+
   float clusterR_;
   float clusterZ_;
   unsigned int clusterCol_;
@@ -67,67 +70,62 @@ private:
   float clusterGlobalY_;
   float clusterGlobalZ_;
 
-  bool isPSModulePixel_ ;
-  bool isPSModuleStrip_ ;
-  bool is2SModule_      ;
+  bool isPSModulePixel_;
+  bool isPSModuleStrip_;
+  bool is2SModule_;
 
-  int dtcID_;  
+  int dtcID_;
 };
 
-Phase2TrackerDumpDigi::Phase2TrackerDumpDigi(const edm::ParameterSet& pset)
+Phase2TrackerDumpClusters::Phase2TrackerDumpClusters(const edm::ParameterSet& pset)
     : geomToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>()),
       topoToken_(esConsumes<TrackerTopology, TrackerTopologyRcd, edm::Transition::BeginRun>()),
-      cablingMapToken_(esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
+      cablingMapToken_(
+          esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
       token_(consumes<Phase2TrackerCluster1DCollectionNew>(pset.getParameter<edm::InputTag>("ProductLabel"))) {
-
-    // Initialize the log file
-    logfile_.open("Phase2TrackerDumpDigi_output.txt");
-    if (!logfile_.is_open()) {
-        throw cms::Exception("OutputFileError") << "Failed to open log file for writing.";
-    }
+  // Initialize the log file
+//   logfile_.open("Phase2TrackerDumpClusters_output.txt");
+//   if (!logfile_.is_open()) {
+//     throw cms::Exception("OutputFileError") << "Failed to open log file for writing.";
+//   }
 }
 
-Phase2TrackerDumpDigi::~Phase2TrackerDumpDigi() {
-
-    // Close the log file
-    logfile_.close();
+Phase2TrackerDumpClusters::~Phase2TrackerDumpClusters() {
+  // Close the log file
+//   logfile_.close();
 }
 
-void Phase2TrackerDumpDigi::beginJob ()
-{
-    outTree_ = fs_->make<TTree>("ClusterTree","ClusterTree");
+void Phase2TrackerDumpClusters::beginJob() {
+  outTree_ = fs_->make<TTree>("ClusterTree", "ClusterTree");
 
-    outTree_->Branch("detId", &detId_, "detId/i");
-    outTree_->Branch("dtcID", &dtcID_, "dtcID/i");
-    outTree_->Branch("isPSModulePixel", &isPSModulePixel_, "isPSModulePixel/O");
-    outTree_->Branch("isPSModuleStrip", &isPSModuleStrip_, "isPSModuleStrip/O");
-    outTree_->Branch("is2SModule", &is2SModule_, "is2SModule/O");
-    outTree_->Branch("clusterCol", &clusterCol_, "clusterCol/I");
-    outTree_->Branch("clusterR", &clusterR_, "clusterR/F");
-    outTree_->Branch("clusterZ", &clusterZ_, "clusterZ/F");
-    outTree_->Branch("clusterCenter", &clusterCenter_, "clusterCenter/F");
-    outTree_->Branch("clusterSize", &clusterSize_, "clusterSize/I");
-    outTree_->Branch("clusterLocalX", &clusterLocalX_, "clusterLocalX/F");
-    outTree_->Branch("clusterLocalY", &clusterLocalY_, "clusterLocalY/F");
-    outTree_->Branch("clusterGlobalX", &clusterGlobalX_, "clusterGlobalX/F");
-    outTree_->Branch("clusterGlobalY", &clusterGlobalY_, "clusterGlobalY/F");
-    outTree_->Branch("clusterGlobalZ", &clusterGlobalZ_, "clusterGlobalZ/F");
-
+  outTree_->Branch("detId", &detId_, "detId/i");
+  outTree_->Branch("dtcID", &dtcID_, "dtcID/i");
+  outTree_->Branch("isPSModulePixel", &isPSModulePixel_, "isPSModulePixel/O");
+  outTree_->Branch("isPSModuleStrip", &isPSModuleStrip_, "isPSModuleStrip/O");
+  outTree_->Branch("is2SModule", &is2SModule_, "is2SModule/O");
+  outTree_->Branch("clusterCol", &clusterCol_, "clusterCol/I");
+  outTree_->Branch("clusterR", &clusterR_, "clusterR/F");
+  outTree_->Branch("clusterZ", &clusterZ_, "clusterZ/F");
+  outTree_->Branch("clusterCenter", &clusterCenter_, "clusterCenter/F");
+  outTree_->Branch("clusterSize", &clusterSize_, "clusterSize/I");
+  outTree_->Branch("clusterLocalX", &clusterLocalX_, "clusterLocalX/F");
+  outTree_->Branch("clusterLocalY", &clusterLocalY_, "clusterLocalY/F");
+  outTree_->Branch("clusterGlobalX", &clusterGlobalX_, "clusterGlobalX/F");
+  outTree_->Branch("clusterGlobalY", &clusterGlobalY_, "clusterGlobalY/F");
+  outTree_->Branch("clusterGlobalZ", &clusterGlobalZ_, "clusterGlobalZ/F");
 }
-void Phase2TrackerDumpDigi::endJob ()
-{
-//     outTree_->GetDirectory()->cd();
-    outTree_->Write();
+void Phase2TrackerDumpClusters::endJob() {
+  //     outTree_->GetDirectory()->cd();
+  outTree_->Write();
 }
 
-
-void Phase2TrackerDumpDigi::beginRun(edm::Run const& run, edm::EventSetup const& es) {
-    tGeom_ = &es.getData(geomToken_);
-    tTopo_ = &es.getData(topoToken_);
-    cablingMap_ = &es.getData(cablingMapToken_);
+void Phase2TrackerDumpClusters::beginRun(edm::Run const& run, edm::EventSetup const& es) {
+  tGeom_ = &es.getData(geomToken_);
+  tTopo_ = &es.getData(topoToken_);
+  cablingMap_ = &es.getData(cablingMapToken_);
 }
 
-void Phase2TrackerDumpDigi::analyze(const edm::Event& event, const edm::EventSetup& es) {
+void Phase2TrackerDumpClusters::analyze(const edm::Event& event, const edm::EventSetup& es) {
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   event.getByToken(token_, clusters_handle);
 
@@ -136,36 +134,33 @@ void Phase2TrackerDumpDigi::analyze(const edm::Event& event, const edm::EventSet
 
   int count_clusters = 0;
   for (const auto& DSVItr : *clusters_handle) {
-
     uint32_t rawid(DSVItr.detId());
     DetId detId(rawid);
     const GeomDetUnit* geomDetUnit(tGeom_->idToDetUnit(detId));
     if (!geomDetUnit)
       continue;
-   
+
     detId_ = detId.rawId();
     isPSModulePixel_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSP;
     isPSModuleStrip_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSS;
-    is2SModule_      = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2SS;
+    is2SModule_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2SS;
 
-//     output << "detId: " << detId.rawId() << "  " ;
-//     output << (isPSModulePixel_ ? "isPSModulePixel_" : (isPSModuleStrip_ ? "isPSModuleStrip_" : "is2SModule_")); 
-//     output << std::endl;
-    
-    
-    if (cablingMap_->knowsDetId(detId_ -1 )){
+    //     output << "detId: " << detId.rawId() << "  " ;
+    //     output << (isPSModulePixel_ ? "isPSModulePixel_" : (isPSModuleStrip_ ? "isPSModuleStrip_" : "is2SModule_"));
+    //     output << std::endl;
+
+    if (cablingMap_->knowsDetId(detId_ - 1)) {
       auto equal_range = cablingMap_->detIdToDTCELinkId(detId_ - 1);
-      for (auto it = equal_range.first; it != equal_range.second; ++it){
+      for (auto it = equal_range.first; it != equal_range.second; ++it) {
+        dtcID_ = it->second.dtc_id();
+      }
+    } else if (cablingMap_->knowsDetId(detId_ - 2)) {
+      auto equal_range = cablingMap_->detIdToDTCELinkId(detId_ - 2);
+      for (auto it = equal_range.first; it != equal_range.second; ++it) {
         dtcID_ = it->second.dtc_id();
       }
     }
-    else if (cablingMap_->knowsDetId(detId_ -2 )){
-      auto equal_range = cablingMap_->detIdToDTCELinkId(detId_ - 2);
-      for (auto it = equal_range.first; it != equal_range.second; ++it){
-          dtcID_ = it->second.dtc_id();
-      }
-    }
-    
+
     for (const auto& clusterItr : DSVItr) {
       clusterCenter_ = clusterItr.center();
       clusterSize_ = clusterItr.size();
@@ -177,33 +172,32 @@ void Phase2TrackerDumpDigi::analyze(const edm::Event& event, const edm::EventSet
 
       clusterLocalX_ = localPosCluster.x();
       clusterLocalY_ = localPosCluster.y();
-      
+
       clusterGlobalX_ = globalPosCluster.x();
       clusterGlobalY_ = globalPosCluster.y();
       clusterGlobalZ_ = globalPosCluster.z();
 
       clusterR_ = globalPosCluster.perp();
       clusterZ_ = globalPosCluster.z();
-      
-      if (clusterSize_ <=8 && dtcID_ == 30)
+
+      if (clusterSize_ <= 8 && dtcID_ == 30)
         count_clusters++;
 
-//       output << "\t cluster size / firstStrip / firstRow / col: " << 
-//                    clusterSize_ << " / " << 
-//                    clusterItr.firstStrip() << " / " << 
-//                    clusterItr.firstRow() << " / " << 
-//                    clusterCol_ << std::endl;
-//       output << "\t cluster r position: " << globalPosCluster.perp() << std::endl;
-//       output << "\t cluster global z position: " << globalPosCluster.z() << std::endl;
+      //       output << "\t cluster size / firstStrip / firstRow / col: " <<
+      //                    clusterSize_ << " / " <<
+      //                    clusterItr.firstStrip() << " / " <<
+      //                    clusterItr.firstRow() << " / " <<
+      //                    clusterCol_ << std::endl;
+      //       output << "\t cluster r position: " << globalPosCluster.perp() << std::endl;
+      //       output << "\t cluster global z position: " << globalPosCluster.z() << std::endl;
 
       outTree_->Fill();  // Fill the tree with current cluster data
     }
-    
   }
   // Output to terminal and log file
-  logfile_ << output.str();
+//   logfile_ << output.str();
 }
 
 #include "FWCore/PluginManager/interface/ModuleDef.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-DEFINE_FWK_MODULE(Phase2TrackerDumpDigi);
+DEFINE_FWK_MODULE(Phase2TrackerDumpClusters);

@@ -8,8 +8,20 @@ process = cms.Process("FEDRAW")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
 # Set the logging output for debugging
-process.MessageLogger.cerr.FwkReport.reportEvery = 1  # print every event
-process.MessageLogger.cerr.threshold = 'INFO'
+# process.MessageLogger.cerr.FwkReport.reportEvery = 1  # print every event
+# process.MessageLogger.cerr.threshold = 'INFO'
+
+process.MessageLogger = cms.Service(
+    "MessageLogger",
+    destinations=cms.untracked.vstring('logFile', 'cout'),
+    logFile=cms.untracked.PSet(
+        threshold=cms.untracked.string('INFO'),  # Change to 'DEBUG' if needed
+    ),
+    cout=cms.untracked.PSet(
+        threshold=cms.untracked.string('WARNING'),  # Only show warnings/errors on console
+    ),
+    categories=cms.untracked.vstring('DTHDAQToFEDRawDataConverter')
+)
 
 # Define an empty source because this is a producer that reads from a file
 process.source = cms.Source("EmptySource")

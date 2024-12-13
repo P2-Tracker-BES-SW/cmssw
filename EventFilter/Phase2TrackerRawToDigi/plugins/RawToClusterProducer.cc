@@ -1,3 +1,6 @@
+// EDProducer unpacking FEDRawData to create an output collection of Phase2TrackerCluster1D
+// for the Phase2 Outer Tracker
+
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/MakerMacros.h"

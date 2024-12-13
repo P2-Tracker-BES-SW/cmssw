@@ -82,7 +82,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
     using namespace Phase2TrackerSpecifications;
     using namespace Phase2DAQFormatSpecification;
 
-    for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID; dtc_id++)
+    for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++)
     {
         for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++)
         {

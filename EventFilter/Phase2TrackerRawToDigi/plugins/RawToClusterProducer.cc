@@ -124,7 +124,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
     // Read one entire DTC (#dtcID), as per the producer logic
 //     unsigned int dtcID = 180; // dtc processing 2S modules
 //     unsigned int dtcID = 209; // dtc processing PS modules	
-    for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID; dtcID++){
+    for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; dtcID++){
     
       // read the 4 slinks
       for (unsigned int iSlink = 0; iSlink < SLINKS_PER_DTC; iSlink++)

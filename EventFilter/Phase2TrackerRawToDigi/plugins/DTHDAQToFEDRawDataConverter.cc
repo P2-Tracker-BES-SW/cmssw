@@ -25,8 +25,9 @@ private:
   unsigned int fedId_;
 
   std::vector<char> readRawFile(const std::string& inputFile);
-  void parseAndDumpEventData(const std::vector<char>& buffer);
-  void reverseParseFragments(const std::vector<char>& buffer, size_t startIdx, uint32_t packetWordCount, uint16_t eventCount);
+    void parseAndDumpEventData(const std::vector<char>& buffer, edm::Event& event); // Updated
+    void reverseParseFragments(const std::vector<char>& buffer, size_t startIdx, uint32_t packetWordCount, uint16_t eventCount, edm::Event& event); // Updated
+  void parseAndOutputFragments(const std::vector<char>& buffer, edm::Event& event);
   void printHex(const std::vector<char>& buffer, size_t length);
 };
 
@@ -64,7 +65,7 @@ void DTHDAQToFEDRawDataConverter::printHex(const std::vector<char>& buffer, size
   edm::LogInfo("DTHDAQToFEDRawDataConverter") << hexOutput.str();
 }
 
-void DTHDAQToFEDRawDataConverter::parseAndDumpEventData(const std::vector<char>& buffer) {
+void DTHDAQToFEDRawDataConverter::parseAndDumpEventData(const std::vector<char>& buffer, edm::Event& event) {
   size_t orbitSize = buffer.size() / orbitCount;
   for (unsigned int orbitIdx = 0; orbitIdx < orbitCount; ++orbitIdx) {
     size_t startIdx = orbitIdx * orbitSize;
@@ -124,13 +125,13 @@ void DTHDAQToFEDRawDataConverter::parseAndDumpEventData(const std::vector<char>&
               << "\nChecksum: 0x" << std::hex << checksum << std::dec << "\n";
 
     // Reverse parse fragments within this orbit
-    reverseParseFragments(buffer, startIdx, packetWordCount, eventCount);
+    reverseParseFragments(buffer, startIdx, packetWordCount, eventCount, event);
   }
 }
 
-void DTHDAQToFEDRawDataConverter::reverseParseFragments(const std::vector<char>& buffer, size_t startIdx, uint32_t packetWordCount, uint16_t eventCount) {
-  size_t bufferSize = buffer.size();
 
+void DTHDAQToFEDRawDataConverter::reverseParseFragments(const std::vector<char>& buffer, size_t startIdx, uint32_t packetWordCount, uint16_t eventCount, edm::Event& event) {
+  size_t bufferSize = buffer.size();
   size_t index = startIdx + (packetWordCount * fragmentPayloadWordSize);  // Calculate where the orbit payload ends
 
   edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Starting reverse parsing from byte offset: " << index << std::endl;
@@ -158,55 +159,55 @@ void DTHDAQToFEDRawDataConverter::reverseParseFragments(const std::vector<char>&
       return;
     }
 
-   // uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[index + fragFlagSize], fragFlagSize));
     uint32_t fragSize = static_cast<uint32_t>(readLittleEndian(&buffer[index + fragSizeSize], fragSizeSize));
-   // uint64_t eventId = readLittleEndian(&buffer[index + 8], 8) & 0xFFFFFFFFFFF;
-  //  uint16_t crc = static_cast<uint16_t>(readLittleEndian(&buffer[index + 14], 2));
 
-    // edm::LogInfo("DTHDAQToFEDRawDataConverter")
-        //       << "Version: " << version << " Source ID: " << sourceId;
-
-    size_t payloadSizeBytes = fragSize * 16/128;
+    size_t payloadSizeBytes = fragSize * 16 / 128;
     if (index < payloadSizeBytes) {
       std::cerr << "Not enough data for the payload of fragment " << frag + 1 << std::endl;
       return;
     }
     index -= payloadSizeBytes;
+
     edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Fragment " << frag + 1 << " Payload starts at byte offset: " << index << std::endl;
 
-    // Optionally, you could print the payload here
-    edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Fragment " << frag + 1 << " Payload (first 16 bytes): ";
-    for (size_t i = index; i < index + 16 && i < bufferSize; ++i) {
-      edm::LogInfo("DTHDAQToFEDRawDataConverter") << std::hex << std::setw(2) << std::setfill('0')
-                << (static_cast<unsigned int>(static_cast<unsigned char>(buffer[i]))) << " ";
-    }
-    edm::LogInfo("DTHDAQToFEDRawDataConverter") << std::dec << std::endl;
+    // Create a FEDRawData object for this fragment
+    std::unique_ptr<FEDRawDataCollection> fedRawDataCollection(new FEDRawDataCollection());
+    FEDRawData& fedData = fedRawDataCollection->FEDData(fedId_);
+    fedData.resize(payloadSizeBytes);
+    std::copy(buffer.begin() + index, buffer.begin() + index + payloadSizeBytes, fedData.data());
+
+    edm::LogInfo("DTHDAQToFEDRawDataConverter")
+        << "FEDRawData created for fragment " << frag + 1 << " with size: " << payloadSizeBytes << " bytes for FED ID: " << fedId_;
+
+    // Store this fragment as an individual event
+    event.put(std::move(fedRawDataCollection));
   }
-  
 
   edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Finished reverse parsing of all fragments in the orbit." << std::endl;
 }
 
 void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSetup&) {
-  std::vector<char> buffer;
-  try {
-    buffer = readRawFile(inputFile_);
-  } catch (const cms::Exception& e) {
-    edm::LogError("DTHDAQToFEDRawDataConverter") << e.what();
-    return;
-  }
+    std::vector<char> buffer;
+    try {
+        buffer = readRawFile(inputFile_);
+    } catch (const cms::Exception& e) {
+        edm::LogError("DTHDAQToFEDRawDataConverter") << e.what();
+        return;
+    }
 
-  std::unique_ptr<FEDRawDataCollection> fedRawDataCollection(new FEDRawDataCollection());
-  FEDRawData& fedData = fedRawDataCollection->FEDData(fedId_);
-  fedData.resize(buffer.size());
-  std::copy(buffer.begin(), buffer.end(), fedData.data());
+    edm::LogInfo("DTHDAQToFEDRawDataConverter")
+        << "Raw data read with size: " << buffer.size() << " bytes from input file: " << inputFile_;
 
-  edm::LogInfo("DTHDAQToFEDRawDataConverter")
-      << "FEDRawData created with size: " << fedData.size() << " bytes for FED ID: " << fedId_;
+    // Parse and process the buffer
+    parseAndDumpEventData(buffer, event);
 
-  printHex(buffer, 64);
-  parseAndDumpEventData(buffer);
-  event.put(std::move(fedRawDataCollection));
+    // Print the first 64 bytes for debugging
+    printHex(buffer, 64);
 }
+
+    
+
+
+
 
 DEFINE_FWK_MODULE(DTHDAQToFEDRawDataConverter);

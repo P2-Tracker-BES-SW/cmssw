@@ -61,7 +61,7 @@ def generate_orbit_stream(version, source_id, run_number, starting_orbit_number,
             bitstream += payload
 
             # Fragment trailer specifics
-            fragment_size = 128  # Payload size (128 bits)
+            fragment_size = (len(payload) * 8) // 128  # Convert bytes to bits and divide by 128  # Payload size (128 bits)
             crc = calculate_checksum(payload) & 0xFFFF
             trailer_flags = 0x0
             bitstream += create_fragment_trailer(trailer_flags, fragment_size, event_id, crc)

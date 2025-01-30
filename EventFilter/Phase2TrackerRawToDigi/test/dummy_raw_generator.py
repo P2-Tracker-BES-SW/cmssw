@@ -68,7 +68,7 @@ def generate_orbit_stream(version, source_id, run_number, starting_orbit_number,
 
     return bitstream
 
-# Example usage
+
 if __name__ == "__main__":
     bitstream = generate_orbit_stream(
         version=1,             # Version (16 bits)

@@ -28,7 +28,7 @@ process.source = cms.Source("EmptySource")
 
 # Limit the number of events processed (since we are reading from a file, 1 is fine)
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(-1)
 )
 
 # Define the DTHDAQToFEDRawDataConverter module

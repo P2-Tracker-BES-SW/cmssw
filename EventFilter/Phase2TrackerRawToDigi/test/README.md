@@ -15,3 +15,4 @@ To validate the output root file, run `python3 validate.py`
 
 
 Right now the number of orbits per .raw file is determined by `orbitCount` at  [../plugins/constants.h](https://github.com/P2-Tracker-BES-SW/cmssw/blob/36ae9f62795b73df91327b0c22b3868ce94a669f/EventFilter/Phase2TrackerRawToDigi/plugins/constants.h#L2)
+This assumes that all orbits have the same size.

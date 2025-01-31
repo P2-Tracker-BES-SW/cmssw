@@ -12,9 +12,8 @@ constexpr unsigned int packetWordCountSize = 4;  // The packet word count  field
 constexpr unsigned int flagsSize = 4;  // The flag field is 4 bytes
 constexpr unsigned int checksumSize = 4;  // The checksum field is 4 bytes
 constexpr unsigned int fragFlagSize = 2;  // The fragment flag field is 2 bytes
-constexpr unsigned int fragSizeSize = 4;  // The fragment flag field is 4 bytes
+constexpr unsigned int fragSizeSize = 4;  // The fragment size field is 4 bytes
 constexpr uint8_t orbitHeaderMarkerH = 0x48;
 constexpr uint8_t orbitHeaderMarkerO = 0x4F;
 constexpr uint8_t fragmentTrailerMarkerH = 0x48;
 constexpr uint8_t fragmentTrailerMarkerF = 0x46;
-

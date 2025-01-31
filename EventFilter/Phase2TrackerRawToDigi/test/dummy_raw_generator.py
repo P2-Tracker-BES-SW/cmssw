@@ -46,12 +46,24 @@ def create_fragment_trailer(flags, fragment_size, event_id, crc):
     return trailer.to_bytes(16, byteorder='little')
 
 # Modified function to generate multiple orbits
-def generate_orbit_stream(version, source_id, run_number, starting_orbit_number, event_count, packet_word_count, flags, num_fragments=67, num_orbits=4):
+def generate_orbit_stream(version, source_id, run_number, starting_orbit_number, event_count, flags, num_fragments=67, num_orbits=4):
     bitstream = b''
 
-    # Loop over the number of orbits
+    # Define the orbit header size in 128-bit (16-byte) words
+    orbit_header_size_words = 32 // 16  # 32 bytes = 2 words
+
     for orbit in range(num_orbits):
         orbit_number = starting_orbit_number + orbit  # Increment orbit number
+
+        # Calculate total packet_word_count as number of 128-bit words in orbit (including header)
+        packet_word_count = orbit_header_size_words + num_fragments * 2
+        # => 2 + 67*2 = 136
+        # Because each 16-byte piece is 4 32-bit words, 
+        # each fragment is payload(4 words) + trailer(4 words) = 8 words
+
+        print(f"Orbit {orbit+1}: packet_word_count={packet_word_count}")
+
+        # Create orbit header
         bitstream += create_orbit_header(version, source_id, run_number, orbit_number, event_count, packet_word_count, flags)
 
         # Generate payloads and fragment trailers for each fragment in the orbit
@@ -60,8 +72,8 @@ def generate_orbit_stream(version, source_id, run_number, starting_orbit_number,
             payload = create_payload(event_id)
             bitstream += payload
 
-            # Fragment trailer specifics
-            fragment_size = (len(payload) * 8) // 128  # Convert bytes to bits and divide by 128  # Payload size (128 bits)
+            # Compute fragment_size in 128-bit words
+            fragment_size = (len(payload) * 8) // 128  # Convert bytes to bits and divide by 128
             crc = calculate_checksum(payload) & 0xFFFF
             trailer_flags = 0x0
             bitstream += create_fragment_trailer(trailer_flags, fragment_size, event_id, crc)
@@ -76,7 +88,6 @@ if __name__ == "__main__":
         run_number=6789,       # Example run number (32 bits)
         starting_orbit_number=98765,  # Starting orbit number (32 bits)
         event_count=67,        # Number of events per orbit (12 bits)
-        packet_word_count=134, # Each fragment is 2 words, 67 * 2 = 134
         flags=0x0              # Initial flags set to 0 (32 bits)
     )
 

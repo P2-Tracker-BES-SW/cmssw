@@ -15,10 +15,12 @@ To validate the output root file, run `python3 validate.py`
 
 Then compare the fragments with the orignal .raw file (I'm in the process of writing a .py script  for that)
 
+This code makes no assumptions about the number of orbits in the raw file or the fragment sizes (such as the number of events per orbit or whether fragments are uniform in size). It reads the entire file—regardless of how many orbits it contains—and uses the information in each orbit header (orbit size and fragment count) along with each fragment trailer (fragment size) to dynamically process the data.
+
 
 _**The code throws an error at the end unless you set maxEvent to the actual number of events per file.**_
 
-However, this could be run without knowing the event number, orbit number or assuming the orbit size. Simply go the test directory, and
+**However, this could be run without knowing the event number.** Simply go the test directory, and
 ```
 chmod +x runDTHDAQ.sh 
 ./runDTHDAQ.sh [filename.raw]

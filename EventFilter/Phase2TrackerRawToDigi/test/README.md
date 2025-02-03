@@ -16,7 +16,7 @@ To validate the output root file, run `python3 validate.py`
 Then compare the fragments with the orignal .raw file (I'm in the process of writing a .py script  for that)
 
 Right now the number of orbits per .raw file is determined by `orbitCount` at  [../plugins/constants.h](https://github.com/P2-Tracker-BES-SW/cmssw/blob/36ae9f62795b73df91327b0c22b3868ce94a669f/EventFilter/Phase2TrackerRawToDigi/plugins/constants.h#L2)
-_**This assumes that all orbits have the same size.**_
+
 _**The code throws an error at the end unless you set maxEvent to the actual number of events per file.**_
 
 However, this could be run without knowing the event number, orbit number or assuming the orbit size. Simply go the test directory, and

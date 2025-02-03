@@ -1,5 +1,5 @@
 // Constants for bit field widths, markers, and size in BYTES
-constexpr unsigned int orbitCount = 4;
+
 constexpr unsigned int orbitHeaderSize = 32;
 constexpr unsigned int fragmentTrailerSize = 16;
 constexpr unsigned int fragmentPayloadWordSize = 16;  // Each fragment payload word is 16 bytes

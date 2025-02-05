@@ -1,4 +1,7 @@
 import ROOT
+import struct
+import zlib
+import random
 
 def hex_dump(data: bytes, max_length=64):
     """
@@ -22,6 +25,15 @@ def inspect_fed_raw_data(
     """
     Inspect and print the contents of the FEDRawDataCollection in a ROOT file.
     
+    For each FED payload, the code extracts the first 4 bytes (if available),
+    converts these bytes to an integer (interpreting them in little-endian order),
+    and compares the value (in decimal) to the event order (starting at 1).
+    
+    It also checks that the remainder of the bytes (if any) are all zero.
+    
+    At the end, a summary is printed indicating whether all checked entries passed
+    the 4-byte number matching check and the all-zero remainder check.
+    
     :param root_file_path:  Path to the ROOT file
     :param tree_name:       Name of the TTree (default "Events")
     :param branch_name:     Name of the FEDRawDataCollection branch
@@ -43,8 +55,12 @@ def inspect_fed_raw_data(
 
     # Get number of entries in the tree
     num_entries = tree.GetEntries()
-    print(f"\n📂 ROOT File: {root_file_path}")
-    print(f"📌 TTree: '{tree_name}' | Entries: {num_entries}")
+    print(f"\n ROOT File: {root_file_path}")
+    print(f" TTree: '{tree_name}' | Entries: {num_entries}")
+
+    # Counters for overall checking
+    total_checked = 0
+    total_failures = 0
 
     # Loop over events
     for event_idx in range(num_entries):
@@ -57,7 +73,7 @@ def inspect_fed_raw_data(
             print(f"Error: Branch '{branch_name}' not found in TTree '{tree_name}'.")
             return
 
-        print(f"\n🔹 Event {event_idx}:")
+        print(f"\n Event {event_idx}:")
 
         fed_count = 0
         start_fed_id, end_fed_id = fed_id_range
@@ -70,21 +86,54 @@ def inspect_fed_raw_data(
                 fed_count += 1
                 print(f"  ➜ FED ID {fed_id}: {data_size} bytes", end='')
 
-                if print_hex:
-                    # Retrieve a cppyy.LowLevelView to the payload
-                    c_buf = fed_data.data()
-                    # Convert that to Python bytes by iterating or slicing
-                    # (Here we use a generator expression to handle each byte)
-                    raw_bytes = bytes(c_buf[i] for i in range(data_size))
+                # Retrieve the FED payload as Python bytes
+                c_buf = fed_data.data()
+                raw_bytes = bytes(c_buf[i] for i in range(data_size))
 
-                    # Hex dump
+                # If the FED has at least 4 bytes, perform our checks:
+                # 1. The first 4 bytes (as a little-endian integer) should equal the event order (1-indexed)
+                # 2. All remaining bytes (if any) should be zero.
+                if data_size >= 4:
+                    first4 = raw_bytes[:4]
+                    value = int.from_bytes(first4, byteorder='little')
+                    expected = event_idx + 1  # 1-indexed event number
+
+                    # Check if the remainder (if any) are all zeros.
+                    remainder = raw_bytes[4:]
+                    remainder_is_zero = all(b == 0 for b in remainder)
+                    
+                    total_checked += 1
+
+                    pass_first4 = (value == expected)
+                    pass_remainder = remainder_is_zero
+
+                    if pass_first4 and pass_remainder:
+                        cmp_str = (f"(first 4 bytes: {value} == expected event {expected} "
+                                   f"and remainder is all zero)")
+                    else:
+                        cmp_str = (f"(first 4 bytes: {value} {'==' if pass_first4 else '!='} expected event {expected}; "
+                                   f"remainder is {'all zero' if pass_remainder else 'not all zero'})")
+                        total_failures += 1
+
+                    print(" " + cmp_str, end='')
+
+                if print_hex:
                     dump_str = hex_dump(raw_bytes, max_hex_len)
                     print(f"\n     Hex dump (up to {max_hex_len} bytes): {dump_str}")
                 else:
                     print("")  # just end the line
 
         if fed_count == 0:
-            print("  ❌ No FED data found in this event.")
+            print("   No FED data found in this event.")
+
+    # Summary statement at the end
+    print("\n================ SUMMARY ================")
+    if total_checked == 0:
+        print("No FED entries with at least 4 bytes were found for checking.")
+    elif total_failures == 0:
+        print(f"All {total_checked} checked FED entries passed the check (first 4 bytes matches the event number (order in file) and remainder bytes are zeros).")
+    else:
+        print(f"{total_failures} out of {total_checked} checked FED entries did NOT pass the check.")
 
     # Close the file
     root_file.Close()

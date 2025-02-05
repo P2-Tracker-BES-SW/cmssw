@@ -30,7 +30,7 @@ def create_orbit_header(version, source_id, run_number, orbit_number, event_coun
 # Function to generate payload (128 bits)
 def create_payload(event_id):
     payload = (event_id & 0xFFFFFFFF)  # 32-bit Event ID
-    return payload.to_bytes(16, byteorder='little')
+    return payload.to_bytes(16, byteorder='little') # The payload has to be an integer number of 128-bits (16 bytes) words
 
 # Function to generate the Fragment Trailer
 def create_fragment_trailer(flags, fragment_size, event_id, crc):

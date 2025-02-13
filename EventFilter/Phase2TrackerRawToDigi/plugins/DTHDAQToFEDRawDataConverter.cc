@@ -283,8 +283,8 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             }
 
             // (c) Parse trailer fields
-            uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + 2], fragFlagSize));
-            uint32_t fragSize  = static_cast<uint32_t>(readLittleEndian(&buffer[trailerPos + 4], fragSizeSize));
+            uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + fragFlagSize], fragFlagSize));
+            uint32_t fragSize  = static_cast<uint32_t>(readLittleEndian(&buffer[trailerPos + fragSizeSize], fragSizeSize));
             uint64_t eventId   = readLittleEndian(&buffer[trailerPos + 8], 6) & 0xFFFFFFFFFFFULL;
             uint16_t crc       = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + 14], 2));
 

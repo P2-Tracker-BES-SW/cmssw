@@ -68,7 +68,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 {
     // Retrieve TrackerGeometry and TrackerTopology from EventSetup
     const TrackerGeometry& trackerGeometry = iSetup.getData(trackerGeometryToken_);
-    const TrackerTopology& trackerTopology = iSetup.getData(trackerTopologyToken_);
     
     // Retrieve the CablingMap
     const auto& cablingMap = iSetup.getData(cablingMapToken_);

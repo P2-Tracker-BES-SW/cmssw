@@ -18,7 +18,7 @@ def inspect_fed_raw_data(
     root_file_path,
     tree_name="Events",
     branch_name="FEDRawDataCollection_dthDAQToFEDRawData__FEDRAW.obj",
-    fed_id_range=(1200, 1600),
+    fed_id_range=(00000, 16000),
     print_hex=False,
     max_hex_len=64
 ):
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         root_file_path,
         tree_name="Events",
         branch_name="FEDRawDataCollection_dthDAQToFEDRawData__FEDRAW.obj",
-        fed_id_range=(1200, 1600),
+        fed_id_range=(00000, 1),
         print_hex=True,   # Toggle for raw hex output
         max_hex_len=64
     )

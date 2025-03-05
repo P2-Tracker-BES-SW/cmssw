@@ -1,0 +1,189 @@
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+====> beginJob(): Reading and parsing the entire raw file once.
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Raw data read: 4608 bytes from: orbit_stream.raw-fed00000-index000.raw
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Raw bitstream (up to 64 bytes): 48 4f 01 00 ce 04 00 00 02 00 00 00 01 00 00 00 01 00 00 00 0b 00 00 00 00 00 00 00 9a 28 0c 8d ce 04 00 00 00 00 00 02 01 00 00 00 00 00 20 55 00 00 00 00 00 00 ce 04 01 00 00 00 c1 c1 c1 c1 
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 1: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=1, EventCount=1, PacketWordCount=11, Flags=0, Checksum=2366384282
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 1 fragments in reverse for orbit 1
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 2: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=2, EventCount=1, PacketWordCount=11, Flags=0, Checksum=1569340511
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 1 fragments in reverse for orbit 2
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 3: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=3, EventCount=2, PacketWordCount=20, Flags=0, Checksum=2156820650
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 2 fragments in reverse for orbit 3
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 4: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=4, EventCount=2, PacketWordCount=20, Flags=0, Checksum=3829472543
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 2 fragments in reverse for orbit 4
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 5: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=5, EventCount=3, PacketWordCount=29, Flags=0, Checksum=500412102
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 3 fragments in reverse for orbit 5
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 6: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=6, EventCount=3, PacketWordCount=29, Flags=0, Checksum=3301996197
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 3 fragments in reverse for orbit 6
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 7: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=7, EventCount=4, PacketWordCount=38, Flags=0, Checksum=3502652642
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 4 fragments in reverse for orbit 7
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 8: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=8, EventCount=4, PacketWordCount=38, Flags=0, Checksum=3633430984
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 4 fragments in reverse for orbit 8
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Orbit 9: Version=1, SourceID=1230, RunNumber=2, OrbitNumber=9, EventCount=10, PacketWordCount=92, Flags=0, Checksum=2206732752
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Parsing 10 fragments in reverse for orbit 9
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+Completed parsing: total orbits read = 9; total fragments stored = 30
+%MSG
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData@beginJob  24-Feb-2025 16:27:55 CET pre-events
+====> Completed parsing. Total fragments found: 30
+%MSG
+Begin processing the 1st record. Run 1, Event 1, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.096 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 1
+Producing event for Fragment #0 (Orbit 1, orbitNumber=1, eventId=1) with payload size=128 bytes.
+%MSG
+Begin processing the 2nd record. Run 1, Event 2, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.097 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 2
+Producing event for Fragment #1 (Orbit 2, orbitNumber=2, eventId=2) with payload size=128 bytes.
+%MSG
+Begin processing the 3rd record. Run 1, Event 3, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.097 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 3
+Producing event for Fragment #2 (Orbit 3, orbitNumber=3, eventId=3) with payload size=128 bytes.
+%MSG
+Begin processing the 4th record. Run 1, Event 4, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.097 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 4
+Producing event for Fragment #3 (Orbit 3, orbitNumber=3, eventId=4) with payload size=128 bytes.
+%MSG
+Begin processing the 5th record. Run 1, Event 5, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.098 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 5
+Producing event for Fragment #4 (Orbit 4, orbitNumber=4, eventId=5) with payload size=128 bytes.
+%MSG
+Begin processing the 6th record. Run 1, Event 6, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.098 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 6
+Producing event for Fragment #5 (Orbit 4, orbitNumber=4, eventId=6) with payload size=128 bytes.
+%MSG
+Begin processing the 7th record. Run 1, Event 7, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.098 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 7
+Producing event for Fragment #6 (Orbit 5, orbitNumber=5, eventId=7) with payload size=128 bytes.
+%MSG
+Begin processing the 8th record. Run 1, Event 8, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.098 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 8
+Producing event for Fragment #7 (Orbit 5, orbitNumber=5, eventId=8) with payload size=128 bytes.
+%MSG
+Begin processing the 9th record. Run 1, Event 9, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.099 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 9
+Producing event for Fragment #8 (Orbit 5, orbitNumber=5, eventId=9) with payload size=128 bytes.
+%MSG
+Begin processing the 10th record. Run 1, Event 10, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.099 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 10
+Producing event for Fragment #9 (Orbit 6, orbitNumber=6, eventId=10) with payload size=128 bytes.
+%MSG
+Begin processing the 11th record. Run 1, Event 11, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.099 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 11
+Producing event for Fragment #10 (Orbit 6, orbitNumber=6, eventId=11) with payload size=128 bytes.
+%MSG
+Begin processing the 12th record. Run 1, Event 12, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.099 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 12
+Producing event for Fragment #11 (Orbit 6, orbitNumber=6, eventId=12) with payload size=128 bytes.
+%MSG
+Begin processing the 13th record. Run 1, Event 13, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.099 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 13
+Producing event for Fragment #12 (Orbit 7, orbitNumber=7, eventId=13) with payload size=128 bytes.
+%MSG
+Begin processing the 14th record. Run 1, Event 14, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.100 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 14
+Producing event for Fragment #13 (Orbit 7, orbitNumber=7, eventId=14) with payload size=128 bytes.
+%MSG
+Begin processing the 15th record. Run 1, Event 15, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.100 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 15
+Producing event for Fragment #14 (Orbit 7, orbitNumber=7, eventId=15) with payload size=128 bytes.
+%MSG
+Begin processing the 16th record. Run 1, Event 16, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.100 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 16
+Producing event for Fragment #15 (Orbit 7, orbitNumber=7, eventId=16) with payload size=128 bytes.
+%MSG
+Begin processing the 17th record. Run 1, Event 17, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.100 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 17
+Producing event for Fragment #16 (Orbit 8, orbitNumber=8, eventId=17) with payload size=128 bytes.
+%MSG
+Begin processing the 18th record. Run 1, Event 18, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.100 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 18
+Producing event for Fragment #17 (Orbit 8, orbitNumber=8, eventId=18) with payload size=128 bytes.
+%MSG
+Begin processing the 19th record. Run 1, Event 19, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.101 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 19
+Producing event for Fragment #18 (Orbit 8, orbitNumber=8, eventId=19) with payload size=128 bytes.
+%MSG
+Begin processing the 20th record. Run 1, Event 20, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.101 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 20
+Producing event for Fragment #19 (Orbit 8, orbitNumber=8, eventId=20) with payload size=128 bytes.
+%MSG
+Begin processing the 21st record. Run 1, Event 21, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.101 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 21
+Producing event for Fragment #20 (Orbit 9, orbitNumber=9, eventId=21) with payload size=128 bytes.
+%MSG
+Begin processing the 22nd record. Run 1, Event 22, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.101 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 22
+Producing event for Fragment #21 (Orbit 9, orbitNumber=9, eventId=22) with payload size=128 bytes.
+%MSG
+Begin processing the 23rd record. Run 1, Event 23, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.101 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 23
+Producing event for Fragment #22 (Orbit 9, orbitNumber=9, eventId=23) with payload size=128 bytes.
+%MSG
+Begin processing the 24th record. Run 1, Event 24, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.102 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 24
+Producing event for Fragment #23 (Orbit 9, orbitNumber=9, eventId=24) with payload size=128 bytes.
+%MSG
+Begin processing the 25th record. Run 1, Event 25, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.102 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 25
+Producing event for Fragment #24 (Orbit 9, orbitNumber=9, eventId=25) with payload size=128 bytes.
+%MSG
+Begin processing the 26th record. Run 1, Event 26, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.102 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 26
+Producing event for Fragment #25 (Orbit 9, orbitNumber=9, eventId=26) with payload size=128 bytes.
+%MSG
+Begin processing the 27th record. Run 1, Event 27, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.102 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 27
+Producing event for Fragment #26 (Orbit 9, orbitNumber=9, eventId=27) with payload size=128 bytes.
+%MSG
+Begin processing the 28th record. Run 1, Event 28, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.102 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 28
+Producing event for Fragment #27 (Orbit 9, orbitNumber=9, eventId=28) with payload size=128 bytes.
+%MSG
+Begin processing the 29th record. Run 1, Event 29, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.103 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 29
+Producing event for Fragment #28 (Orbit 9, orbitNumber=9, eventId=29) with payload size=128 bytes.
+%MSG
+Begin processing the 30th record. Run 1, Event 30, LumiSection 1 on stream 0 at 24-Feb-2025 16:27:55.103 CET
+%MSG-i DTHDAQToFEDRawDataConverter:   DTHDAQToFEDRawDataConverter:dthDAQToFEDRawData 24-Feb-2025 16:27:55 CET  Run: 1 Event: 30
+Producing event for Fragment #29 (Orbit 9, orbitNumber=9, eventId=30) with payload size=128 bytes.
+%MSG

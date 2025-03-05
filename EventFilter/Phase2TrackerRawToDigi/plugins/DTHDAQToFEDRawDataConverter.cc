@@ -272,9 +272,9 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             size_t trailerPos = currentPos - fragmentTrailerSize;
 
             // (b) Verify trailer markers
-            uint8_t markerH_trailer = static_cast<uint8_t>(buffer[trailerPos]);
+            uint8_t markerT_trailer = static_cast<uint8_t>(buffer[trailerPos]);
             uint8_t markerF_trailer = static_cast<uint8_t>(buffer[trailerPos + 1]);
-            if (markerH_trailer != fragmentTrailerMarkerH || markerF_trailer != fragmentTrailerMarkerF) {
+            if (markerT_trailer != fragmentTrailerMarkerT || markerF_trailer != fragmentTrailerMarkerF) {
                 edm::LogError("DTHDAQToFEDRawDataConverter")
                     << "Invalid Fragment Trailer marker in orbit " << (orbitIdx + 1)
                     << ", fragment #" << (fragIdx + 1);

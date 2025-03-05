@@ -40,7 +40,7 @@ def create_payload(event_id, payload_size=16):
 # Function to generate the Fragment Trailer
 def create_fragment_trailer(flags, fragment_size, event_id, crc):
     trailer = 0
-    trailer |= 0x48  # First byte
+    trailer |= 0x54  # First byte
     trailer |= 0x46 << 8  # Second byte
     trailer |= (flags & 0xFFFF) << 16  # Flags (16 bits)
     trailer |= (fragment_size & 0xFFFFFFFF) << 32  # Fragment size (32 bits)

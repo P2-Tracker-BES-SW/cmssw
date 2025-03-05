@@ -125,3 +125,4 @@ echo "Updated DTHDAQtoFEDRAWData_cfg.py at line 30 with event count ${EVENTNUM}"
 
 # Run cmsRun with the modified configuration file.
 cmsRun DTHDAQtoFEDRAWData_cfg.py
+echo "cmsRunned DTHDAQtoFEDRAWData_cfg.py, check log file"

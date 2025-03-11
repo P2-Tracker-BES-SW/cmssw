@@ -32,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Define the DTHDAQToFEDRawDataConverter module
 process.dthDAQToFEDRawData = cms.EDProducer('DTHDAQToFEDRawDataConverter',
-    inputFile = cms.string('_4orbit_data.raw'),  # Path to your input raw file
+    inputFile = cms.string('orbit_stream.raw-fed00000-index000.raw'),  # Path to your input raw file
     fedId = cms.uint32(1230)  # Example FED ID, adjust as necessary
 )
 

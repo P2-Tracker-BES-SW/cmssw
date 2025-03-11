@@ -116,8 +116,7 @@ void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSet
     // Check if we have any fragments left
     if (currentFragmentIndex_ >= allFragments_.size()) {
         // We are out of fragments to produce. 
-        // Typically you might throw an exception to end the job:
-        edm::LogError("DTHDAQToFEDRawDataConverter")
+        edm::LogWarning("DTHDAQToFEDRawDataConverter")
             << "[DTHDAQToFEDRawDataConverter] No more fragments left to produce. "
             << "Already produced " << currentFragmentIndex_ << " events.";
         return;    

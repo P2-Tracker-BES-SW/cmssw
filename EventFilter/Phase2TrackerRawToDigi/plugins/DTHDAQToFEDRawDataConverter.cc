@@ -19,7 +19,7 @@
 // Include the constants for bit field widths, markers, and size in BYTES:
 #include "EventFilter/Phase2TrackerRawToDigi/plugins/constants.h"
 
-// helper for endianness, the LXPLUS architecture is little-endian, thus our dummy .raw files are too
+// helper for endianness, the LXPLUS architecture is little-endian, so is the raw data from the DTH
 uint64_t readLittleEndian(const char* data, size_t size) {
     uint64_t value = 0;
     for (size_t i = 0; i < size; ++i) {
@@ -85,6 +85,8 @@ DTHDAQToFEDRawDataConverter::DTHDAQToFEDRawDataConverter(const edm::ParameterSet
     , fedId_(   config.getParameter<unsigned int>("fedId"))
 {
     // We will produce a FEDRawDataCollection each time produce(...) is called.
+    // Since this is an EDProducer and the cfg file uses "EmptySource" to read from .raw file, 
+    // produce() is called as many times as "maxEvent" is set to
     produces<FEDRawDataCollection>();
 }
 
@@ -183,10 +185,6 @@ void DTHDAQToFEDRawDataConverter::printHex(const std::vector<char>& buffer, size
 /**
  * 3) Parse the entire buffer, find all orbits, then for each orbit, find all fragments,
  *    and store them in allFragments_ so that each fragment can become a CMSSW event.
- *
- *    The code below essentially mirrors my original parse logic from
- *    `parseAndDumpEventData()`, but *does not* produce anything yet.
- *    Instead, it pushes data into `allFragments_`.
  */
 void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<char>& buffer) {
     size_t startIdx = 0;
@@ -285,10 +283,13 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             // (c) Parse trailer fields
             uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + fragFlagSize], fragFlagSize));
             uint32_t fragSize  = static_cast<uint32_t>(readLittleEndian(&buffer[trailerPos + fragSizeSize], fragSizeSize));
-            uint64_t eventId   = readLittleEndian(&buffer[trailerPos + 8], 6) & 0xFFFFFFFFFFFULL;
-            uint16_t crc       = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + 14], 2));
+            uint64_t eventId   = readLittleEndian(&buffer[trailerPos + 8], 6) & 0xFFFFFFFFFFFULL; //The event ID is a 44-bit (5.5 bytes) field, eventID+res+CRC = 8 bytes
+            //                                                                                    0xFFFFFFFFFFFULL is a mask to keep the  first 44 bits (5.5 bytes) out of the 48 bits (6 bytes), 
+            //                                                                                    the other 4 bits (0.5 bytes)are reserved and this code does not extract them
+            uint16_t crc       = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + 14], 2)); // the buffer index did not update in the last statment, this line updates it: 8+6 = 14 bytes
+            //                                                                                    CRC checksum is 16-bit (2-byte) field. 16 +44 + 4 (reserved) = 64 bits (8 bytes)
 
-            // (d) Calculate payload size in bytes (adjust if your format differs)
+            // (d) Calculate payload size in bytes
             size_t payloadSizeBytes = fragSize * fragmentPayloadWordSize;
             if (trailerPos < payloadSizeBytes) {
                 edm::LogError("DTHDAQToFEDRawDataConverter")
@@ -333,5 +334,5 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
         << "; total fragments stored = " << allFragments_.size();
 }
 
-// This macro declares the plugin to the framework
+
 DEFINE_FWK_MODULE(DTHDAQToFEDRawDataConverter);

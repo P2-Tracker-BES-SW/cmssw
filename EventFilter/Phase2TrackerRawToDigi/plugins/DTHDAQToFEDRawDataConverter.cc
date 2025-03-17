@@ -1,4 +1,4 @@
-// A utility to read and parse the DTH output .raw files then convert each event fragment to a FEDRawData entry
+// A utility to read and parse a .raw orbit aggregasion file from the DTH, convert each event fragment to a FEDRawData entry
 #include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"

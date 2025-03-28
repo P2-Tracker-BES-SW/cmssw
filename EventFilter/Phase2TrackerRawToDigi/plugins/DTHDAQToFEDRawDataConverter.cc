@@ -37,7 +37,8 @@ struct FragmentData {
     // Orbit-level info (for logging/diagnostics)
     unsigned int orbitIdx    = 0;  
     uint32_t runNumber       = 0;  
-    uint32_t orbitNumber     = 0;  
+    uint32_t orbitNumber     = 0;
+    uint32_t sourceId        = 0;
     uint16_t fragFlags       = 0;  
     uint32_t fragSize        = 0;  
     uint64_t eventId         = 0;  

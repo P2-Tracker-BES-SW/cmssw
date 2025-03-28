@@ -306,6 +306,7 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             fdata.orbitIdx    = orbitIdx + 1;
             fdata.runNumber   = runNumber;
             fdata.orbitNumber = orbitNumber;
+            fdata.sourceId    = sourceId;
             fdata.fragFlags   = fragFlags;
             fdata.fragSize    = fragSize;
             fdata.eventId     = eventId;

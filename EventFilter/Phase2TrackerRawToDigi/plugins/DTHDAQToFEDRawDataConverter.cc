@@ -61,9 +61,9 @@ public:
 private:
     // Configuration
     std::string  inputFile_;
-    unsigned int fedId_;
+   
 
-    // We store *all* parsed fragments from the raw file:
+    // We store all parsed fragments from the raw file:
     std::vector<FragmentData> allFragments_;
 
     // Index for the next fragment to publish as a CMSSW event
@@ -82,7 +82,6 @@ private:
 // Constructor: read parameters, declare our output
 DTHDAQToFEDRawDataConverter::DTHDAQToFEDRawDataConverter(const edm::ParameterSet& config)
     : inputFile_(config.getParameter<std::string>("inputFile"))
-    , fedId_(   config.getParameter<unsigned int>("fedId"))
 {
     // We will produce a FEDRawDataCollection each time produce(...) is called.
     // Since this is an EDProducer and the cfg file uses "EmptySource" to read from .raw file, 
@@ -137,8 +136,8 @@ void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSet
     // Create a FEDRawDataCollection
     auto fedRawDataCollection = std::make_unique<FEDRawDataCollection>();
 
-    // Put the fragment payload into the fedId_ slot
-    FEDRawData& fedData = fedRawDataCollection->FEDData(fedId_);
+    // Put the fragment payload into the sourceId slot (used as fedId_)
+    FEDRawData& fedData = fedRawDataCollection->FEDData(frag.sourceId);
     fedData.resize(frag.payloadBytes.size());
     std::copy(frag.payloadBytes.begin(), frag.payloadBytes.end(), fedData.data());
 

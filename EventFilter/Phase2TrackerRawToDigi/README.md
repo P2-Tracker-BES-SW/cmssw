@@ -31,17 +31,6 @@ The plugin code is in [../plugins/DTHDAQToFEDRawDataConverter.cc](https://github
 
 To run the code: `cmsRun DTHDAQtoFEDRAWData_cfg.py`
 
-To validate the output root file, run `python3 validate.py`
+
 
 This code makes no assumptions about the number of orbits in the raw file or the fragment sizes (such as the number of events per orbit or whether fragments are uniform in size). It reads the entire file—regardless of how many orbits it contains—and uses the information in each orbit header (orbit size and fragment count) along with each fragment trailer (fragment size) to dynamically process the data.
-
-
-_**The code throws an error at the end unless you set maxEvent to the actual number of events per file.**_
-
-**However, this could be run without knowing the event number.** Simply go the test directory, and
-```
-chmod +x runDTHDAQ.sh 
-./runDTHDAQ.sh [filename.raw]
-```
-
-This counts the number of events in the .raw file and creates a cfg.py configuration file and cmsRuns it.

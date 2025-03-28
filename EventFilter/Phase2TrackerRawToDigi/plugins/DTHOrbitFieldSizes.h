@@ -1,5 +1,9 @@
-// Constants for bit field widths, markers, and size in BYTES
+#ifndef DTHOrbitFieldSizes_H
+#define DTHOrbitFieldSizes_H
 
+// Constants for bit field widths, markers, and size in BYTES
+// From EDMS document No.: 2705647 v 2.2
+// https://edms.cern.ch/document/2705647/2.2
 constexpr unsigned int orbitHeaderSize = 32;
 constexpr unsigned int fragmentTrailerSize = 16;
 constexpr unsigned int fragmentPayloadWordSize = 16;  // Each fragment payload word is 16 bytes
@@ -17,3 +21,4 @@ constexpr uint8_t orbitHeaderMarkerH = 0x48;
 constexpr uint8_t orbitHeaderMarkerO = 0x4F;
 constexpr uint8_t fragmentTrailerMarkerT = 0x54;
 constexpr uint8_t fragmentTrailerMarkerF = 0x46;
+#endif

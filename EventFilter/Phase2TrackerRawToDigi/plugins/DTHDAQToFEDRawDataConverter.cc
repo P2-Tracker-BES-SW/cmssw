@@ -283,11 +283,8 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             // (c) Parse trailer fields
             uint16_t fragFlags = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + fragFlagSize], fragFlagSize));
             uint32_t fragSize  = static_cast<uint32_t>(readLittleEndian(&buffer[trailerPos + fragSizeSize], fragSizeSize));
-            uint64_t eventId   = readLittleEndian(&buffer[trailerPos + 8], 6) & 0xFFFFFFFFFFFULL; //The event ID is a 44-bit (5.5 bytes) field, eventID+res+CRC = 8 bytes
-            //                                                                                    0xFFFFFFFFFFFULL is a mask to keep the  first 44 bits (5.5 bytes) out of the 48 bits (6 bytes), 
-            //                                                                                    the other 4 bits (0.5 bytes)are reserved and this code does not extract them
-            uint16_t crc       = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + 14], 2)); // the buffer index did not update in the last statment, this line updates it: 8+6 = 14 bytes
-            //                                                                                    CRC checksum is 16-bit (2-byte) field. 16 +44 + 4 (reserved) = 64 bits (8 bytes)
+            uint64_t eventId   = readLittleEndian(&buffer[trailerPos + trailerOffsetEventId], eventIdSize) & eventIdMask;
+            uint16_t crc       = static_cast<uint16_t>(readLittleEndian(&buffer[trailerPos + trailerOffsetCRC], crcSize)); 
 
             // (d) Calculate payload size in bytes
             size_t payloadSizeBytes = fragSize * fragmentPayloadWordSize;

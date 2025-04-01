@@ -21,4 +21,13 @@ constexpr uint8_t orbitHeaderMarkerH = 0x48;
 constexpr uint8_t orbitHeaderMarkerO = 0x4F;
 constexpr uint8_t fragmentTrailerMarkerT = 0x54;
 constexpr uint8_t fragmentTrailerMarkerF = 0x46;
+
+
+//eventID+res+CRC = 8 bytes, i.e. offset of 8 bytes
+constexpr size_t trailerOffsetEventId = 8;
+constexpr size_t eventIdSize = 6;  // 6 bytes, the eventId is only 44 bits (5.5 bytes) out of the 48 bits (6 bytes)
+constexpr uint64_t eventIdMask = 0xFFFFFFFFFFFULL; // mask to keep the first 44 bits (5.5 bytes), which is the eventId, out of the 48 bits 
+
+constexpr size_t trailerOffsetCRC = trailerOffsetEventId + eventIdSize;
+constexpr size_t crcSize = 2;
 #endif

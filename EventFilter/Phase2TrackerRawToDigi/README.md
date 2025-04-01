@@ -31,6 +31,13 @@ The plugin code is in [../plugins/DTHDAQToFEDRawDataConverter.cc](https://github
 
 To run the code: `cmsRun DTHDAQtoFEDRAWData_cfg.py`
 
-
-
 This code makes no assumptions about the number of orbits in the raw file or the fragment sizes (such as the number of events per orbit or whether fragments are uniform in size). It reads the entire file—regardless of how many orbits it contains—and uses the information in each orbit header (orbit size and fragment count) along with each fragment trailer (fragment size) to dynamically process the data.
+
+Here is an example raw input file you can download from
+https://github.com/smorovic/cmssw/blob/dev-dth-byte-order-commit-3/EventFilter/Utilities/test/run000018_ls0001_index000000.raw (check that you downlaod the .raw binary file and not html)
+
+Alternatively, you can make your own raw input file:
+```
+cmsRun startBU.py runNumber=100101 fffBaseDir=myOutputDir maxLS=2 fedMeanSize=128
+eventsPerFile=2 eventsPerLS=3 frdFileVersion=0 dataType=DTH
+```

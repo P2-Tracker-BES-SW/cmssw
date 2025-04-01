@@ -76,8 +76,10 @@ private:
     // Helper: parse the entire buffer into orbits/fragments (once per job)
     void parseAllOrbitsAndFragments(const std::vector<char>& buffer);
 
-    // Optional debug print
+    // Optional debug print. Example: printHex(buffer, 64) prints the first 64 bytes of the buffer
     void printHex(const std::vector<char>& buffer, size_t maxLength);
+   
+
 };
 
 // Constructor: read parameters, declare our output
@@ -100,9 +102,6 @@ void DTHDAQToFEDRawDataConverter::beginJob() {
 
     edm::LogInfo("DTHDAQToFEDRawDataConverter")
         << "Raw data read: " << buffer.size() << " bytes from: " << inputFile_;
-
-    // Debug: Print first 64 bytes
-    printHex(buffer, 64);
 
     // Parse all orbits/fragments and store in allFragments_
     parseAllOrbitsAndFragments(buffer);

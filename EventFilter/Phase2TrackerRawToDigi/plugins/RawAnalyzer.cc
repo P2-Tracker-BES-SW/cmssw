@@ -6,9 +6,18 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
 #include "DataFormats/FEDRawData/interface/FEDRawData.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 
 #include <iostream>
 #include <bitset>
+
+using namespace Phase2TrackerSpecifications;
+
+//==================================================================
+// Analyzer to print the contents of the FEDRawDataCollection
+// EDProduct, which contains the RAW binary data produced by
+// the CMS detector.
+//==================================================================
 
 class RawAnalyzer : public edm::one::EDAnalyzer<> {
 public:
@@ -36,11 +45,16 @@ void RawAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     return;
   }
 
+  unsigned int nDTCs = fedRawDataCollection->size() / SLINKS_PER_DTC;
+  std::cout<<"Number of DTCs = "<<nDTCs<<std::endl;
+
+  for (unsigned int dtc_id = 0; dtc_id < nDTCs; dtc_id++) {
+
   // Read only the 0th FED position as per the producer logic
-  const FEDRawData& fedData_slink_0 = fedRawDataCollection->FEDData(0 + 4 * (81 - 1) + 0);  // FED ID 0
-  const FEDRawData& fedData_slink_1 = fedRawDataCollection->FEDData(1 + 4 * (81 - 1) + 0);  // FED ID 1
-  const FEDRawData& fedData_slink_2 = fedRawDataCollection->FEDData(2 + 4 * (81 - 1) + 0);  // FED ID 2
-  const FEDRawData& fedData_slink_3 = fedRawDataCollection->FEDData(3 + 4 * (81 - 1) + 0);  // FED ID 3
+  const FEDRawData& fedData_slink_0 = fedRawDataCollection->FEDData(0 + SLINKS_PER_DTC * dtc_id);  // FED ID 0
+  const FEDRawData& fedData_slink_1 = fedRawDataCollection->FEDData(1 + SLINKS_PER_DTC * dtc_id);  // FED ID 1
+  const FEDRawData& fedData_slink_2 = fedRawDataCollection->FEDData(2 + SLINKS_PER_DTC * dtc_id);  // FED ID 2
+  const FEDRawData& fedData_slink_3 = fedRawDataCollection->FEDData(3 + SLINKS_PER_DTC * dtc_id);  // FED ID 3
  
 
   // ** Below is the logic to read out the 32bit words from the fedRawData object.
@@ -53,10 +67,12 @@ void RawAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
       maxWords = std::max(maxWords, fedData->size() / 4);  // Divide by 4 to get 32-bit words
   }
 
+  if (maxWords == 0) continue; // No data for this DTC.
+
+  std::cout<<"==================== "<<iEvent.id()<<" DTC ID: "<<dtc_id<<" ====================="<<std::endl;
+
   // Prepare column headers
-  std::cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
-  std::cout << "------------------- SLink 0 -------------------------------- SLink 1 -------------------------------- SLink 2 -------------------------------- SLink 3 ----------------" << std::endl;
-  std::cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+  std::cout << "       --------- SLink 0 ----------              --------- SLink 1 ---------              --------- SLink 2 ----------              --------- SLink 3 ---------" << std::endl;
 
   // Loop through all rows (up to maxWords) and print each 32-bit word
   for (size_t row = 0; row < maxWords; ++row) 
@@ -76,11 +92,12 @@ void RawAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                         << std::bitset<32>(word) << " ";
           } else {
               // Print empty space for missing data in this column
-              std::cout << "                  ";
+              std::cout << "                 EMPTY                   ";
           }
       }
       std::cout << std::endl;  // Move to the next line after printing a row
   }
+}
 
 }
 

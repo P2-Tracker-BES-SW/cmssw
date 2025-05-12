@@ -150,6 +150,18 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
         uint32_t flags = readLittleEndian(&buffer[startIdx], flagsSize); startIdx += flagsSize;
         uint32_t checksum = readLittleEndian(&buffer[startIdx], checksumSize); startIdx += checksumSize;
 
+
+        edm::LogInfo("DTHDAQToFEDRawDataConverter")
+            << "Orbit " << (orbitIdx + 1)
+            << ": Version=" << version
+            << ", SourceID=" << sourceId
+            << ", RunNumber=" << runNumber
+            << ", OrbitNumber=" << orbitNumber
+            << ", EventCount=" << eventCount
+            << ", PacketWordCount=" << packetWordCount
+            << ", Flags=" << flags
+            << ", Checksum=" << checksum;
+
         size_t orbitDataSizeBytes = packetWordCount * fragmentPayloadWordSize - orbitHeaderSize;
         size_t orbitDataEnd = startIdx + orbitDataSizeBytes;
         if (orbitDataEnd > buffer.size()) break;

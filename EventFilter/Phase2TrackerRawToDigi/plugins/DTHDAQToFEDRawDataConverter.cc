@@ -20,8 +20,10 @@
 #include <sstream>
 #include <algorithm>
 
+// Include the constants for bit field widths, markers, and size in BYTES:
 #include "EventFilter/Phase2TrackerRawToDigi/interface/DTHOrbitFieldSizes.h"
 
+// helper for endianness, the LXPLUS architecture is little-endian, so is the raw data from the DTH
 uint64_t readLittleEndian(const char* data, size_t size) {
     uint64_t value = 0;
     for (size_t i = 0; i < size; ++i) {
@@ -40,6 +42,8 @@ struct FragmentData {
     uint32_t fragSize = 0;
     uint64_t eventId = 0;
     uint16_t crc = 0;
+
+    // The actual binary payload for this fragment
     std::vector<char> payloadBytes;
 };
 

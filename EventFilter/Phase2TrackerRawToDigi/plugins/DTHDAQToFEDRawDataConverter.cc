@@ -1,6 +1,6 @@
 // A utility to read and parse a .raw orbit aggregation file from the DTH,
-// and convert all event fragments belonging to the same event ID into
-// one FEDRawDataCollection per CMSSW event.
+// and convert all event fragments belonging to the same event ID into one FEDRawDataCollection per CMSSW event.
+// By Alaa Adel Abdelhamid, May 2025
 
 #include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"

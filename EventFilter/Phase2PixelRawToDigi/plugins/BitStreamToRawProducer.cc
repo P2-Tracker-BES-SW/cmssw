@@ -49,10 +49,10 @@ private:
   const edm::ESGetToken<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd> cablingMapToken_;
   const edm::EDGetTokenT<edm::DetSetVector<Phase2ITChipBitStream>> ITChipBitStreamToken_;
 
-  void addWordToBuffer(unsigned char* buffer, size_t position, uint16_t word);
-  void addWordToBitVector(std::vector<bool>& vec, uint16_t word);
+  void addWordToBuffer(unsigned char* buffer, size_t position, uint32_t word);
+  void addWordToBitVector(std::vector<bool>& vec, uint32_t word);
   void padToChunkBoundary(std::vector<bool>& vec);
-  uint16_t calculateChipOffset(const std::vector<bool>& dataBlock);
+  uint32_t calculateChipOffset(const std::vector<bool>& dataBlock);
   std::string getBitString(const std::vector<bool>& bits, size_t start, size_t len);
   const TrackerDetToDTCELinkCablingMap* cablingMap_ = nullptr;
 
@@ -157,10 +157,9 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
           size_t newSize = dataBlock.size();
 
           // Calculate the offset for this chip (word position in the data block)
-          uint16_t chipOffset = calculateChipOffset(dataBlock);
+          uint32_t chipOffset = calculateChipOffset(dataBlock);
 
-          addWordToBitVector(offsetBlock, (chipOffset >> 16) & 0xFFFF);  // MSB
-          addWordToBitVector(offsetBlock, chipOffset & 0xFFFF);          // LSB
+          addWordToBitVector(offsetBlock, chipOffset & 0xFFFFFFFF);
 
           std::vector<bool> chipBitstream = chip.get_bitstream();
           unsigned int bitstreamSize = chipBitstream.size();
@@ -170,7 +169,7 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
           unsigned int padding_needed = (BITS_PER_CHUNK - (total_chip_size % BITS_PER_CHUNK)) % BITS_PER_CHUNK;
 
           // Add chip header 1 (marker + padding info)
-          uint16_t header1 = CHIP_HEADER_MARKER | (padding_needed & 0xF);
+          uint32_t header1 = CHIP_HEADER_MARKER | (padding_needed & 0xF);
           addWordToBitVector(dataBlock, header1);
 
           // Add chip header 2 (bitstream size)
@@ -204,7 +203,7 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
       slink_data.resize(total_size);
       unsigned char* buffer = slink_data.data();
 
-      // Add header (8 lines of 0xFFFF)
+      // Add header (4 lines of 0xFFFFFFFF)
       for (int i = 0; i < HEADER_TRAILER_LINES; i++) {
         addWordToBuffer(buffer, i, HEADER_TRAILER_PATTERN);
       }
@@ -212,11 +211,11 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
       // Add offset block
       unsigned int offset_words = offsetBlock.size() / BITS_PER_WORD;
       for (unsigned int i = 0; i < offset_words; i++) {
-        // Extract 16-bit word from offset block
-        uint16_t word = 0;
+        // Extract 32-bit word from offset block
+        uint32_t word = 0;
         for (int bit = 0; bit < BITS_PER_WORD; bit++) {
           if (offsetBlock[i * BITS_PER_WORD + bit]) {
-            word |= (1 << (15 - bit));
+            word |= (1 << (31 - bit));
           }
         }
         addWordToBuffer(buffer, HEADER_TRAILER_LINES + i, word);
@@ -225,17 +224,17 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
       // Add data block
       unsigned int data_words = dataBlock.size() / BITS_PER_WORD;
       for (unsigned int i = 0; i < data_words; i++) {
-        // Extract 16-bit word from data block
-        uint16_t word = 0;
+        // Extract 32-bit word from data block
+        uint32_t word = 0;
         for (int bit = 0; bit < BITS_PER_WORD; bit++) {
           if (dataBlock[i * BITS_PER_WORD + bit]) {
-            word |= (1 << (15 - bit));
+            word |= (1 << (31 - bit));
           }
         }
         addWordToBuffer(buffer, HEADER_TRAILER_LINES + offset_words + i, word);
       }
 
-      // Add trailer (8 lines of 0xFFFF)
+      // Add trailer (4 lines of 0xFFFFFFFF)
       for (int i = 0; i < HEADER_TRAILER_LINES; i++) {
         addWordToBuffer(buffer, HEADER_TRAILER_LINES + offset_words + data_words + i, HEADER_TRAILER_PATTERN);
       }
@@ -245,18 +244,18 @@ void BitStreamToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
   iEvent.put(std::move(fedRawDataCollection));
 }
 
-void BitStreamToRawProducer::addWordToBuffer(unsigned char* buffer, size_t position, uint16_t word) {
-  // Add a 16-bit word to the buffer at the specified position
-  buffer[position * BYTES_PER_WORD] = (word >> 8) & 0xFF;  // MSB
-  buffer[position * BYTES_PER_WORD + 1] = word & 0xFF;     // LSB
+void BitStreamToRawProducer::addWordToBuffer(unsigned char* buffer, size_t position, uint32_t word) {
+  // Add 32-bit word to the buffer at the specified position
+  buffer[position * BYTES_PER_WORD] = (word >> 16) & 0xFFFF;  // MSB
+  buffer[position * BYTES_PER_WORD + 1] = word         & 0xFFFF;  // LSB
 }
 
-void BitStreamToRawProducer::addWordToBitVector(std::vector<bool>& vec, uint16_t word) {
+void BitStreamToRawProducer::addWordToBitVector(std::vector<bool>& vec, uint32_t word) {
   // Track the starting position for debugging
   size_t startPos = vec.size();
 
-  // Convert a 16-bit word to 16 bits and add to the vector
-  for (int bit = 15; bit >= 0; bit--) {
+  // Convert two 32-bit words to 32 bits and add to the vector
+  for (int bit = 31; bit >= 0; bit--) {
     bool bitValue = (word >> bit) & 1;
     vec.push_back(bitValue);
   }
@@ -271,7 +270,7 @@ void BitStreamToRawProducer::padToChunkBoundary(std::vector<bool>& vec) {
   }
 }
 
-uint16_t BitStreamToRawProducer::calculateChipOffset(const std::vector<bool>& dataBlock) {
+uint32_t BitStreamToRawProducer::calculateChipOffset(const std::vector<bool>& dataBlock) {
   // Calculate the word offset where this chip's data will start
   return dataBlock.size() / BITS_PER_WORD;
 }

@@ -41,9 +41,8 @@ public:
 private:
   void produce(edm::Event&, const edm::EventSetup&) override;
 
-  uint16_t readWord(const unsigned char* dataPtr, int wordIdx) const;
-  std::string wordToHexString(uint16_t word) const;
-  std::string bitPattern(uint16_t word) const;
+  uint32_t readWord(const unsigned char* dataPtr, int wordIdx) const;
+  std::string wordToHexString(uint32_t word) const;
 
   // Debugging functions for helper methods
   std::string getBitString(const std::vector<bool>& bits, size_t start, size_t len) const;
@@ -222,14 +221,14 @@ void RawToBitstreamProducer::processChip(const unsigned char* dataPtr,
               << std::endl;
     return;
   }
-  uint16_t header1 = readWord(dataPtr, chipStartWord);
+  uint32_t header1 = readWord(dataPtr, chipStartWord);
   if ((header1 & 0xF000) != CHIP_HEADER_MARKER) {
     std::cout << "WARNING: Invalid chip header " << wordToHexString(header1) << " at word " << chipStartWord
               << ", skipping" << std::endl;
     return;
   }
   uint8_t paddingBits = header1 & 0xF;
-  uint16_t bitstreamSize = readWord(dataPtr, chipStartWord + 1);
+  uint32_t bitstreamSize = readWord(dataPtr, chipStartWord + 1);
   std::vector<bool> bitstream = extractBitstream(dataPtr, chipStartWord + 2, bitstreamSize);
 
   // Create the Phase2ITChipBitStream object and add it to the filler
@@ -248,39 +247,15 @@ std::string RawToBitstreamProducer::getBitString(const std::vector<bool>& bits, 
   return result;
 }
 
-void RawToBitstreamProducer::dumpBitstream(const std::vector<bool>& bits, size_t position) const {
-  std::cout << "BITSTREAM at position " << position << ": ";
-  size_t start = (position > 8) ? position - 8 : 0;
-  size_t end = std::min(bits.size(), position + 16);
-  for (size_t i = start; i < end; i++) {
-    if (i == position)
-      std::cout << "|";
-    std::cout << (bits[i] ? "1" : "0");
-    if ((i + 1) % 8 == 0)
-      std::cout << " ";
-  }
-  std::cout << std::endl;
-}
-
-uint16_t RawToBitstreamProducer::readWord(const unsigned char* dataPtr, int wordIdx) const {
+uint32_t RawToBitstreamProducer::readWord(const unsigned char* dataPtr, int wordIdx) const {
   int byteIdx = wordIdx * 2;
-  return (static_cast<uint16_t>(dataPtr[byteIdx]) << 8) | static_cast<uint16_t>(dataPtr[byteIdx + 1]);
+  return (static_cast<uint32_t>(dataPtr[byteIdx]) << 16) | static_cast<uint32_t>(dataPtr[byteIdx + 1]);
 }
 
-std::string RawToBitstreamProducer::wordToHexString(uint16_t word) const {
+std::string RawToBitstreamProducer::wordToHexString(uint32_t word) const {
   std::stringstream ss;
   ss << "0x" << std::hex << std::setw(4) << std::setfill('0') << word;
   return ss.str();
-}
-
-std::string RawToBitstreamProducer::bitPattern(uint16_t word) const {
-  std::string result;
-  for (int i = 15; i >= 0; i--) {
-    result += ((word >> i) & 1) ? '1' : '0';
-    if (i % 4 == 0 && i > 0)
-      result += ' ';
-  }
-  return result;
 }
 
 std::vector<uint32_t> RawToBitstreamProducer::extractChipOffsets(const unsigned char* dataPtr,
@@ -288,7 +263,7 @@ std::vector<uint32_t> RawToBitstreamProducer::extractChipOffsets(const unsigned 
                                                                  int maxWords) const {
   std::vector<uint32_t> offsets;
   std::cout << "  Analyzing offset block from word " << offsetStartWord << ":" << std::endl;
-  int words_per_chunk = BITS_PER_CHUNK / BITS_PER_WORD;  // 8 words per chunk
+  int words_per_chunk = BITS_PER_CHUNK / BITS_PER_WORD;  // 4 words per chunk
   for (int i = 0; i < maxWords - 1; i += 2) {
     if (offsetStartWord + i + 1 >= maxWords)
       break;
@@ -300,7 +275,7 @@ std::vector<uint32_t> RawToBitstreamProducer::extractChipOffsets(const unsigned 
     offsets.push_back(offset);
     if ((i + 2) % words_per_chunk == 0) {
       if (offsetStartWord + i + 2 < maxWords) {
-        uint16_t nextWord = readWord(dataPtr, offsetStartWord + i + 2);
+        uint32_t nextWord = readWord(dataPtr, offsetStartWord + i + 2);
         if ((nextWord & 0xF000) == CHIP_HEADER_MARKER) {
           std::cout << "    Found chip header marker " << wordToHexString(nextWord) << " at word "
                     << (offsetStartWord + i + 2) << ", ending offset extraction" << std::endl;
@@ -325,16 +300,16 @@ std::vector<bool> RawToBitstreamProducer::extractBitstream(const unsigned char* 
   int fullWords = bitstreamSize / BITS_PER_WORD;
   int remainingBits = bitstreamSize % BITS_PER_WORD;
   for (int i = 0; i < fullWords; i++) {
-    uint16_t word = readWord(dataPtr, startWord + i);
+    uint32_t word = readWord(dataPtr, startWord + i);
     for (int j = 0; j < BITS_PER_WORD; j++) {
-      bool bit = (word >> (15 - j)) & 1;
+      bool bit = (word >> (31 - j)) & 1;
       bitstream.push_back(bit);
     }
   }
   if (remainingBits > 0) {
-    uint16_t word = readWord(dataPtr, startWord + fullWords);
+    uint32_t word = readWord(dataPtr, startWord + fullWords);
     for (int j = 0; j < remainingBits; j++) {
-      bool bit = (word >> (15 - j)) & 1;
+      bool bit = (word >> (31 - j)) & 1;
       bitstream.push_back(bit);
     }
   }
@@ -343,11 +318,11 @@ std::vector<bool> RawToBitstreamProducer::extractBitstream(const unsigned char* 
   return bitstream;
 }
 
-// FIXME for now this works because we are assuming 8 lines of 0xFFFF for both headers and trailers
-// Later we have to come up with something more concrete to parse out these 8 lines
+// FIXME for now this works because we are assuming 4 lines of 0xFFFFFFFF for both headers and trailers
+// Later we have to come up with something more concrete to parse out these 4 lines
 bool RawToBitstreamProducer::verifyHeaderTrailerPattern(const unsigned char* dataPtr, int wordIdx) const {
   for (int i = 0; i < HEADER_TRAILER_LINES; i++) {
-    uint16_t word = readWord(dataPtr, wordIdx + i);
+    uint32_t word = readWord(dataPtr, wordIdx + i);
     if (word != HEADER_TRAILER_PATTERN) {
       return false;
     }

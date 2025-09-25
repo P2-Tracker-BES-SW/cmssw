@@ -1,0 +1,54 @@
+<library file="ClusterToRawProducer.cc,DTHDAQToFEDRawDataConverter.cc,RawAnalyzer.cc,Phase2TrackerDumpClusters.cc,ClusterPropSoAToLegacyED.cc"
+         name="Phase2RawToDigiProducers">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="DataFormats/Common"/>
+  <use name="DataFormats/DetId"/>
+  <use name="DataFormats/Phase2TrackerDigi"/>
+  <use name="DataFormats/Phase2TrackerCluster"/>
+
+  <use name="DataFormats/FEDRawData"/>
+  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="Geometry/Records"/>
+  <use name="DataFormats/TrackerCommon"/>
+  <use name="CondFormats/SiPhase2TrackerObjects"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="root"/>
+
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<!-- alpaka-based portable plugins -->
+<library file="alpaka/*.cc" name="Phase2RawToClusterProducer">
+  <use name="alpaka"/>
+  <use name="L1Trigger/TrackerDTC"/>
+  <use name="root"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="PhysicsTools/UtilAlgos"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="CondFormats/HGCalObjects"/>
+  <use name="DataFormats/HGCalDigi"/>
+  <use name="DataFormats/HGCalRecHit"/>
+  <use name="DataFormats/Math"/>
+  <use name="DataFormats/TestObjects"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="Geometry/Records"/>
+  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="CondFormats/SiPhase2TrackerObjects"/>
+  <use name="HeterogeneousCore/AlpakaCore"/>
+  <use name="HeterogeneousCore/AlpakaInterface"/>
+  <use name="RecoLocalCalo/HGCalRecAlgos"/>
+
+  <use name="DataFormats/FEDRawData"/>
+  <use name="DataFormats/Phase2TrackerCluster"/>
+
+  <flags ALPAKA_BACKENDS="1"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

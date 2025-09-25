@@ -1,0 +1,6 @@
+<use name="DQM/DataScouting"/>
+<use name="DataFormats/JetReco"/>
+<use name="HLTrigger/HLTcore"/>
+<library name="DQMDataScoutingPlugins" file="*.cc">
+  <flags EDM_PLUGIN="1"/>
+</library>

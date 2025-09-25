@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+# A script to compare the provenance of two input root files.
+# It prints out informations about those modules which are common to the input files,
+# but whose parameters are setted to different values, and about those modules
+# present only in one of the two files.
+# According to the level of verbosity, it will be report the name of these modules
+# and details about the parameters and their values.
+#
+# author:  Annapaola de Cosa
+
+from argparse import ArgumentParser
+import sys
+from subprocess import Popen, PIPE, STDOUT
+from PhysicsTools.PythonAnalysis.readProv import *
+from PhysicsTools.PythonAnalysis.diffProv import *
+
+parser = ArgumentParser()
+parser.add_argument('--version', action='version', version='%(prog)s 0.1')
+parser.add_argument("-v", "--verbosity_level", dest="verbose", choices=(0,1,2), help="[0] to print short message [1], to print details about the differences of modules common to both files, [2] to print all the details about the differences between the two files")
+parser.add_argument("filename1",type=str)
+parser.add_argument("filename2",type=str)
+options = parser.parse_args()
+
+def provenance(args):
+    cmd="edmProvDump "+args    
+    if sys.platform == "linux2":
+        close_fds = True
+    else:
+        close_fds = False  
+    pipe = Popen(cmd, bufsize=1,stdin=PIPE, stdout=PIPE, stderr=PIPE, shell = True, close_fds=close_fds)
+    provenance, provenanceerr=pipe.communicate()
+    s=args[:args.index('.')]
+    file=open(s,'w')    
+    file.write(provenance)
+
+    return s
+
+prov1=provenance(options.filename1)
+prov2=provenance(options.filename2)
+f=filereader()
+module1=f.readfile(prov1)
+module2=f.readfile(prov2)
+d=difference(options.verbose)
+d.module_diff(module1,module2,options.filename1,options.filename2)

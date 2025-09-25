@@ -1,0 +1,11 @@
+<use name="DataFormats/ForwardDetId"/>
+<use name="DataFormats/Common"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/CaloTopology"/>
+<use name="Geometry/HGCalCommonData"/>
+<use name="MagneticField/Engine"/>
+<use name="TrackingTools/TrajectoryState"/>
+<use name="TrackingTools/GeomPropagators"/>
+<export>
+  <lib name="1"/>
+</export>

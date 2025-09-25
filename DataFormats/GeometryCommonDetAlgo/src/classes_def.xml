@@ -1,0 +1,19 @@
+<lcgdict>
+  <class name="Measurement1D"  ClassVersion="10">
+   <version ClassVersion="10" checksum="2157948156"/>
+  </class>
+  <class name="Measurement1DFloat"  ClassVersion="10">
+   <version ClassVersion="10" checksum="2540816510"/>
+  </class>
+  <class name="std::vector<Measurement1DFloat>" />
+  <class name="edm::ValueMap<Measurement1DFloat>" />
+  <class name="edm::Wrapper<edm::ValueMap<Measurement1DFloat> >" />
+
+  <!-- used in TrackingTools/PatternTools as VertexConstraint -->
+  <class name="GlobalErrorBase<double,ErrorMatrixTag>"/>
+  <class name="std::pair<Point3DBase<float,GlobalTag>, GlobalErrorBase<double,ErrorMatrixTag> >"/>
+  <class name="std::vector<std::pair<Point3DBase<float,GlobalTag>, GlobalErrorBase<double,ErrorMatrixTag> > >"/>
+  <class name="edm::Wrapper<std::vector<std::pair<Point3DBase<float,GlobalTag>, GlobalErrorBase<double,ErrorMatrixTag> > > >" persistent="false"/>
+  <class name="edm::RefProd<std::vector<std::pair<Point3DBase<float,GlobalTag>, GlobalErrorBase<double,ErrorMatrixTag> > > >"/>
+
+</lcgdict>

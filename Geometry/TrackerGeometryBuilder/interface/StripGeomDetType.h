@@ -1,0 +1,34 @@
+#ifndef Geometry_TrackerGeometryBuilder_StripGeomDetType_H
+#define Geometry_TrackerGeometryBuilder_StripGeomDetType_H
+
+#include "Geometry/CommonDetUnit/interface/GeomDetType.h"
+#include "Geometry/CommonTopologies/interface/StripTopology.h"
+#include <vector>
+
+/**
+ * StripGeomDetType is the abstract class for SiStripGeomDetType.
+ */
+class StripGeomDetType final : public GeomDetType {
+public:
+  typedef StripTopology TopologyType;
+
+  StripGeomDetType(TopologyType* t, std::string const& name, SubDetector& det, bool stereo)
+      : GeomDetType(name, det), theTopology(t), theStereoFlag(stereo) {}
+
+  ~StripGeomDetType() override { delete theTopology; }
+
+  // Access to topologies
+  const Topology& topology() const override { return *theTopology; }
+
+  virtual const TopologyType& specificTopology() const { return *theTopology; }
+
+  void setTopology(TopologyType* topol);
+
+  bool isStereo() const { return theStereoFlag; }
+
+private:
+  TopologyType* theTopology;
+  bool theStereoFlag;
+};
+
+#endif  // StripGeomDetType_H

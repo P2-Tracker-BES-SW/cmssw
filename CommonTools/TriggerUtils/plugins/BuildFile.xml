@@ -1,0 +1,6 @@
+<library file="*.cc" name="CommonToolsTriggerUtilsPlugins">
+  <use name="FWCore/Framework"/>
+  <use name="HLTrigger/HLTcore"/>
+  <use name="CommonTools/TriggerUtils"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

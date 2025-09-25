@@ -1,0 +1,51 @@
+#include "TrackingTools/GsfTools/interface/GsfMatrixTools.h"
+
+namespace KullbackLeiblerDistanceDetails {
+
+  template <unsigned int N>
+  double compute(SingleGaussianState<N> const& sgs1, SingleGaussianState<N> const& sgs2) {
+    using Vector = ROOT::Math::SVector<double, N>;
+    using Matrix = ROOT::Math::SMatrix<double, N, N, ROOT::Math::MatRepSym<double, N>>;
+
+    const Vector& mu1 = sgs1.mean();
+    const Matrix& V1 = sgs1.covariance();
+    const Vector& mu2 = sgs2.mean();
+    const Matrix& V2 = sgs2.covariance();
+
+    const Matrix& G1 = sgs1.weightMatrix();
+    const Matrix& G2 = sgs2.weightMatrix();
+    Vector mudiff = mu1 - mu2;
+    Matrix Vdiff = V1 - V2;
+    Matrix Gdiff = G2 - G1;
+    Matrix Gsum = G1 + G2;
+
+    /*  for sse above is faster (less instructions, less CPI) for avx2 equivelent maybe below faster
+    Vector mudiff = sgs1.mean();
+    Matrix Vdiff = sgs1.covariance();
+    const Vector& mu2 = sgs2.mean();
+    const Matrix& V2 = sgs2.covariance();
+    
+    Matrix Gsum = sgs1.weightMatrix();
+    const Matrix& G2 = sgs2.weightMatrix();
+    mudiff -= mu2;
+    Vdiff -= V2;
+    Matrix Gdiff = G2 - Gsum;
+    Gsum += G2;
+*/
+
+    //   double dist = (Vdiff * Gdiff).trace() + Gsum.similarity(mudiff);
+    double dist = GsfMatrixTools::trace(Vdiff, Gdiff) + ROOT::Math::Similarity(mudiff, Gsum);
+
+    return dist;
+  }
+}  // namespace KullbackLeiblerDistanceDetails
+
+template <unsigned int N>
+double KullbackLeiblerDistance<N>::operator()(const SingleGaussianState<N>& sgs1,
+                                              const SingleGaussianState<N>& sgs2) const {
+  // compute inverse here (if not yet done)
+  sgs1.weightMatrix();
+  sgs2.weightMatrix();
+
+  return KullbackLeiblerDistanceDetails::compute<N>(sgs1, sgs2);
+}

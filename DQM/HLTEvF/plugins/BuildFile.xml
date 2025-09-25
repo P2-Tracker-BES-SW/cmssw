@@ -1,0 +1,23 @@
+<library file="*.cc" name="DQMHLTEvFPlugins">
+  <use name="HLTrigger/HLTcore"/>
+  <use name="HLTrigger/JetMET"/>
+  <use name="CondFormats/L1TObjects"/>
+  <use name="DQMServices/Core"/>
+  <use name="DataFormats/BeamSpot"/>
+  <use name="DataFormats/BTauReco"/>
+  <use name="DataFormats/Common"/>
+  <use name="DataFormats/Math"/>
+  <use name="DataFormats/HLTReco"/>
+  <use name="DataFormats/JetReco"/>
+  <use name="DataFormats/L1TGlobal"/>
+  <use name="DataFormats/OnlineMetaData"/>
+  <use name="DataFormats/RecoCandidate"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="Geometry/Records"/>
+  <use name="DQMOffline/Trigger"/>
+  <use name="rootcore"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

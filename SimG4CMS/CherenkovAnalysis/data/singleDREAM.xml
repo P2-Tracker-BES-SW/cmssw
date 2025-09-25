@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<DDDefinition>
+
+
+<SpecParSection label="singleDREAM" eval="true">
+ <SpecPar name="Crystal">
+   <PartSelector path="//Crystal"/>
+   <Parameter name="SensitiveDetector" value="DreamSensitiveDetector" eval="false"/>
+   <Parameter name="ReadOutName" value="EcalHitsEB" eval="false"/>
+ </SpecPar>
+ <SpecPar name="calo">
+   <PartSelector path="//DREAM" />
+   <Parameter name="SensitiveDetector" value="CaloTrkProcessing" eval="false"/>
+   <Parameter name="ReadOutName" value="CaloHitsTk"  eval="false"/>
+   <Parameter name="Calorimeter" value="Crystal"     eval="false"/>
+   <Parameter name="Levels"      value="2"           eval="true"/>
+   <Parameter name="Neighbours"  value="1"           eval="true"/>
+   <Parameter name="Inside"      value="NotFound"    eval="false"/>
+   <Parameter name="InsideLevel" value="2"           eval="true"/>
+   <Parameter name="FineCalorimeter" value="Crystal" eval="false"/>
+   <Parameter name="FineLevels"  value="2"           eval="true"/>
+ </SpecPar>
+</SpecParSection>
+
+</DDDefinition>

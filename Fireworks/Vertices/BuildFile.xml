@@ -1,0 +1,10 @@
+<use name="rootcore"/>
+<use name="opengl"/>
+<use name="rooteve"/>
+<use name="rootgeom"/>
+<use name="rootphysics"/>
+<use name="rootrgl"/>
+<use name="rootcling"/>
+<export>
+  <lib name="1"/>
+</export>

@@ -1,0 +1,2 @@
+<use name="RecoTracker/FinalTrackSelectors"/>
+<bin file="trackAlgoPriorityOrder_t.cpp"/>

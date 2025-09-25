@@ -1,0 +1,5 @@
+<use name="roothistmatrix"/>
+<use name="protobuf"/>
+<use name="cppunit"/>
+<test name="runFastHadd" command="run_fastHadd_tests.sh"/>
+<bin file="testSchemaEvolution.cpp"/>

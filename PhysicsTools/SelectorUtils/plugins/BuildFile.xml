@@ -1,0 +1,7 @@
+<export>
+</export>
+<library name="PhysicsToolsSelectorUtils_plugins" file="*.cc">
+  <use name="PhysicsTools/SelectorUtils"/>
+  <use name="CommonTools/Utils"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

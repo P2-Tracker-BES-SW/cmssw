@@ -1,0 +1,16 @@
+<library file="*.cc" name="SimMuonMCTruthPlugins">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="DataFormats/CSCRecHit"/>
+  <use name="DataFormats/MuonReco"/>
+  <use name="Geometry/Records"/>
+  <use name="MagneticField/Records"/>
+  <use name="SimDataFormats/Track"/>
+  <use name="SimDataFormats/TrackingHit"/>
+  <use name="SimDataFormats/Associations"/>
+  <use name="SimMuon/MCTruth"/>
+  <use name="clhep"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

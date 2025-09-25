@@ -1,0 +1,19 @@
+<use name="CalibTracker/SiStripCommon"/>
+<use name="CondCore/CondDB"/>
+<use name="CondFormats/SiStripObjects"/>
+<use name="DataFormats/Common"/>
+<use name="CondFormats/Common"/>
+<use name="DataFormats/SiStripCommon"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Utilities"/>
+<use name="CoralCommon"/>
+<use name="OnlineDB/SiStripConfigDb"/>
+<use name="tkonlineswdb"/>
+<use name="boost"/>
+<use name="root"/>
+<export>
+  <lib name="1"/>
+</export>

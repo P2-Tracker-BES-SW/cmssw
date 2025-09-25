@@ -1,0 +1,6 @@
+<use name="CondFormats/GeometryObjects"/>
+<use name="CondCore/ESSources"/>
+<use name="Geometry/Records"/>
+<library file="plugin.cc" name="CondCoreGeometryPluginsPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

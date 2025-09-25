@@ -1,0 +1,6 @@
+<use name="DQMServices/Core"/>
+<use name="FWCore/Framework"/>
+<use name="CommonTools/UtilAlgos"/>
+<library name="DQMOfflineJetMETPlugins" file="*.cc">
+  <flags EDM_PLUGIN="1"/>
+</library>

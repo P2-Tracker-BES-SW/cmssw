@@ -1,0 +1,29 @@
+<use name="clhep"/>
+<use name="boost"/>
+<use name="root"/>
+<use name="FWCore/Framework"/>
+<use name="MagneticField/Engine"/>
+<use name="DataFormats/DetId"/>
+<use name="DataFormats/EcalDetId"/>
+<use name="DataFormats/HcalDetId"/>
+<use name="DataFormats/EcalRecHit"/>
+<use name="DataFormats/HcalRecHit"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/TrackReco"/>
+<use name="SimDataFormats/CaloHit"/>
+<use name="SimDataFormats/Track"/>
+<use name="SimDataFormats/GeneratorProducts"/>
+<use name="SimDataFormats/Vertex"/>
+<use name="SimTracker/TrackerHitAssociation"/>
+<use name="SimGeneral/HepPDTRecord"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/CaloTopology"/>
+<use name="Geometry/EcalAlgo"/>
+<use name="Geometry/HcalTowerAlgo"/>
+<use name="RecoLocalCalo/EcalRecAlgos"/>
+<use name="TrackingTools/TrajectoryState"/>
+<use name="TrackingTools/GeomPropagators"/>
+<use name="TrackingTools/TrackAssociator"/>
+<export>
+  <lib name="1"/>
+</export>

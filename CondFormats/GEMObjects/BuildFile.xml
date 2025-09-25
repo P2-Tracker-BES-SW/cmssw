@@ -1,0 +1,6 @@
+<use name="DataFormats/MuonDetId"/>
+<use name="FWCore/Utilities"/>
+<use name="CondFormats/Serialization"/>
+<export>
+  <lib name="1"/>
+</export>

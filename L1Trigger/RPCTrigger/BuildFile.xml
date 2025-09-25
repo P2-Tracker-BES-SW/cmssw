@@ -1,0 +1,14 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="Utilities/Xerces"/>
+<use name="DataFormats/RPCDigi"/>
+<use name="Geometry/RPCGeometry"/>
+<use name="DataFormats/MuonDetId"/>
+<use name="DataFormats/L1GlobalMuonTrigger"/>
+<use name="xerces-c"/>
+<use name="CondFormats/RPCObjects"/>
+<use name="CondFormats/L1TObjects"/>
+<use name="CondFormats/DataRecord"/>
+<export>
+  <lib name="1"/>
+</export>

@@ -1,0 +1,11 @@
+<bin file="testSerializationBTauObjects.cpp">
+  <use name="CondFormats/BTauObjects"/>
+</bin>
+
+<bin file="testBTagEntry.cpp">
+  <use name="CondFormats/BTauObjects"/>
+</bin>
+
+<bin file="testBTagCalibration.cpp">
+  <use name="CondFormats/BTauObjects"/>
+</bin>

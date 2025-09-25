@@ -1,0 +1,4 @@
+import FWCore.ParameterSet.Config as cms
+
+from TrackingTools.GsfTracking.gsfTrajectorySmootherESProducer_cfi import gsfTrajectorySmootherESProducer as _gsfTrajectorySmootherESProducer
+GsfTrajectorySmoother = _gsfTrajectorySmootherESProducer.clone()

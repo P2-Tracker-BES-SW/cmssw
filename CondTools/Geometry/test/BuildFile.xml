@@ -1,0 +1,12 @@
+<use name="root"/>
+<use name="CondFormats/Common"/>
+<use name="CondFormats/GeometryObjects"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="Geometry/Records"/>
+<library file="GeometryTester.cc" name="GeometryTester">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<test name="test-data-file-deletion" command="test-data-file-deletion.sh"/>

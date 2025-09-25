@@ -1,0 +1,11 @@
+<export>
+</export>
+<library name="CommonToolsPileupAlgos_plugins" file="*.cc">
+  <use name="DataFormats/ParticleFlowCandidate"/>
+  <use name="DataFormats/PatCandidates"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="CommonTools/PileupAlgos"/>
+  <use name="fastjet"/>
+  <use name="fastjet-contrib"/>
+</library>

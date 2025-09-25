@@ -1,0 +1,9 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/EcalDigi"/>
+<use name="DataFormats/EcalRawData"/>
+<use name="OnlineDB/EcalCondDB"/>
+<use name="Geometry/EcalMapping"/>
+<use name="clhep"/>
+<use name="root"/>
+<flags EDM_PLUGIN="1"/>

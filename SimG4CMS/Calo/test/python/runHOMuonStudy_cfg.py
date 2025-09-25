@@ -1,0 +1,95 @@
+import FWCore.ParameterSet.Config as cms
+
+process = cms.Process("SimHitStudy")
+process.load("SimG4CMS.Calo.HOSimHitStudy_cfi")
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+process.load("IOMC.EventVertexGenerators.VtxSmearedGauss_cfi")
+process.load("Geometry.CMSCommonData.cmsSimIdealGeometryXML_cfi")
+process.load("Geometry.TrackerNumberingBuilder.trackerNumberingGeometry_cfi")
+process.load("Geometry.EcalCommonData.ecalSimulationParameters_cff")
+process.load("Geometry.HcalCommonData.hcalDDConstants_cff")
+process.load("Geometry.MuonNumbering.muonGeometryConstants_cff")
+process.load("Geometry.MuonNumbering.muonOffsetESProducer_cff")
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Configuration.EventContent.EventContent_cff")
+process.load('Configuration.StandardSequences.Generator_cff')
+process.load('Configuration.StandardSequences.SimIdeal_cff')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+from Configuration.AlCa.autoCond import autoCond
+process.GlobalTag.globaltag = autoCond['run1_mc']
+
+process.load("IOMC.RandomEngine.IOMC_cff")
+process.RandomNumberGeneratorService.generator.initialSeed = 456789
+process.RandomNumberGeneratorService.g4SimHits.initialSeed = 9876
+process.RandomNumberGeneratorService.VtxSmeared.initialSeed = 123456789
+
+process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(50000)
+)
+
+process.MessageLogger = cms.Service("MessageLogger",
+    destinations = cms.untracked.vstring('cout'),
+    categories = cms.untracked.vstring('FwkJob', 'HitStudy'),
+    debugModules = cms.untracked.vstring('*'),
+    cout = cms.untracked.PSet(
+        threshold = cms.untracked.string('DEBUG'),
+        default = cms.untracked.PSet(
+            limit = cms.untracked.int32(0)
+        ),
+        HitStudy = cms.untracked.PSet(
+            limit = cms.untracked.int32(0)
+        ),
+        FwkJob = cms.untracked.PSet(
+            limit = cms.untracked.int32(-1)
+        )
+    )
+)
+
+#process.Timing = cms.Service("Timing")
+
+process.source = cms.Source("EmptySource",
+    firstRun        = cms.untracked.uint32(1),
+    firstEvent      = cms.untracked.uint32(1)
+)
+
+process.generator = cms.EDProducer("FlatRandomEGunProducer",
+    PGunParameters = cms.PSet(
+        PartID = cms.vint32(13),
+        MinEta = cms.double(-1.305),
+        MaxEta = cms.double(1.305),
+        MinPhi = cms.double(-3.14159265359),
+        MaxPhi = cms.double(3.14159265359),
+        MinE   = cms.double(150.),
+        MaxE   = cms.double(150.)
+    ),
+    Verbosity       = cms.untracked.int32(0),
+    AddAntiParticle = cms.bool(False)
+)
+
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string('simHitStudy_150.root')
+)
+
+process.g4SimHits.HCalSD.TestNumberingScheme = True
+process.HOSimHitStudy.TestNumbering          = True
+process.HOSimHitStudy.PrintExcessEnergy      = False
+process.HOSimHitStudy.MaxEnergy = 10.0
+process.HOSimHitStudy.ScaleEB   = 1.02
+process.HOSimHitStudy.ScaleHB   = 104.4
+process.HOSimHitStudy.ScaleHO   = 2.33
+
+process.generation_step = cms.Path(process.pgen)
+process.simulation_step = cms.Path(process.psim)
+process.analysis_step   = cms.Path(process.HOSimHitStudy)
+
+# Schedule definition 
+process.schedule = cms.Schedule(process.generation_step,
+                                process.simulation_step,
+                                process.analysis_step
+                                )
+
+# filter all path with the production filter sequence
+for path in process.paths:
+        getattr(process,path)._seq = process.generator * getattr(process,path)._seq
+
+

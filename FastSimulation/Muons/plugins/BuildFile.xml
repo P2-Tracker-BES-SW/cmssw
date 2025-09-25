@@ -1,0 +1,19 @@
+<library name="FastSimulationMuonsPlugins" file="*.cc">
+  <use name="DataFormats/Math"/>
+  <use name="DataFormats/MuonSeed"/>
+  <use name="DataFormats/TrackReco"/>
+  <use name="DataFormats/TrackerRecHit2D"/>
+  <use name="DataFormats/TrajectorySeed"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="FWCore/Utilities"/>
+  <use name="FastSimulation/Tracking"/>
+  <use name="RecoMuon/GlobalTrackingTools"/>
+  <use name="RecoMuon/TrackerSeedGenerator"/>
+  <use name="RecoMuon/TrackingTools"/>
+  <use name="RecoTracker/TkTrackingRegions"/>
+  <use name="SimDataFormats/Track"/>
+  <use name="TrackingTools/PatternTools"/>
+</library>

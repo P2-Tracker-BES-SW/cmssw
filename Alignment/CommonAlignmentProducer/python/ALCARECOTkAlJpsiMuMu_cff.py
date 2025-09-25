@@ -1,0 +1,69 @@
+# AlCaReco for track based alignment using J/Psi->MuMu events
+import FWCore.ParameterSet.Config as cms
+
+import HLTrigger.HLTfilters.hltHighLevel_cfi
+ALCARECOTkAlJpsiMuMuHLT = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
+    andOr = True, ## choose logical OR between Triggerbits
+    eventSetupPathsKey = 'TkAlJpsiMuMu',
+    throw = False # tolerate triggers stated above, but not available
+    )
+
+# DCS partitions
+# "EBp","EBm","EEp","EEm","HBHEa","HBHEb","HBHEc","HF","HO","RPC"
+# "DT0","DTp","DTm","CSCp","CSCm","CASTOR","TIBTID","TOB","TECp","TECm"
+# "BPIX","FPIX","ESp","ESm"
+import DPGAnalysis.Skims.skim_detstatus_cfi
+ALCARECOTkAlJpsiMuMuDCSFilter = DPGAnalysis.Skims.skim_detstatus_cfi.dcsstatus.clone(
+    DetectorType = cms.vstring('TIBTID','TOB','TECp','TECm','BPIX','FPIX',
+                               'DT0','DTp','DTm','CSCp','CSCm'),
+    ApplyFilter  = cms.bool(True),
+    AndOr        = cms.bool(True),
+    DebugOn      = cms.untracked.bool(False)
+)
+
+import Alignment.CommonAlignmentProducer.TkAlMuonSelectors_cfi
+ALCARECOTkAlJpsiMuMuGoodMuons = Alignment.CommonAlignmentProducer.TkAlMuonSelectors_cfi.TkAlGoodIdMuonSelector.clone()
+
+import Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi
+ALCARECOTkAlJpsiMuMu = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi.AlignmentTrackSelector.clone()
+ALCARECOTkAlJpsiMuMu.filter = True ##do not store empty events
+
+ALCARECOTkAlJpsiMuMu.applyBasicCuts = True
+ALCARECOTkAlJpsiMuMu.ptMin = 0.8 ##GeV
+ALCARECOTkAlJpsiMuMu.etaMin = -3.5
+ALCARECOTkAlJpsiMuMu.etaMax = 3.5
+ALCARECOTkAlJpsiMuMu.nHitMin = 0
+
+ALCARECOTkAlJpsiMuMu.GlobalSelector.muonSource = 'ALCARECOTkAlJpsiMuMuGoodMuons'
+# To not loose non-prompt J/Psi, do not apply any isolation
+ALCARECOTkAlJpsiMuMu.GlobalSelector.applyIsolationtest = False
+ALCARECOTkAlJpsiMuMu.GlobalSelector.applyGlobalMuonFilter = True
+
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.applyMassrangeFilter = True
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.minXMass = 2.7 ##GeV
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.maxXMass = 3.4 ##GeV
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.daughterMass = 0.105 ##GeV (Muons)
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.applyChargeFilter = False
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.charge = 0
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.applyAcoplanarityFilter = False
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.acoplanarDistance = 1 ##radian
+ALCARECOTkAlJpsiMuMu.TwoBodyDecaySelector.numberOfCandidates = 1 	 
+
+## for the GEN level information
+TkAlJpsiMuMuGenMuonSelector = cms.EDFilter("GenParticleSelector",
+                                           src = cms.InputTag("genParticles"),
+                                           cut = cms.string("abs(pdgId) == 13"), # Select only muons
+                                           filter = cms.bool(False),
+                                           throwOnMissing = cms.untracked.bool(False))
+
+seqALCARECOTkAlJpsiMuMu = cms.Sequence(ALCARECOTkAlJpsiMuMuHLT+ALCARECOTkAlJpsiMuMuDCSFilter+ALCARECOTkAlJpsiMuMuGoodMuons+ALCARECOTkAlJpsiMuMu+TkAlJpsiMuMuGenMuonSelector)
+
+## customizations for the pp_on_AA eras
+from Configuration.Eras.Modifier_pp_on_XeXe_2017_cff import pp_on_XeXe_2017
+from Configuration.ProcessModifiers.pp_on_AA_cff import pp_on_AA
+(pp_on_XeXe_2017 | pp_on_AA).toModify(ALCARECOTkAlJpsiMuMuHLT,
+                                      eventSetupPathsKey='TkAlJpsiMuMuHI'
+)
+
+from Configuration.Eras.Modifier_phase2_tracker_cff import phase2_tracker
+phase2_tracker.toModify(ALCARECOTkAlJpsiMuMu, etaMin = -4, etaMax = 4)

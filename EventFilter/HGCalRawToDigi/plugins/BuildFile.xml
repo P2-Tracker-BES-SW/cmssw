@@ -1,0 +1,6 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/HGCDigi"/>
+<use name="EventFilter/HGCalRawToDigi"/>
+<use name="clhep"/>
+<flags EDM_PLUGIN="1"/>

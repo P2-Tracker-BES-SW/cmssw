@@ -1,0 +1,9 @@
+<lcgdict>
+  <selection>
+    <class name="reco::parser::ExpressionBase" persistent="false" />
+    <class name="reco::parser::SelectorBase" persistent="false" />
+    <class name="helper::Parser" persistent="false" />
+    <class name="helper::ScannerBase" persistent="false" />
+  </selection>
+
+</lcgdict>

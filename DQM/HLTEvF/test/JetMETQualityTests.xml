@@ -1,0 +1,42 @@
+<TESTSCONFIGURATION>
+
+<QTEST name="DeadChannels">
+	<TYPE>DeadChannel</TYPE>	
+        <PARAM name="threshold">3</PARAM>
+        <PARAM name="error">0.80</PARAM>
+        <PARAM name="warning">0.80</PARAM>
+</QTEST>
+<LINK name="*1jet50*">
+	<TestName activate="true">DeadChannels</TestName>
+</LINK>
+
+
+<QTEST name="Noisy">
+   <TYPE>NoisyChannel</TYPE>
+   <PARAM name="tolerance">0.02</PARAM>
+   <PARAM name="neighbours">2</PARAM>
+   <PARAM name="error">0.50</PARAM>
+   <PARAM name="warning">0.90</PARAM>
+</QTEST>
+<LINK name="*1jet80*">
+        <TestName activate="true">Noisy</TestName>
+</LINK>
+
+
+<QTEST name="XRange">
+	<TYPE>ContentsXRange</TYPE>	
+	<PARAM name="xmin">0</PARAM>
+	<PARAM name="xmax">40</PARAM>
+	<PARAM name="error">0.30</PARAM>
+	<PARAM name="warning">0.70</PARAM>
+</QTEST>
+<LINK name="*1jet110*">
+     <TestName activate="true">XRange</TestName>
+</LINK>
+
+
+
+
+
+
+</TESTSCONFIGURATION>

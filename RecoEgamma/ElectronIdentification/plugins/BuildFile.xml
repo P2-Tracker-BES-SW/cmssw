@@ -1,0 +1,21 @@
+<use name="CommonTools/Egamma"/>
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/EcalRecHit"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="PhysicsTools/SelectorUtils"/>
+<use name="RecoEgamma/EgammaIsolationAlgos"/>
+<use name="RecoEgamma/EgammaTools"/>
+<use name="RecoEgamma/ElectronIdentification"/>
+<use name="root"/>
+<use name="rootcore"/>
+<library file="*.cc" name="RecoEgammaElectronIdentificationPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<library name="RecoEgammaElectronIdentificationPlugins_cuts" file="cuts/*.cc">
+  <flags EDM_PLUGIN="1"/>
+</library>

@@ -1,0 +1,13 @@
+<export>
+</export>
+<library name="PhysicsToolsRecoAlgos_plugins" file="*.cc">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="PhysicsTools/RecoUtils"/>
+  <use name="PhysicsTools/RecoAlgos"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use name="MagneticField/Records"/>
+  <use name="RecoVertex/KalmanVertexFit"/>
+  <use name="RecoVertex/GaussianSumVertexFit"/>
+  <use name="SimGeneral/HepPDTRecord"/>
+</library>

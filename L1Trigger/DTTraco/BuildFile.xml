@@ -1,0 +1,10 @@
+<use name="FWCore/ParameterSet"/>
+<use name="L1TriggerConfig/DTTPGConfig"/>
+<use name="L1Trigger/DTUtilities"/>
+<use name="L1Trigger/DTBti"/>
+<use name="L1Trigger/DTTriggerServerTheta"/>
+<use name="CLHEP"/>
+<use name="root"/>
+<export>
+  <lib name="1"/>
+</export>

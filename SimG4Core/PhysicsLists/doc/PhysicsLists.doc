@@ -1,0 +1,68 @@
+
+/*!
+
+\page SimG4Core_PhysicsLists Package SimG4Core/PhysicsLists
+
+<center>
+<small>
+
+<!-- @CVS_TAG@ will be substituted at build time, no need to touch -->
+<a href=http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/SimG4Core/PhysicsLists/?cvsroot=CMSSW&only_with_tag=@CVS_TAG@>Source code (CVS tag: @CVS_TAG@)</a> - 
+<a href=http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/SimG4Core/PhysicsLists/.admin/developers?rev=HEAD&cvsroot=CMSSW&content-type=text/vnd.viewcvs-markup>Administrative privileges</a>
+</small>
+</center>
+
+\section desc Description
+<!-- Short description of what this package is supposed to provide -->
+
+The package provides custom components of Geant4 Physics List constructors and 
+CMS Physics Lists. Any CMS Physics List includes local components or 
+components provided by Geant4.   
+
+\subsection interface Public interface
+<!-- List the classes that are provided for use in other packages (if any) -->
+
+- CMSEmNoDeltaRay          - obsolete EM physics
+- CMSEmStandardPhysics     - EMM customised electromagnetic (EM) physics 
+                             configuration based on Geant4 10.7 EM configuration
+                             option1 with custom msc: e+e- msc below 100 MeV
+                             by the default Urban model for HCal and HGCal
+- CMSEmStandardPhysicsLPM  - EMM customised electromagnetic (EM) physics 
+                             configuration based on Geant4 10.6 EM configuration
+                             option1 with custom msc: e+e- msc below 100 MeV
+                             by the default Urban model for HCal and HGCal
+- CMSEmStandardPhysicsXS   - EMN customised electromagnetic (EM) physics 
+                             configuration based on Geant4 10.7 EM configuration
+                             option4 with custom msc: e+e- msc below 100 MeV
+                             by the default Urban model for HCal and HGCal
+- CMSMonopolePhysics       - extra constructor of magnetic monopole physics
+- DummyEMPhysics           - constructor where only electron and mu- ionisation
+                             are defined
+- CMSHadronPhysicsFTFP_BERT  - custom constructor of CMS hadron inelastic 
+                             physics based on Geant4 10.7
+                           
+- HadronPhysicsQGSPCMS_FTFP_BERT - castom QGSP_FTFP_BERT hadron inelastic 
+                             physics created on top of Geant4 10.7
+
+\subsection pluginai Plugins
+<!-- List the plugins that are provided for use in other packages (if any) -->
+FTFPCMS_BERT_EMM            - use CMSEmStandardPhysics
+FTFPCMS_BERT_EMN            - use CMSEmStandardPhysicsXS
+QGSPCMS_FTFP_BERT_EML       - use G4EmStandardPhysics_option1 
+
+\subsection modules Modules
+<!-- Describe modules implemented in this package and their parameter set -->
+
+
+\subsection tests Unit tests and examples
+<!-- Describe cppunit tests and example configuration files -->
+Unknown
+
+\section status Status and planned development
+<!-- e.g. completed, stable, missing features -->
+Unknown
+
+<hr>
+Last updated:
+@DATE@  Author: computer-generated.
+*/

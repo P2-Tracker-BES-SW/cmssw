@@ -1,0 +1,10 @@
+<use name="rivet"/>
+<use name="yoda"/>
+<use name="fastjet"/>
+<use name="clhep"/>
+<use name="boost"/>
+<use name="gsl"/>
+<use name="root"/>
+<use name="hepmc3"/>
+<flags RIVET_PLUGIN="1"/>
+<flags CXXFLAGS="-Wno-error=missing-braces -Wno-missing-braces -Wno-non-virtual-dtor"/>

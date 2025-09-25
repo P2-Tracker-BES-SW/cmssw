@@ -1,0 +1,12 @@
+<export>
+  <lib name="1"/>
+</export>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/MessageLogger"/>
+<use name="boost"/>
+<use name="hepmc"/>
+<use name="hepmc3"/>
+<use name="heppdt"/>
+<use name="geant4core"/>
+<use name="rootmath"/>
+<use name="expat"/>

@@ -1,0 +1,74 @@
+/*
+ *  See header file for a description of this class.
+ *
+ *  \author S. Bolognesi - INFN Torino
+ */
+
+// system include files
+#include <memory>
+
+// user include files
+#include "CalibMuon/DTCalibration/plugins/DTFakeT0ESProducer.h"
+#include "FWCore/Framework/interface/SourceFactory.h"
+
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/ESTransientHandle.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+
+#include "CondFormats/DTObjects/interface/DTT0.h"
+#include "CondFormats/DataRecord/interface/DTT0Rcd.h"
+#include "DataFormats/MuonDetId/interface/DTLayerId.h"
+
+#include "Geometry/MuonNumbering/interface/MuonGeometryConstants.h"
+#include "DetectorDescription/Core/interface/DDCompactView.h"
+#include "CalibMuon/DTCalibration/plugins/DTGeometryParserFromDDD.h"
+
+using namespace std;
+
+DTFakeT0ESProducer::DTFakeT0ESProducer(const edm::ParameterSet& pset) {
+  //framework
+  auto cc = setWhatProduced(this, &DTFakeT0ESProducer::produce);
+  //  setWhatProduced(this,dependsOn(& DTGeometryESModule::parseDDD()));
+  findingRecord<DTT0Rcd>();
+
+  //read constant value for t0 from cfg
+  t0Mean = pset.getParameter<double>("t0Mean");
+  t0Sigma = pset.getParameter<double>("t0Sigma");
+  cpvTokenDDD_ = cc.consumesFrom<DDCompactView, IdealGeometryRecord>(edm::ESInputTag());
+  mdcToken_ = cc.consumes();
+}
+
+DTFakeT0ESProducer::~DTFakeT0ESProducer() {}
+
+// ------------ method called to produce the data  ------------
+std::unique_ptr<DTT0> DTFakeT0ESProducer::produce(const DTT0Rcd& iRecord) {
+  parseDDD(iRecord);
+  auto t0Map = std::make_unique<DTT0>();
+
+  //Loop on layerId-nwires map
+  for (map<DTLayerId, pair<unsigned int, unsigned int> >::const_iterator lIdWire = theLayerIdWiresMap.begin();
+       lIdWire != theLayerIdWiresMap.end();
+       ++lIdWire) {
+    int firstWire = ((*lIdWire).second).first;
+    int nWires = ((*lIdWire).second).second;
+    //Loop on wires of each layer
+    for (int wire = 0; wire < nWires; wire++) {
+      t0Map->set(DTWireId((*lIdWire).first, wire + firstWire), t0Mean, t0Sigma, DTTimeUnits::counts);
+    }
+  }
+
+  return t0Map;
+}
+
+void DTFakeT0ESProducer::parseDDD(const DTT0Rcd& iRecord) {
+  edm::ESTransientHandle<DDCompactView> cpv = iRecord.getTransientHandle(cpvTokenDDD_);
+  const auto& mdc = iRecord.get(mdcToken_);
+
+  DTGeometryParserFromDDD parser(&(*cpv), mdc, theLayerIdWiresMap);
+}
+
+void DTFakeT0ESProducer::setIntervalFor(const edm::eventsetup::EventSetupRecordKey&,
+                                        const edm::IOVSyncValue&,
+                                        edm::ValidityInterval& oValidity) {
+  oValidity = edm::ValidityInterval(edm::IOVSyncValue::beginOfTime(), edm::IOVSyncValue::endOfTime());
+}

@@ -1,0 +1,8 @@
+<export>
+</export>
+<library name="PhysicsToolsCandAlgos_plugins" file="*.cc">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="PhysicsTools/CandUtils"/>
+</library>

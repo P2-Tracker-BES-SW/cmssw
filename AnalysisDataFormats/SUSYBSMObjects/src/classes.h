@@ -1,0 +1,5 @@
+#include "AnalysisDataFormats/SUSYBSMObjects/interface/HSCParticle.h"
+#include "AnalysisDataFormats/SUSYBSMObjects/interface/HSCPIsolation.h"
+#include "AnalysisDataFormats/SUSYBSMObjects/interface/HSCPCaloInfo.h"
+#include "AnalysisDataFormats/SUSYBSMObjects/interface/HSCPDeDxInfo.h"
+#include "AnalysisDataFormats/SUSYBSMObjects/interface/MuonSegment.h"

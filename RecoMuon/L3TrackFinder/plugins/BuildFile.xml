@@ -1,0 +1,5 @@
+<library name="RecoMuonL3TrackFinderPlugins" file="*.cc">
+  <use name="FWCore/Framework"/>
+  <use name="RecoMuon/L3TrackFinder"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

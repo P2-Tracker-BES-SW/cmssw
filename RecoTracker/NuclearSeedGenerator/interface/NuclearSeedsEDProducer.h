@@ -1,0 +1,77 @@
+#ifndef CD_NuclearSeedsEDProducer_H_
+#define CD_NuclearSeedsEDProducer_H_
+// -*- C++ -*-
+//
+// Package:    NuclearSeedsEDProducer
+// Class:      NuclearSeedsEDProducer
+//
+/**\class NuclearSeedsEDProducer NuclearSeedsEDProducer.h RecoTracker/NuclearSeedGenerator/interface/NuclearSeedsEDProducer.h
+
+ Description: <one line class summary>
+
+ Implementation:
+     <Notes on implementation>
+*/
+//
+// Original Author:  Vincent ROBERFROID
+//         Created:  Wed Feb 28 12:05:36 CET 2007
+//
+//
+
+// system include files
+#include <memory>
+
+// user include files
+#include "FWCore/Framework/interface/ESHandle.h"
+
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
+
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "RecoTracker/NuclearSeedGenerator/interface/NuclearInteractionFinder.h"
+
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "RecoTracker/NuclearSeedGenerator/interface/TrajectoryToSeedMap.h"
+
+namespace reco {
+  class TransientTrack;
+}
+
+class Trajectory;
+class Chi2MeasurementEstimatorBase;
+class CkfComponentsRecord;
+class NavigationSchoolRecord;
+
+/** \class NuclearSeedsEDProducer
+ *
+ */
+
+class NuclearSeedsEDProducer : public edm::stream::EDProducer<> {
+public:
+  explicit NuclearSeedsEDProducer(const edm::ParameterSet&);
+  ~NuclearSeedsEDProducer() override;
+
+private:
+  void beginRun(edm::Run const& run, const edm::EventSetup&) override;
+  void produce(edm::Event&, const edm::EventSetup&) override;
+
+  // ----------member data ---------------------------
+  NuclearInteractionFinder::Config config_;
+  std::unique_ptr<NuclearInteractionFinder> theNuclearInteractionFinder;
+
+  bool improveSeeds;
+  edm::EDGetTokenT<TrajectoryCollection> producer_;
+  edm::EDGetTokenT<MeasurementTrackerEvent> mteToken_;
+
+  edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
+  edm::ESGetToken<Propagator, TrackingComponentsRecord> propagatorToken_;
+  edm::ESGetToken<Chi2MeasurementEstimatorBase, TrackingComponentsRecord> estimatorToken_;
+  edm::ESGetToken<MeasurementTracker, CkfComponentsRecord> measurementTrackerToken_;
+  edm::ESGetToken<GeometricSearchTracker, TrackerRecoGeometryRecord> geomSearchTrackerToken_;
+  edm::ESGetToken<NavigationSchool, NavigationSchoolRecord> navigationToken_;
+};
+#endif

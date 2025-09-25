@@ -1,0 +1,25 @@
+<use name="FWCore/Framework"/>
+<use name="DataFormats/Provenance"/>
+<use name="CondFormats/DataRecord"/>
+<use name="CondFormats/RunInfo"/>
+<use name="Fireworks/Core"/>
+<use name="Fireworks/Geometry"/>
+<use name="rootcore"/>
+<use name="rootinteractive"/>
+<use name="rootgeom"/>
+<use name="rooteve"/>
+<use name="rootrgl"/>
+<use name="rootguihtml"/>
+<use name="rootx11"/>
+<use name="boost_python"/>
+<use name="FWCore/PythonParameterSet"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/FWLite"/>
+<use name="FWCore/Common"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Utilities"/>
+<use name="Fireworks/TableWidget"/>
+<export>
+  <lib name="1"/>
+</export>

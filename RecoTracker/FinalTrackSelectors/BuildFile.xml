@@ -1,0 +1,13 @@
+<use name="ofast-flag"/>
+<use name="DataFormats/TrackReco"/>
+<use name="DataFormats/VertexReco"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/ParameterSet"/>
+<use name="CondFormats/GBRForest"/>
+<use name="TrackingTools/PatternTools"/>
+<use name="roottmva"/>
+<use name="lwtnn"/>
+<export>
+  <lib name="1"/>
+</export>

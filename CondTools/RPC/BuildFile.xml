@@ -1,0 +1,11 @@
+<use name="CondFormats/RPCObjects"/>
+<use name="CondFormats/DataRecord"/>
+<use name="CondCore/PopCon"/>
+<use name="CondCore/DBOutputService"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="boost"/>
+<export>
+  <lib name="1"/>
+</export>

@@ -1,0 +1,15 @@
+# "including" common configuration here
+<COMMON>
+
+#process.source = cms.Source("EmptySource")
+process.source = cms.Source("EmptySource", firstRun = cms.untracked.uint32(<iovrun>)) 
+
+process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(1)
+)
+
+process.AlignmentProducer.algoConfig.outpath = '<PATH>/main/'
+process.AlignmentProducer.algoConfig.collectorActive = True
+process.AlignmentProducer.algoConfig.collectorNJobs = 0
+process.AlignmentProducer.algoConfig.collectorPath = '<PATH>'
+

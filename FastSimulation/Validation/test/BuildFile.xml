@@ -1,0 +1,13 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/JetReco"/>
+<use name="boost"/>
+<use name="rootgraphics"/>
+<library file="JetComparison.cc" name="JetComparison">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<bin file="timing.cpp">
+</bin>

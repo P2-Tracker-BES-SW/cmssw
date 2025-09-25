@@ -1,0 +1,17 @@
+<use name="SimMuon/CSCDigitizer"/>
+<library file="*.cc" name="SimMuonCSCDigitizerPlugins">
+  <use name="DataFormats/CSCDigi"/>
+  <use name="DataFormats/MuonDetId"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="FWCore/PluginManager"/>
+  <use name="Geometry/CSCGeometry"/>
+  <use name="Geometry/Records"/>
+  <use name="CondFormats/RecoMuonObjects"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="SimGeneral/PreMixingModule"/>
+  <use name="boost"/>
+  <use name="clhep"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

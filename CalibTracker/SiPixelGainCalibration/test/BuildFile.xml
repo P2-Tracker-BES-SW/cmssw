@@ -1,0 +1,6 @@
+<use name="DataFormats/SiPixelDigi"/>
+<use name="FWCore/Framework"/>
+<use name="root"/>
+<library file="*.cc" name="testCalibTrackerSiPixelGainCalibration">
+  <flags EDM_PLUGIN="1"/>
+</library>

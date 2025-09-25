@@ -1,0 +1,17 @@
+<use name="DataFormats/BeamSpot"/>
+<use name="DataFormats/CaloTowers"/>
+<use name="DataFormats/Math"/>
+<use name="DataFormats/ParticleFlowReco"/>
+<use name="DataFormats/ParticleFlowCandidate"/>
+<use name="DataFormats/TrackReco"/>
+<use name="DataFormats/VertexReco"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/PluginManager"/>
+<use name="TrackingTools/PatternTools"/>
+<use name="RecoTracker/PixelTrackFitting"/>
+<use name="RecoTracker/PixelLowPtUtilities"/>
+<use name="SimDataFormats/TrackingAnalysis"/>
+<export>
+  <lib name="1"/>
+</export>

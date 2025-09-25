@@ -1,0 +1,15 @@
+<use name="boost"/>
+<use name="CondFormats/Serialization"/>
+<use name="boost_serialization"/>
+<use name="FWCore/Utilities"/>
+<use name="DataFormats/L1GlobalCaloTrigger"/>
+<use name="DataFormats/L1GlobalTrigger"/>
+<use name="CondFormats/External"/>
+<use name="DataFormats/L1CaloTrigger"/>
+<use name="FWCore/MessageLogger"/>
+<use name="xerces-c"/>
+<use name="utm"/>
+<export>
+  <lib name="1"/>
+</export>
+<flags LDFLAGS="-lXMLIO"/>

@@ -1,0 +1,13 @@
+<use name="DataFormats/BTauReco"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/JetReco"/>
+<use name="DataFormats/TrackReco"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="rootcore"/>
+<use name="DQMServices/Core"/>
+<use name="rootgpad"/>
+<use name="JetMETCorrections/JetCorrector"/>
+<export>
+  <lib name="1"/>
+</export>

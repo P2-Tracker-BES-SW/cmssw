@@ -1,0 +1,6 @@
+import FWCore.ParameterSet.Config as cms
+
+from TrackingTools.GsfTracking.gsfTrajectoryFitterESProducer_cfi import gsfTrajectoryFitterESProducer as _gsfTrajectoryFitterESProducer
+GsfTrajectoryFitter = _gsfTrajectoryFitterESProducer.clone()
+
+

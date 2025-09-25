@@ -1,0 +1,105 @@
+<var name="TEST_COMMENT" value="">
+<var name="TEST_NEW" value="9_3_0_pre2_pmx_DQM_std_1">
+<var name="TEST_REF" value="9_3_0_pre2_pmx_DQM_std">
+
+<var name="TAG_STARTUP" value="92X_upgrade2017_realistic_v7">
+<var name="DATA_VERSION" value="v1">
+
+TAG for the REFERENCE DATA, USED ONLY FOR INFORMATION ON WEB PAGE
+<var name="DD_COND_REF" value="PU25ns_92X_upgrade2017_realistic_v7-v1">
+
+<var name="DD_RELEASE" value="${CMSSW_VERSION}">
+
+<var name="STORE_DIR" value="/afs/cern.ch/work/a/archiron/private/CMSSW_9_3_0_pre2_ValELE/src/Validation/RecoEgamma/test/9_3_0_pre2">
+<var name="STORE_REF" value="/afs/cern.ch/work/a/archiron/private/CMSSW_9_3_0_pre2_ValELE/src/Validation/RecoEgamma/test/9_3_0_pre2">
+
+<var name="WEB_DIR" value="/afs/cern.ch/cms/Physics/egamma/www/validation/Electrons/Releases">
+
+The value of OVAL_ENVNAME is automatically set by Oval to the name
+of the current environment, before running any executable. Using it below,
+we have an output file name which is unique for each execution.
+
+<var name="TEST_OUTPUT_LOGS" value="*.${OVAL_ENVNAME}.olog">
+
+Oval is able to check the output channel of an execution and compare it with a reference output.
+The tags below are defining which are lines to be compared. The currently specification is a
+first draft, and we do not yet check the differences that Oval could raise.
+
+<diffnumber expr="^dataset has (\d+) files:$" tolerance="1">
+<error expr="^dataset has 0 files:$">
+
+<diffline expr="^(TH1.Print Name = [a-zA-Z_]+, Entries= ).*$">
+<diffnumber expr="^TH1.Print Name = [a-zA-Z_]+, Entries= (\d+),.*$" tolerance="20%">
+<diffnumber expr="^TH1.Print Name = [a-zA-Z_]+, Entries= \d+, Total sum= (\S+)$" tolerance="10%">
+<diffline expr="^(h_\S+ has )\d+ entries of mean value \S+$">
+<diffnumber expr="^h_\S+ has (\d+) entries of mean value \S+$" tolerance="20%">
+<diffnumber expr="^h_\S+ has \d+ entries of mean value (\S+)$" tolerance="10%">
+<!diffvar name="HISTO" expr="^TH1.Print Name = [a-zA-Z_]+, Entries= \d+, Total sum= (\S+)$" tolerance="10%">
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+================================================================================
+FullSim
+================================================================================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<environment name="FullStdStats">
+
+  This set of targets is currently used for the validation of electrons.
+
+  Used if DD_source=/eos/...
+  <var name="DD_TIER" value="GEN-SIM-RECO">
+
+  <var name="VAL_HISTOS" value="ElectronMcSignalHistos.txt">
+  <var name="VAL_CONFIGURATION" value="ElectronMcSignalValidation_cfg">
+  <var name="VAL_CONFIGURATION_gedGsfE" value="ElectronMcSignalValidation_gedGsfElectrons_cfg">
+  <var name="VAL_POST_CONFIGURATION" value="ElectronMcSignalPostValidation_cfg">
+
+  <environment name="ValPileUpStartup">
+
+    <var name="TAG_STARTUP" value="${TAG_STARTUP}">
+    <var name="TEST_GLOBAL_TAG" value="${TAG_STARTUP}">
+    <var name="TEST_GLOBAL_AUTOCOND" value="startup">
+
+    <environment name="Valdummy">
+
+      <var name="DD_SAMPLE" value="dummy">
+
+        <var name="RED_FILE" value="DQM_DUMMY.root">
+ <var name="BLUE_FILE" value="DQM_DUMMY.root">
+ <target name="publish" cmd='electronCompare.py -c ${VAL_HISTOS} -r ${RED_FILE} -b ${BLUE_FILE} -t "gedGsfElectrons ${DD_SAMPLE}<br><b><font color='red'>${TEST_NEW}</font></b> : ${DD_COND}<br><b><font color='blue'>${TEST_REF}</font></b> : ${DD_COND_REF}" ${STORE_DIR}/${RED_FILE} ${STORE_REF}/${BLUE_FILE} ${WEB_DIR}/${TEST_NEW}/GedvsGed_${TEST_REF}/Fullgedvsged_${DD_SAMPLE}_gedGsfE_Startup'>
+
+    </environment>
+
+    <var name="DD_COND" value="PUpmx25ns_${TEST_GLOBAL_TAG}-${DATA_VERSION}">
+
+    <var name="DD_COND_REF" value="PU25ns_92X_upgrade2017_realistic_v7-v1">
+
+      <environment name="ValPileUpTTbarStartup_gedGsfE">
+
+        <var name="DD_SAMPLE" value="RelValTTbar_13">
+
+      <var name="RED_FILE" value="DQM_V0001_R000000001__RelValTTbar_13__CMSSW_9_3_0_pre2-PUpmx25ns_92X_upgrade2017_realistic_v7-v1__DQMIO.root">
+      <var name="BLUE_FILE" value="9_3_0_pre2/DQM_V0001_R000000001__RelValTTbar_13__CMSSW_9_3_0_pre2-PU25ns_92X_upgrade2017_realistic_v7-v1__DQMIO.root">
+
+      <target name="publish" cmd='electronCompare.py -c ${VAL_HISTOS} -r ${RED_FILE} -b ${BLUE_FILE} -t "gedGsfElectrons ${DD_SAMPLE}<br><b><font color='red'>${TEST_NEW}</font></b> : ${DD_COND}<br><b><font color='blue'>${TEST_REF}</font></b> : ${DD_COND_REF}" ${STORE_DIR}/${RED_FILE} ${STORE_REF}/${BLUE_FILE} ${WEB_DIR}/${TEST_NEW}/GedvsGed_${TEST_REF}/PUpmx25ns_${DD_SAMPLE}_gedGsfE_Startup'>
+
+      </environment>
+
+    <var name="DD_COND" value="PUpmx25ns_${TEST_GLOBAL_TAG}-${DATA_VERSION}">
+
+    <var name="DD_COND_REF" value="PU25ns_92X_upgrade2017_realistic_v7-v1">
+
+      <environment name="ValPileUpZEEStartup_gedGsfE">
+
+        <var name="DD_SAMPLE" value="RelValZEE_13">
+
+      <var name="RED_FILE" value="DQM_V0001_R000000001__RelValZEE_13__CMSSW_9_3_0_pre2-PUpmx25ns_92X_upgrade2017_realistic_v7-v1__DQMIO.root">
+      <var name="BLUE_FILE" value="9_3_0_pre2/DQM_V0001_R000000001__RelValZEE_13__CMSSW_9_3_0_pre2-PU25ns_92X_upgrade2017_realistic_v7-v1__DQMIO.root">
+
+      <target name="publish" cmd='electronCompare.py -c ${VAL_HISTOS} -r ${RED_FILE} -b ${BLUE_FILE} -t "gedGsfElectrons ${DD_SAMPLE}<br><b><font color='red'>${TEST_NEW}</font></b> : ${DD_COND}<br><b><font color='blue'>${TEST_REF}</font></b> : ${DD_COND_REF}" ${STORE_DIR}/${RED_FILE} ${STORE_REF}/${BLUE_FILE} ${WEB_DIR}/${TEST_NEW}/GedvsGed_${TEST_REF}/PUpmx25ns_${DD_SAMPLE}_gedGsfE_Startup'>
+
+      </environment>
+
+  </environment>
+
+</environment>

@@ -1,0 +1,24 @@
+import FWCore.ParameterSet.Config as cms
+
+process = cms.Process("HFSHOWERLIBRARY")
+
+process.load("FWCore.MessageService.MessageLogger_cfi")
+
+process.source = cms.Source("EmptySource")
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
+
+process.TFileService = cms.Service("TFileService",fileName = cms.string('HFShowerLibrary.root') )
+
+process.photon = cms.EDAnalyzer('HcalForwardLibWriter',
+    hcalForwardLibWriterParameters = cms.PSet(
+	FileName = cms.FileInPath('SimG4CMS/ShowerLibraryProducer/data/fileList.txt'),
+	Nbins = cms.int32(16),
+	Nshowers = cms.int32(10000),
+        BufSize = cms.int32(1),
+        SplitLevel = cms.int32(2),
+        CompressionAlgo = cms.int32(4),
+        CompressionLevel = cms.int32(4)
+    )
+)
+
+process.p = cms.Path(process.photon)

@@ -1,0 +1,10 @@
+<flags EDM_PLUGIN="1"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="Geometry/Records"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/CaloTopology"/>
+<use name="Geometry/HcalTowerAlgo"/>
+<use name="CondFormats/Alignment"/>
+<use name="clhep"/>

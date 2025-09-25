@@ -1,0 +1,33 @@
+
+
+
+
+CondDBESSource Statistics
+DataProxy 1 setInterval 1 Runs 1 Lumis 0 Refresh 0 Actual Refresh 0 Reconnect 0 Actual Reconnect 0
+TrackerDetToDTCELinkCablingMapRcd / : frontier://FrontierProd/CMS_CONDITIONS, TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly
+  
+  Time look up, payloadIds:
+   1 - 18446744073709551615 : 677806b1c9884282be114262d53be6bc81074ff2
+
+
+CondDBESSource Statistics
+DataProxy 1 setInterval 1 Runs 1 Lumis 0 Refresh 0 Actual Refresh 0 Reconnect 0 Actual Reconnect 0
+TrackerDetToDTCELinkCablingMapRcd / : frontier://FrontierProd/CMS_CONDITIONS, TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly
+  
+  Time look up, payloadIds:
+   1 - 18446744073709551615 : 677806b1c9884282be114262d53be6bc81074ff2
+
+
+CondDBESSource Statistics
+DataProxy 1 setInterval 1 Runs 1 Lumis 0 Refresh 0 Actual Refresh 0 Reconnect 0 Actual Reconnect 0
+TrackerDetToDTCELinkCablingMapRcd / : frontier://FrontierProd/CMS_CONDITIONS, TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly
+  
+  Time look up, payloadIds:
+   1 - 18446744073709551615 : 677806b1c9884282be114262d53be6bc81074ff2
+
+
+Folder 'validation_plots' created.
+common_detIds_string: && (detId==411853973 || detId==411853974 || detId==411346081 || detId==411346082 || detId==412370037 || detId==411845749 || detId==411845750 || detId==412370038 || detId==411845753 || detId==411845754 || detId==412370041 || detId==412370042 || detId==411845757 || detId==411845758 || detId==412370045 || detId==412370046 || detId==411845761 || detId==411845762 || detId==412370049 || detId==412370050 || detId==411849861 || detId==411849862 || detId==412374149 || detId==412374150 || detId==411849865 || detId==411849866 || detId==412374153 || detId==412374154 || detId==411849869 || detId==411849870 || detId==412374157 || detId==412374158 || detId==411849873 || detId==411849874 || detId==412374161 || detId==412374162 || detId==412378261 || detId==412378262 || detId==411341974 || detId==411337878 || detId==412378265 || detId==412378266 || detId==411853977 || detId==411853978 || detId==412378269 || detId==412378270 || detId==411853981 || detId==411853982 || detId==411853985 || detId==412378273 || detId==411853986 || detId==412378274 || detId==411337889 || detId==411337890 || detId==411346085 || detId==411346086 || detId==411346089 || detId==411346090 || detId==411858089 || detId==411858086 || detId==411346093 || detId==411346094 || detId==411858090 || detId==411858093 || detId==411346097 || detId==411346098 || detId==411858094 || detId==411858097 || detId==411858098 || detId==412382385 || detId==412382386 || detId==411858081 || detId==412382369 || detId==411858082 || detId==412382370 || detId==411858085 || detId==412382373 || detId==412382374 || detId==412382377 || detId==412382378 || detId==412382381 || detId==412382382 || detId==411337877 || detId==411337881 || detId==411337882 || detId==411337885 || detId==411337886 || detId==411341973 || detId==411341977 || detId==411341978 || detId==411341981 || detId==411341982 || detId==411341985 || detId==411341986)
+modules with differences {0, 411845761, 411845762, 411341986, 411858085, 411858086, 411853978, 412374154, 411849874, 411853973, 412370038, 412370045, 411341977, 412370046, 412378270, 411845757, 411845758}
+modules not present in original but not in re-digi: set()
+modules not present in re-digi but not in original: set()

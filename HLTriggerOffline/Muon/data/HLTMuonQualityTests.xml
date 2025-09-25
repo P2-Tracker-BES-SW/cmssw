@@ -1,0 +1,20 @@
+<TESTSCONFIGURATION>
+
+<QTEST name="ContentsAbove0.8" activate="true">
+        <TYPE>ContentsWithinExpected</TYPE>
+        <PARAM name="error">0.80</PARAM>
+        <PARAM name="warning">0.90</PARAM>
+        <PARAM name="minMean">0.80</PARAM>
+        <PARAM name="maxMean">1.00</PARAM>
+        <PARAM name="minRMS">0.00</PARAM>
+        <PARAM name="maxRMS">1.00</PARAM>
+        <PARAM name="toleranceMean">1.00</PARAM>
+        <PARAM name="minEntries">0</PARAM>
+        <PARAM name="useEmptyBins">1</PARAM>
+</QTEST>
+
+<LINK name="HLT/Muon/Summary/Efficiency_Summary">
+	<TestName activate="true">ContentsAbove0.8</TestName>
+</LINK>
+
+</TESTSCONFIGURATION>

@@ -1,0 +1,10 @@
+<use name="DQMServices/Core"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="roothistmatrix"/>
+<library file="*.cc" name="DQMServicesFwkIOTestPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<test name="TestDQMServicesFwkIOScripts" command="run_tests.sh"/>

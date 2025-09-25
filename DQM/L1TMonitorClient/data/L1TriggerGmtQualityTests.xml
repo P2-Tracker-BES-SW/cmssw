@@ -1,0 +1,23 @@
+<TESTSCONFIGURATION>
+
+    <QTEST name="DeadChannels_GMT_2D">
+        <TYPE>DeadChannel</TYPE>    
+        <PARAM name="error">0.20</PARAM>
+        <PARAM name="warning">0.50</PARAM>
+        <PARAM name="threshold">0</PARAM>
+    </QTEST>
+
+    <QTEST name="HotChannels_GMT_2D">
+        <TYPE>NoisyChannel</TYPE>   
+        <PARAM name="error">0.70</PARAM>
+        <PARAM name="warning">0.80</PARAM>
+        <PARAM name="tolerance">10</PARAM>
+        <PARAM name="neighbours">3</PARAM>
+    </QTEST>
+
+    <LINK name="*GMT_etaphi">
+        <TestName activate="true">HotChannels_GMT_2D</TestName>
+        <TestName activate="true">DeadChannels_GMT_2D</TestName>
+    </LINK>
+
+</TESTSCONFIGURATION>

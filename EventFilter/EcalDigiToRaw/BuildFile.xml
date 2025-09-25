@@ -1,0 +1,7 @@
+<use name="DataFormats/EcalDigi"/>
+<use name="DataFormats/EcalDetId"/>
+<use name="DataFormats/FEDRawData"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="Geometry/EcalMapping"/>
+<flags EDM_PLUGIN="1"/>

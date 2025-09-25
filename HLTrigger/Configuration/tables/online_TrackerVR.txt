@@ -1,0 +1,24 @@
+HLTriggerFirstPath
+HLT_Random_HighRate_v*
+
+Status_OnCPU # CMSHLT-3186
+Status_OnGPU # CMSHLT-3186
+
+HLTriggerFinalPath
+
+## EndPaths ##
+
+PhysicsVRRandom0Output   # CMSHLT-3405
+PhysicsVRRandom1Output
+PhysicsVRRandom2Output
+PhysicsVRRandom3Output
+PhysicsVRRandom4Output
+PhysicsVRRandom5Output
+PhysicsVRRandom6Output
+PhysicsVRRandom7Output
+
+######## Paths that are different between online and offline ########
+
+#HLTAnalyzerEndpath             # only in 'special', not in 'online'
+RatesMonitoring                # only in 'online', not in 'special'
+#DQMHistograms                  # only in 'online', not in 'special' (NOT in online TrackerVR, apparently!)

@@ -1,0 +1,10 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="CommonTools/RecoUtils"/>
+<use name="DataFormats/BeamSpot"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/TrackReco"/>
+<use name="DataFormats/EgammaCandidates"/>
+<library file="*.cc" name="PFPUAssoMapPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

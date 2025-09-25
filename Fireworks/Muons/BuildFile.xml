@@ -1,0 +1,12 @@
+<use name="DataFormats/MuonDetId"/>
+<use name="DataFormats/MuonReco"/>
+<use name="DataFormats/TrackReco"/>
+<use name="Fireworks/Candidates"/>
+<use name="Fireworks/Core"/>
+<use name="Fireworks/Tracks"/>
+<use name="rooteve"/>
+<use name="rootgeom"/>
+<use name="rootgeompainter"/>
+<export>
+  <lib name="1"/>
+</export>

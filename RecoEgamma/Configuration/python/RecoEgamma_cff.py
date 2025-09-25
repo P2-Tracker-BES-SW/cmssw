@@ -1,0 +1,49 @@
+import FWCore.ParameterSet.Config as cms
+
+from RecoEgamma.EgammaElectronProducers.gsfElectronSequence_cff import *
+from RecoEgamma.EgammaElectronProducers.uncleanedOnlyElectronSequence_cff import *
+from RecoEgamma.EgammaPhotonProducers.photonSequence_cff import *
+from RecoEgamma.EgammaPhotonProducers.conversionSequence_cff import *
+from RecoEgamma.EgammaPhotonProducers.conversionTrackSequence_cff import *
+from RecoEgamma.EgammaPhotonProducers.allConversionSequence_cff import *
+from RecoEgamma.EgammaPhotonProducers.gedPhotonSequence_cff import *
+from RecoEgamma.EgammaIsolationAlgos.egammaIsolationSequence_cff import *
+from RecoEgamma.EgammaIsolationAlgos.interestingEgammaIsoDetIdsSequence_cff import *
+from RecoEgamma.PhotonIdentification.photonId_cff import *
+from RecoEgamma.ElectronIdentification.electronIdSequence_cff import *
+from RecoEgamma.EgammaHFProducers.hfEMClusteringSequence_cff import *
+from TrackingTools.Configuration.TrackingTools_cff import *
+
+from RecoEgamma.EgammaIsolationAlgos.egmIsolationDefinitions_cff import *
+
+egammaGlobalRecoTask = cms.Task(electronGsfTrackingTask,conversionTrackTask,allConversionTask)
+egammaGlobalReco = cms.Sequence(egammaGlobalRecoTask)
+# this might be historical: not sure why we do this
+from Configuration.Eras.Modifier_fastSim_cff import fastSim
+_fastSim_egammaGlobalRecoTask = egammaGlobalRecoTask.copy()
+_fastSim_egammaGlobalRecoTask.replace(conversionTrackTask,conversionTrackTaskNoEcalSeeded)
+fastSim.toReplaceWith(egammaGlobalRecoTask, _fastSim_egammaGlobalRecoTask)
+
+egammaHighLevelRecoPrePFTask = cms.Task(gsfEcalDrivenElectronTask,uncleanedOnlyElectronTask,conversionTask,photonTask)
+egammaHighLevelRecoPrePF = cms.Sequence(egammaHighLevelRecoPrePFTask)
+fastSim.toReplaceWith(egammaHighLevelRecoPrePFTask,egammaHighLevelRecoPrePFTask.copyAndExclude([uncleanedOnlyElectronTask,conversionTask]))
+
+egammaHighLevelRecoPostPFTask = cms.Task(interestingEgammaIsoDetIdsTask,egmIsolationTask,photonIDTask,photonIDTaskGED,eIdTask,hfEMClusteringTask)
+egammaHighLevelRecoPostPF = cms.Sequence(egammaHighLevelRecoPostPFTask)
+
+from Configuration.Eras.Modifier_pA_2016_cff import pA_2016
+from Configuration.Eras.Modifier_peripheralPbPb_cff import peripheralPbPb
+from Configuration.ProcessModifiers.pp_on_AA_cff import pp_on_AA
+from Configuration.Eras.Modifier_pp_on_XeXe_2017_cff import pp_on_XeXe_2017
+from Configuration.Eras.Modifier_ppRef_2017_cff import ppRef_2017
+#HI-specific algorithms needed in pp scenario special configurations 
+from RecoHI.HiEgammaAlgos.photonIsolationHIProducer_cfi import photonIsolationHIProducerpp
+from RecoHI.HiEgammaAlgos.photonIsolationHIProducer_cfi import photonIsolationHIProducerppGED
+from RecoHI.HiEgammaAlgos.photonIsolationHIProducer_cfi import photonIsolationHIProducerppIsland
+
+_egammaHighLevelRecoPostPF_HITask = egammaHighLevelRecoPostPFTask.copy()
+_egammaHighLevelRecoPostPF_HITask.add(photonIsolationHIProducerpp)
+_egammaHighLevelRecoPostPF_HITask.add(photonIsolationHIProducerppGED)
+_egammaHighLevelRecoPostPF_HITask.add(photonIsolationHIProducerppIsland)
+for e in [pA_2016, peripheralPbPb, pp_on_AA, pp_on_XeXe_2017, ppRef_2017]:
+    e.toReplaceWith(egammaHighLevelRecoPostPFTask, _egammaHighLevelRecoPostPF_HITask)

@@ -1,0 +1,11 @@
+To save SimTracks with particle code (PDG code) from a list, need
+to activate the watcher SaveSimTrack specifying the codes in .cfg file:
+ 
+process.g4SimHits.Watchers = cms.VPSet(cms.PSet(
+    SaveSimTrack = cms.PSet(
+         PDGCodes  = cms.untracked.vint32([2212])
+    ),
+    type  = cms.string('SaveSimTrack')
+) )               
+
+will save all particles of code 2212.

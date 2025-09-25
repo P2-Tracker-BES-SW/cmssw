@@ -1,0 +1,13 @@
+<use name="FWCore/Framework"/>
+<library file="*.cc" name="RecoBTagCombinedPlugins">
+  <use name="lwtnn"/>
+  <use name="boost"/>
+  <use name="RecoBTag/SecondaryVertex"/>
+  <use name="FWCore/Utilities"/>
+  <use name="DataFormats/BTauReco"/>
+  <use name="DataFormats/Common"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="RecoBTau/JetTagComputer"/>
+  <use name="RecoBTag/Combined"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

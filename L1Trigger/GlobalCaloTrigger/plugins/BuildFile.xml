@@ -1,0 +1,7 @@
+<library file="*.cc" name="L1TriggerGlobalCaloTriggerPlugins">
+  <use name="root"/>
+  <use name="CommonTools/UtilAlgos"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="L1Trigger/GlobalCaloTrigger"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

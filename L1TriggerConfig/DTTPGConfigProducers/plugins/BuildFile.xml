@@ -1,0 +1,8 @@
+<use name="CalibMuon/DTCalibration"/>
+<use name="FWCore/Framework"/>
+<use name="CondFormats/DTObjects"/>
+<use name="FWCore/ParameterSet"/>
+<use name="boost"/>
+<library file="*.cc" name="L1TriggerConfigDTTPGConfigProducersPlugin">
+  <flags EDM_PLUGIN="1"/>
+</library>

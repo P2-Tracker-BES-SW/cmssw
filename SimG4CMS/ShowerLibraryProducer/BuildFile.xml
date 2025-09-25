@@ -1,0 +1,15 @@
+<use name="SimG4Core/SensitiveDetector"/>
+<use name="SimG4Core/Notification"/>
+<use name="SimG4CMS/Calo"/>
+<use name="DataFormats/Math"/>
+<use name="SimDataFormats/CaloHit"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/MessageLogger"/>
+<use name="boost"/>
+<use name="geant4core"/>
+<use name="root"/>
+<use name="rootmath"/>
+<export>
+  <lib name="1"/>
+</export>

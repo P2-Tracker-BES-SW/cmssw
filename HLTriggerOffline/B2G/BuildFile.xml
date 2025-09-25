@@ -1,0 +1,12 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/Common"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DQMServices/Core"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/MuonReco"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="DataFormats/JetReco"/>
+<use name="HLTrigger/HLTcore"/>
+<use name="clhep"/>
+<use name="root"/>
+<flags EDM_PLUGIN="1"/>

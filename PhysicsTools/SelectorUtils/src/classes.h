@@ -1,0 +1,21 @@
+#include "DataFormats/Common/interface/Wrapper.h"
+
+//Add includes for your classes here
+#include "PhysicsTools/SelectorUtils/interface/strbitset.h"
+#include "DataFormats/Common/interface/Wrapper.h"
+#include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
+#include "PhysicsTools/SelectorUtils/interface/EventSelector.h"
+#include "PhysicsTools/SelectorUtils/interface/ElectronVPlusJetsIDSelectionFunctor.h"
+#include "PhysicsTools/SelectorUtils/interface/MuonVPlusJetsIDSelectionFunctor.h"
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+#include "PhysicsTools/SelectorUtils/interface/PVSelector.h"
+#include "PhysicsTools/SelectorUtils/interface/RunLumiSelector.h"
+
+#include "PhysicsTools/SelectorUtils/interface/VersionedSelector.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
+#include "DataFormats/MuonReco/interface/MuonFwd.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"

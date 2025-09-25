@@ -1,0 +1,40 @@
+<TESTSCONFIGURATION>
+
+<QTEST name="meanJetPtTest">
+        <TYPE>MeanWithinExpected</TYPE> 
+        <PARAM name="mean">10</PARAM>
+        <PARAM name="useRMS">0</PARAM>
+        <PARAM name="useSigma">0</PARAM>
+        <PARAM name="useRange">1</PARAM>
+        <PARAM name="xmin">0</PARAM>
+        <PARAM name="xmax">50</PARAM>
+        <PARAM name="error">0.10</PARAM>
+        <PARAM name="warning">0.70</PARAM>
+</QTEST>
+
+<QTEST name="meanJetConstituentsTest">
+        <TYPE>MeanWithinExpected</TYPE> 
+        <PARAM name="mean">10</PARAM>
+        <PARAM name="useRMS">0</PARAM>
+        <PARAM name="useSigma">0</PARAM>
+        <PARAM name="useRange">1</PARAM>
+        <PARAM name="xmin">4</PARAM>
+        <PARAM name="xmax">16</PARAM>
+        <PARAM name="error">0.10</PARAM>
+        <PARAM name="warning">0.70</PARAM>
+</QTEST>
+
+
+<QTEST name="meanEMFractionTest">
+        <TYPE>MeanWithinExpected</TYPE> 
+        <PARAM name="mean">0.5</PARAM>
+        <PARAM name="useRMS">0</PARAM>
+        <PARAM name="useSigma">0</PARAM>
+        <PARAM name="useRange">1</PARAM>
+        <PARAM name="xmin">0.1</PARAM>
+        <PARAM name="xmax">0.9</PARAM>
+        <PARAM name="error">0.10</PARAM>
+        <PARAM name="warning">0.70</PARAM>
+</QTEST>
+
+</TESTSCONFIGURATION>

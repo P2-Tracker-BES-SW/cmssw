@@ -1,0 +1,7 @@
+<library file="*.cc" name="TrackTriggerPlugins">
+  <use name="L1Trigger/TrackTrigger"/>
+  <use name="DataFormats/L1TrackTrigger"/>
+  <use name="DataFormats/Phase2TrackerDigi"/>
+  <use name="root"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

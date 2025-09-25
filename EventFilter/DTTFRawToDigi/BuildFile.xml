@@ -1,0 +1,5 @@
+<use name="FWCore/Framework"/>
+<use name="DataFormats/L1DTTrackFinder"/>
+<use name="DataFormats/FEDRawData"/>
+<use name="EventFilter/Utilities"/>
+<flags EDM_PLUGIN="1"/>

@@ -1,0 +1,13 @@
+<use name="HeavyFlavorAnalysis/RecoDecay"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/RecoCandidate"/>
+<use name="FWCore/Framework"/>
+<use name="RecoVertex/KinematicFit"/>
+<use name="RecoVertex/KinematicFitPrimitives"/>
+<export>
+  <flags SEAL_PLUGIN="1"/>
+  <use name="DataFormats/PatCandidates"/>
+  <use name="DataFormats/RecoCandidate"/>
+  <use name="RecoVertex/KinematicFitPrimitives"/>
+  <lib name="1"/>
+</export>

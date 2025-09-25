@@ -1,0 +1,7 @@
+<use name="xerces-c"/>
+<bin name="testXMLTranslators" file="testXMLTranslators.cc">
+</bin>
+
+<library name="TestXMLTranslators" file="stubs/EcalTestConditionAnalyzer.cc">
+  <flags EDM_PLUGIN="1"/>
+</library>

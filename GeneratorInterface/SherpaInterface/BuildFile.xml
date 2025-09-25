@@ -1,0 +1,9 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="GeneratorInterface/Core"/>
+<use name="GeneratorInterface/ExternalDecays"/>
+<use name="Utilities/OpenSSL"/>
+<use name="clhep"/>
+<use name="sherpa"/>
+<use name="zlib"/>
+<flags EDM_PLUGIN="1"/>

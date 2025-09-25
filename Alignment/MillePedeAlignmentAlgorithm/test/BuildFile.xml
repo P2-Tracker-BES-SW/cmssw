@@ -1,0 +1,26 @@
+<library file="*Rcd*.cpp" name="MPAlignmentRcdScan">
+  <use name="CondFormats/AlignmentRecord"/>
+  <use name="DataFormats/DetId"/>
+  <use name="FWCore/Framework"/>
+  <use name="CondFormats/Alignment"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
+<test name="test_PrepareInputDb" command="mps_prepare_input_db.py -g auto:run2_data -r 1 -o ./test_input.db"/>
+<test name="test_MpsWorkFlow" command="test_mps-workflow.sh"/>
+<test name="test-pede" command="pede -t">
+  <use name="millepede"/>
+</test>
+
+<test name="test_MilleZmm" command="test_mille.sh"/>
+<test name="test_PedeCampaign" command="test_pede.sh"/>
+<test name="test_PedeConversion" command="test_pedeConversion.sh">
+  <flags PRE_TEST="test_PedeCampaign"/>
+</test>
+<test name="test_PayloadSanity" command="test_payload_sanity.sh">
+  <flags PRE_TEST="test_PedeCampaign"/>
+</test>
+<test name="test_ZMuMuMassConstraintParameterFinder" command="test_ZMuMuMassConstraintParameterFinder.sh"/>
+<bin file="testFindMassContraintParameters.cpp" name="test_ExtractMassConstraint">
+  <flags PRE_TEST="test_ZMuMuMassConstraintParameterFinder"/>
+  <use name="roothistmatrix"/>
+</bin>

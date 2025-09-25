@@ -1,0 +1,8 @@
+<library file="*.cc" name="RecoLocalCaloCastorRecoPlugins">
+  <flags EDM_PLUGIN="1"/>
+  <use name="CalibFormats/CastorObjects"/>
+  <use name="RecoLocalCalo/CastorReco"/>
+  <use name="FWCore/Framework"/>
+  <use name="DataFormats/Common"/>
+  <use name="boost"/>
+</library>

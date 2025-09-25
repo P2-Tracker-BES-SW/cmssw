@@ -1,0 +1,5 @@
+<use name="FWCore/Framework"/>
+<use name="IOPool/Streamer"/>
+<library file="*.cc" name="IOPoolStreamerPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

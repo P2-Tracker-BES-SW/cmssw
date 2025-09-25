@@ -1,0 +1,264 @@
+import FWCore.ParameterSet.Config as cms
+
+##    __  __       _          ____   _  _____   __  __
+##   |  \/  | __ _| | _____  |  _ \ / \|_   _| |  \/  |_   _  ___  _ __  ___
+##   | |\/| |/ _` | |/ / _ \ | |_) / _ \ | |   | |\/| | | | |/ _ \| '_ \/ __|
+##   | |  | | (_| |   <  __/ |  __/ ___ \| |   | |  | | |_| | (_) | | | \__ \
+##   |_|  |_|\__,_|_|\_\___| |_| /_/   \_\_|   |_|  |_|\__,_|\___/|_| |_|___/
+##
+##
+### ==== Make PAT Muons ====
+import PhysicsTools.PatAlgos.producersLayer1.muonProducer_cfi
+patMuonsWithoutTrigger = PhysicsTools.PatAlgos.producersLayer1.muonProducer_cfi.patMuons.clone(
+    muonSource = 'muons',
+    # embed the tracks, so we don't have to carry them around
+    embedTrack          = True,
+    embedCombinedMuon   = True,
+    embedStandAloneMuon = True,
+    embedPFCandidate    = False,
+    embedCaloMETMuonCorrs = cms.bool(False),
+    embedTcMETMuonCorrs   = cms.bool(False),
+    embedPfEcalEnergy     = cms.bool(False),
+    # then switch off some features we don't need
+    #addTeVRefits = False, ## <<--- this doesn't work. PAT bug ??
+    embedPickyMuon = False,
+    embedTpfmsMuon = False,
+    userIsolation = cms.PSet(),   # no extra isolation beyond what's in reco::Muon itself
+    isoDeposits = cms.PSet(), # no heavy isodeposits
+    addGenMatch = False,       # no mc: T&P doesn't take it from here anyway.
+)
+# Reset all these; the default in muonProducer_cfi is not empty, but wrong
+patMuonsWithoutTrigger.userData.userInts.src    = []
+patMuonsWithoutTrigger.userData.userFloats.src  = []
+patMuonsWithoutTrigger.userData.userCands.src   = []
+patMuonsWithoutTrigger.userData.userClasses.src = []
+
+##    __  __       _       _       ____      ___        __  _     _
+##   |  \/  | __ _| |_ ___| |__   |  _ \    / \ \      / / | |   / |
+##   | |\/| |/ _` | __/ __| '_ \  | |_) |  / _ \ \ /\ / /  | |   | |
+##   | |  | | (_| | || (__| | | | |  _ <  / ___ \ V  V /   | |___| |
+##   |_|  |_|\__,_|\__\___|_| |_| |_| \_\/_/   \_\_/\_/    |_____|_|
+##
+##
+from MuonAnalysis.MuonAssociators.muonL1Match_cfi import muonL1Match as muonL1Info
+
+## Define a generic function, so that it can be used with existing PAT Muons
+def addL1UserData(patMuonProducer, l1ModuleLabel = "muonL1Info"):
+    "Load variables inside PAT muon, from module <l1ModuleLabel> that you must run before it"
+    patMuonProducer.userData.userInts.src += [
+        cms.InputTag(l1ModuleLabel, "quality"), # will be -999 in case of no match
+    ]
+    patMuonProducer.userData.userFloats.src += [
+        cms.InputTag(l1ModuleLabel, "deltaR"),  # will be 999 in case of no match
+    ]
+    patMuonProducer.userData.userFloats.src += [
+        cms.InputTag(l1ModuleLabel, "deltaPhi"),  # will be 999 in case of no match
+    ]
+    patMuonProducer.userData.userInts.src += [
+        cms.InputTag(l1ModuleLabel, "bx"),  # will be -999 in case of no match
+    ]
+    patMuonProducer.userData.userCands.src += [
+        cms.InputTag(l1ModuleLabel)
+    ]
+
+## Do it for this collection of pat Muons
+addL1UserData(patMuonsWithoutTrigger, "muonL1Info")
+
+##    __  __       _       _       _   _ _   _____
+##   |  \/  | __ _| |_ ___| |__   | | | | | |_   _|
+##   | |\/| |/ _` | __/ __| '_ \  | |_| | |   | |
+##   | |  | | (_| | || (__| | | | |  _  | |___| |
+##   |_|  |_|\__,_|\__\___|_| |_| |_| |_|_____|_|
+##
+##
+
+### ==== Unpack trigger, and match ====
+from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import patTrigger as patTriggerFull
+patTriggerFull.onlyStandAlone = True
+patTrigger = cms.EDProducer("TriggerObjectFilterByCollection",
+    src = cms.InputTag("patTriggerFull"),
+    collections = cms.vstring("hltL1extraParticles", "hltGmtStage2Digis", "hltL2MuonCandidates", "hltIterL3MuonCandidates","hltIterL3FromL2MuonCandidates","hltHighPtTkMuonCands", "hltGlbTrkMuonCands", "hltMuTrackJpsiCtfTrackCands", "hltMuTrackJpsiEffCtfTrackCands", "hltMuTkMuJpsiTrackerMuonCands","hltTracksIter"),
+)
+#patTrigger = cms.EDFilter("PATTriggerObjectStandAloneSelector",
+#    src = cms.InputTag("patTriggerFull"),
+#    cut = cms.string('coll("hltL1extraParticles") || coll("hltL2MuonCandidates") || coll("hltIterL3MuonCandidates") || coll("hltGlbTrkMuonCands") || coll("hltMuTrackJpsiCtfTrackCands") || coll("hltMuTrackJpsiEffCtfTrackCands") || coll("hltMuTkMuJpsiTrackerMuonCands")'),
+#)
+
+### ==== Then perform a match for all HLT triggers of interest
+muonTriggerMatchHLT = cms.EDProducer( "PATTriggerMatcherDRDPtLessByR",
+    src     = cms.InputTag( "patMuonsWithoutTrigger" ),
+    matched = cms.InputTag( "patTrigger" ),
+    matchedCuts = cms.string(""),
+#    andOr          = cms.bool( False ),
+#    filterIdsEnum  = cms.vstring( '*' ),
+#    filterIds      = cms.vint32( 0 ),
+#    filterLabels   = cms.vstring( '*' ),
+#    pathNames      = cms.vstring( '*' ),
+#    collectionTags = cms.vstring( '*' ),
+    maxDPtRel = cms.double( 0.5 ),
+    maxDeltaR = cms.double( 0.5 ),
+    resolveAmbiguities    = cms.bool( True ),
+    resolveByMatchQuality = cms.bool( True ) #change with respect to previous tag
+)
+
+### == For HLT triggers which are just L1s, we need a different matcher
+from MuonAnalysis.MuonAssociators.muonHLTL1Match_cfi import muonHLTL1Match
+muonMatchL1 = muonHLTL1Match.clone(
+    src     = muonTriggerMatchHLT.src,
+    matched = muonTriggerMatchHLT.matched,
+)
+
+### Single Mu L1
+muonMatchHLTL1 = muonMatchL1.clone(matchedCuts = cms.string('coll("hltL1extraParticles")'))
+muonMatchHLTL2 = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltL2MuonCandidates")'), maxDeltaR = 0.3, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning. It was: 1.2
+muonMatchHLTL3 = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltIterL3MuonCandidates")'), maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning. It was: 0.5
+muonMatchHLTL3T = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltGlbTrkMuonCands")'),  maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning. It was: 0.5
+muonMatchHLTL3fromL2 = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltIterL3FromL2MuonCandidates")'),  maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning. It was: 0.5
+muonMatchHLTTkMu =  muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltHighPtTkMuonCands")'),  maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning. It was: 0.5
+muonMatchHLTCtfTrack  = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltMuTrackJpsiCtfTrackCands")'),    maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning.
+muonMatchHLTCtfTrack2 = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltMuTrackJpsiEffCtfTrackCands")'), maxDeltaR = 0.1, maxDPtRel = 10.0)  #maxDeltaR Changed accordingly to Zoltan tuning.
+muonMatchHLTTrackMu  = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltMuTkMuJpsiTrackerMuonCands")'), maxDeltaR = 0.1, maxDPtRel = 10.0) #maxDeltaR Changed accordingly to Zoltan tuning.
+muonMatchHLTTrackIt  = muonTriggerMatchHLT.clone(matchedCuts = cms.string('coll("hltTracksIter")'), maxDeltaR = 0.1, maxDPtRel = 1.0) #maxDeltaR Changed accordingly to Zoltan tuning.
+
+patTriggerMatchers1Mu = cms.Sequence(
+      #muonMatchHLTL1 +   # keep off by default, since it is slow and usually not needed
+      muonMatchHLTL2 +
+      muonMatchHLTL3 +
+      muonMatchHLTL3T +
+      muonMatchHLTL3fromL2 +
+      muonMatchHLTTkMu
+)
+patTriggerMatchers1MuInputTags = [
+    #cms.InputTag('muonMatchHLTL1','propagatedReco'), # fake, will match if and only if he muon did propagate to station 2
+    #cms.InputTag('muonMatchHLTL1'),
+    cms.InputTag('muonMatchHLTL2'),
+    cms.InputTag('muonMatchHLTL3'),
+    cms.InputTag('muonMatchHLTL3T'),
+    cms.InputTag('muonMatchHLTL3fromL2'),
+    cms.InputTag('muonMatchHLTTkMu'),
+]
+
+patTriggerMatchers2Mu = cms.Sequence(
+    muonMatchHLTCtfTrack  +
+    muonMatchHLTCtfTrack2 +
+    muonMatchHLTTrackMu +
+    muonMatchHLTTrackIt
+)
+patTriggerMatchers2MuInputTags = [
+    cms.InputTag('muonMatchHLTCtfTrack'),
+    cms.InputTag('muonMatchHLTCtfTrack2'),
+    cms.InputTag('muonMatchHLTTrackMu'),
+    cms.InputTag('muonMatchHLTTrackIt'),
+]
+
+## ==== Embed ====
+patMuonsWithTrigger = cms.EDProducer( "PATTriggerMatchMuonEmbedder",
+    src     = cms.InputTag(  "patMuonsWithoutTrigger" ),
+    matches = cms.VInputTag()
+)
+patMuonsWithTrigger.matches += patTriggerMatchers1MuInputTags
+patMuonsWithTrigger.matches += patTriggerMatchers2MuInputTags
+
+
+## ==== Trigger Sequence ====
+patTriggerMatching = cms.Sequence(
+    patTriggerFull * patTrigger *
+    patTriggerMatchers1Mu *
+    patTriggerMatchers2Mu *
+    patMuonsWithTrigger
+)
+
+patMuonsWithTriggerSequence = cms.Sequence(
+    muonL1Info             *
+    patMuonsWithoutTrigger *
+    patTriggerMatching
+)
+
+
+
+def switchOffAmbiguityResolution(process):
+    "Switch off ambiguity resolution: allow multiple reco muons to match to the same trigger muon"
+    process.muonMatchHLTL1.resolveAmbiguities = False
+    process.muonMatchHLTL2.resolveAmbiguities = False
+    process.muonMatchHLTL3.resolveAmbiguities = False
+    process.muonMatchHLTL3fromL2.resolveAmbiguities = False
+    process.muonMatchHLTTkMu.resolveAmbiguities  = False
+    process.muonMatchHLTCtfTrack.resolveAmbiguities = False
+    process.muonMatchHLTTrackMu.resolveAmbiguities  = False
+    process.muonMatchHLTTrackIt.resolveAmbiguities  = False
+
+def changeTriggerProcessName(process, triggerProcessName, oldProcessName="HLT"):
+    "Change the process name under which the trigger was run"
+    patTriggerFull.processName = triggerProcessName
+
+def changeRecoMuonInput(process, recoMuonCollectionTag, oldRecoMuonCollectionTag=cms.InputTag("muons")):
+    "Use a different input collection of reco muons"
+    from PhysicsTools.PatAlgos.tools.helpers import massSearchReplaceAnyInputTag
+    massSearchReplaceAnyInputTag(process.patMuonsWithTriggerSequence, oldRecoMuonCollectionTag, recoMuonCollectionTag)
+
+def useExistingPATMuons(process, newPatMuonTag, addL1Info=False):
+    "Start from existing pat Muons instead of producing them"
+    process.patMuonsWithTriggerSequence.remove(process.patMuonsWithoutTrigger)
+    process.patMuonsWithTriggerSequence.remove(process.muonL1Info)
+    process.patMuonsWithTrigger.src = newPatMuonTag
+    from PhysicsTools.PatAlgos.tools.helpers import massSearchReplaceAnyInputTag
+    massSearchReplaceAnyInputTag(process.patMuonsWithTriggerSequence, cms.InputTag('patMuonsWithoutTrigger'), newPatMuonTag)
+    if addL1Info:
+        process.muonL1Info.src = newPatMuonTag.muonSource
+        addL1UserData(getattr(process,newPatMuonTag.moduleLabel), 'muonL1Info')
+
+def addPreselection(process, cut):
+    "Add a preselection cut to the muons before matching (might be relevant, due to ambiguity resolution in trigger matching!"
+    process.patMuonsWithoutTriggerUnfiltered = process.patMuonsWithoutTrigger.clone()
+    process.globalReplace('patMuonsWithoutTrigger', cms.EDFilter("PATMuonSelector", src = cms.InputTag('patMuonsWithoutTriggerUnfiltered'), cut = cms.string(cut)))
+    process.patMuonsWithTriggerSequence.replace(process.patMuonsWithoutTrigger, process.patMuonsWithoutTriggerUnfiltered * process.patMuonsWithoutTrigger)
+
+def addMCinfo(process):
+    "Add MC matching information to the muons"
+    process.load("PhysicsTools.PatAlgos.mcMatchLayer0.muonMatch_cfi")
+    process.patMuonsWithTriggerSequence.replace(process.patMuonsWithoutTrigger, process.muonMatch + process.patMuonsWithoutTrigger)
+    process.patMuonsWithoutTrigger.addGenMatch = True
+    process.patMuonsWithoutTrigger.embedGenMatch = True
+    process.patMuonsWithoutTrigger.genParticleMatch = 'muonMatch'
+
+def addDiMuonTriggers(process):
+    print("[MuonAnalysis.MuonAssociators.patMuonsWithTrigger_cff] Di-muon triggers are already enabled by default")
+
+def addHLTL1Passthrough(process, embedder="patMuonsWithTrigger"):
+    process.patMuonsWithTriggerSequence.replace(process.muonMatchHLTL3, process.muonMatchHLTL1 + process.muonMatchHLTL3)
+    getattr(process,embedder).matches += [ cms.InputTag('muonMatchHLTL1'), cms.InputTag('muonMatchHLTL1','propagatedReco') ]
+
+def useL1MatchingWindowForSinglets(process):
+    "Change the L1 trigger matching window to be suitable also for CSC single triggers"
+    if hasattr(process, 'muonL1Info'):
+        process.muonL1Info.maxDeltaR     = 0.3 #Changed accordingly to Zoltan tuning. It was: 1.2
+        process.muonL1Info.maxDeltaEta   = 0.2
+        process.muonL1Info.fallbackToME1 = True
+    if hasattr(process, 'muonMatchHLTL1'):
+        process.muonMatchHLTL1.maxDeltaR     = 0.3 #Changed accordingly to Zoltan tuning. It was: 1.2
+        process.muonMatchHLTL1.maxDeltaEta   = 0.2
+        process.muonMatchHLTL1.fallbackToME1 = True
+
+
+def useL1Stage2Candidates(process):
+    if hasattr(process, 'muonL1Info'):
+        # l1PhiOffest might need a second look
+        # barrel seems not to requre it, whereas encaps do
+        # anyhow the effect is of the order of 0.02
+        #process.muonL1Info.l1PhiOffset = cms.double()
+        process.muonL1Info.useMB2InOverlap = cms.bool(True)
+        process.muonL1Info.useStage2L1 = cms.bool(True)
+        process.muonL1Info.preselection = cms.string("")
+        process.muonL1Info.matched = cms.InputTag("gmtStage2Digis:Muon:")
+
+def appendL1MatchingAlgo(process, algo = "quality"):
+    if hasattr(process, 'muonL1Info'):
+        newMuonL1Info = process.muonL1Info.clone(sortBy = cms.string(algo),
+                                                         sortByQuality  = cms.bool(algo == "quality"),
+                                                         sortByDeltaPhi = cms.bool(algo == "deltaEta"),
+                                                         sortByDeltaEta = cms.bool(algo == "deltaPhi"),
+                                                         sortByPt       = cms.bool(algo == "pt"),
+                                                         maxDeltaR  = cms.double(0.3))
+        setattr(process, "muonL1Info" + algo.title(), newMuonL1Info)
+        process.patMuonsWithTriggerSequence.replace(process.muonL1Info, process.muonL1Info + getattr(process, 'muonL1Info' + algo.title()))
+        addL1UserData(patMuonsWithoutTrigger, "muonL1Info" + algo.title())

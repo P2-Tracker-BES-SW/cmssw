@@ -1,0 +1,8 @@
+<use name="clhep"/>
+<use name="cuda"/>
+<use name="CUDADataFormats/EcalRecHitSoA"/>
+<use name="FWCore/Framework"/>
+
+<export>
+  <lib name="1"/>
+</export>

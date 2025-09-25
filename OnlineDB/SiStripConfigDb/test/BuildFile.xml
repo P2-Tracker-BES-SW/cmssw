@@ -1,0 +1,10 @@
+<library file="plugins/*.cc" name="testOnlineDBSiStripConfigDbPlugins">
+  <use name="DataFormats/SiStripCommon"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="OnlineDB/SiStripConfigDb"/>
+  <use name="boost"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

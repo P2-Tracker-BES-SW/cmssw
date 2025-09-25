@@ -1,0 +1,41 @@
+<lcgdict>
+ <class name="cond::IOVProvenance"/>
+ <class name="cond::IOVDescription"/>
+ <class name="cond::IOVUserMetaData"/>
+
+ <class name="FileBlob" class_version="0">
+ </class>
+ <class name="std::vector<FileBlob>"/>
+ <class name="FileBlobCollection" class_version="0"/>
+ <class name="edm::Wrapper<FileBlobCollection>" class_version="0"/>
+
+ <class name="MultiFileBlob" class_version="0">
+   <field name="blob" mapping="blob"/>
+   <field name="positions" mapping="blob"/>
+   <field name="expanded" transient="true" />
+  </class>
+
+
+<class name="cond::SmallWORMDict"/>
+<class name="cond::IOVKeysDescription"/>
+
+
+ <class name="cond::Summary"/>
+ <class name="cond::GenericSummary"/>
+
+
+ <class name="cond::BaseKeyed"/>
+
+ <class name="ConfObject"/>
+
+ <class name="DropBoxMetadata" class_version="0"/>
+ <class name="DropBoxMetadata::Parameters">
+ <field name="theParameters" mapping="blob" />
+ </class>
+ <class name="std::pair<const std::basic_string<char>, DropBoxMetadata::Parameters>"/>
+ <class name="std::map<const std::basic_string<char>, DropBoxMetadata::Parameters>"/>
+ <class name="std::pair<std::string, DropBoxMetadata::Parameters>"/>
+ <class name="std::map<std::string, DropBoxMetadata::Parameters>"/>
+
+
+</lcgdict>

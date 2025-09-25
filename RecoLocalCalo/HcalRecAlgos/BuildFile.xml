@@ -1,0 +1,20 @@
+<use name="boost"/>
+<use name="clhep"/>
+<use name="eigen"/>
+<use name="rootminuit2"/>
+<use name="vdt_headers"/>
+<use name="CalibCalorimetry/HcalAlgos"/>
+<use name="CalibFormats/CaloObjects"/>
+<use name="CalibFormats/HcalObjects"/>
+<use name="DataFormats/HcalDigi"/>
+<use name="DataFormats/HcalRecHit"/>
+<use name="DataFormats/TrackReco"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/ParameterSet"/>
+<use name="Geometry/CaloTopology"/>
+<use name="RecoLocalCalo/EcalRecAlgos"/>
+<export>
+  <lib name="1"/>
+</export>
+<flags CXXFLAGS="-Wno-error=array-bounds" />

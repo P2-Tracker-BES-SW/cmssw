@@ -1,0 +1,11 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/MessageLogger"/>
+<use name="L1Trigger/HardwareValidation"/>
+<use name="DataFormats/HcalDigi"/>
+<use name="DataFormats/L1DTTrackFinder"/>
+<use name="DataFormats/L1CSCTrackFinder"/>
+<use name="DataFormats/L1Trigger"/>
+<library file="*.cc" name="L1TriggerHardwareValidationPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

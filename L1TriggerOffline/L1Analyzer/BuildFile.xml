@@ -1,0 +1,5 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/L1GlobalTrigger"/>
+<use name="SimDataFormats/CrossingFrame"/>
+<flags EDM_PLUGIN="1"/>

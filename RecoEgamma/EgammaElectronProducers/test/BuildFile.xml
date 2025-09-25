@@ -1,0 +1,7 @@
+<library name="RecoEgammaGEDValueMapAnalyzer" file="GEDValueMapAnalyzer.cc">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="DataFormats/Common"/>
+  <use name="DataFormats/ParticleFlowCandidate"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

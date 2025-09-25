@@ -1,0 +1,22 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/Utilities"/>
+<use name="DataFormats/Common"/>
+<use name="DataFormats/Math"/>
+<use name="DataFormats/VertexReco"/>
+<use name="DataFormats/BTauReco"/>
+<use name="CommonTools/Statistics"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="TrackingTools/IPTools"/>
+<use name="SimTracker/TrackerHitAssociation"/>
+<use name="SimTracker/TrackHistory"/>
+<use name="DQMServices/Core"/>
+<use name="DQMOffline/RecoB"/>
+<use name="Validation/RecoB"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="clhep"/>
+<use name="rootcore"/>
+<use name="root"/>
+<library file="*.cc" name="ValidationRecoBPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

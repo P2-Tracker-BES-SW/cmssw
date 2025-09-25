@@ -1,0 +1,11 @@
+<use name="DetectorDescription/Core"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/Utilities"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/Records"/>
+<use name="Geometry/EcalTestBeam"/>
+<use name="clhep"/>
+<library file="*.cc" name="GeometryEcalTestBeamPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

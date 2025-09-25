@@ -1,0 +1,12 @@
+<use name="classlib"/>
+<use name="protobuf"/>
+<use name="roothistmatrix"/>
+<use name="tbb"/>
+<use name="fmt"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Utilities"/>
+<export>
+  <lib name="1"/>
+</export>

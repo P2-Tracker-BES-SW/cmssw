@@ -1,0 +1,19 @@
+universe               = vanilla
+executable             = run_validation_steps.sh
+output                 = validation.out
+error                  = validation.err
+log                    = validation.log
+
++RequestGPUs           = 1
++GPU_UseExclusiveMode = True
+request_cpus           = 1
+request_memory         = 4GB
++MaxRuntime = 36000
+should_transfer_files        = YES
+when_to_transfer_output      = ON_EXIT_OR_EVICT
+
+# List only output files that are always expected
+#transfer_output_files        = profile_baseline1.ncu-rep
+#transfer_output_files = validation_plots/
+queue
+

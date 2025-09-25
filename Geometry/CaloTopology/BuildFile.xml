@@ -1,0 +1,13 @@
+<use name="DataFormats/CaloTowers"/>
+<use name="DataFormats/HcalDetId"/>
+<use name="DataFormats/EcalDetId"/>
+<use name="DataFormats/ForwardDetId"/>
+<use name="DataFormats/Common"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/HcalCommonData"/>
+<use name="Geometry/HGCalCommonData"/>
+<use name="Geometry/HGCalTBCommonData"/>
+<use name="boost"/>
+<export>
+  <lib name="1"/>
+</export>

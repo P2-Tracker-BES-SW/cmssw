@@ -1,0 +1,7 @@
+<use name="Geometry/DTGeometry"/>
+<use name="L1TriggerConfig/DTTPGConfig"/>
+<use name="CLHEP"/>
+<use name="root"/>
+<export>
+  <lib name="1"/>
+</export>

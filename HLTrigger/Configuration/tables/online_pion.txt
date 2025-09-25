@@ -1,0 +1,19 @@
+# "PIon" menu (placeholder)
+
+HLT_Random_v*
+HLT_ZeroBias_v*
+HLT_Physics_v*
+
+HLTriggerFirstPath
+HLTriggerFinalPath
+HLTAnalyzerEndpath
+
+Status_OnCPU	#	CMSHLT-2206
+Status_OnGPU	#	CMSHLT-2206
+
+PhysicsCommissioningOutput
+
+DQMOutput
+
+## only in 'online' version
+RatesMonitoring

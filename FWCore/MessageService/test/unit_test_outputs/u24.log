@@ -1,0 +1,8 @@
+----- Begin Fatal Exception {Timestamp} ----------------------
+An exception of category 'DuplicateDestination' occurred while
+   [0] Constructing the EventProcessor
+   [1] Constructing service of type MessageLogger
+Exception Message:
+Duplicate name for a MessageLogger Destination: u24.log
+Please modify the configuration to use unique file names.
+----- End Fatal Exception -------------------------------------------------

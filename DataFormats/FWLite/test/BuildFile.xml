@@ -1,0 +1,13 @@
+<use name="cppunit"/>
+<test name="testDataFormatsFWLiteMakeInput" command="RefTest.sh"/>
+
+<bin name="testDataFormatsFWLite" file="test.cppunit.cpp,format_type_name.cppunit.cpp">
+  <flags PRE_TEST="testDataFormatsFWLiteMakeInput"/>
+  <use name="DataFormats/FWLite"/>
+  <use name="FWCore/FWLite"/>
+  <use name="DataFormats/TestObjects"/>
+</bin>
+
+<test name="TestRunnerDataFormatsFWLite" command="run_all_t.sh">
+  <flags PRE_TEST="testDataFormatsFWLite"/>
+</test>

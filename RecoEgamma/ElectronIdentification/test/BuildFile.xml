@@ -1,0 +1,11 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="root"/>
+<use name="rootcore"/>
+<use name="RecoEgamma/ElectronIdentification"/>
+<library name="RecoEgammaElectronIdentificationVIDExample" file="VIDUsageExample.cc">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<test name="runtestRecoEgammaElectronIdentification" command="runtests.sh"/>

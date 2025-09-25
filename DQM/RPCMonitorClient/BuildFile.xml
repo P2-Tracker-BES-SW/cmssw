@@ -1,0 +1,10 @@
+<use name="DQMServices/Core"/>
+<use name="Geometry/RPCGeometry"/>
+<use name="CondFormats/RPCObjects"/>
+<use name="CondFormats/DataRecord"/>
+<use name="CondFormats/RunInfo"/>
+<use name="CondCore/PopCon"/>
+<export>
+  <lib name="1"/>
+</export>
+

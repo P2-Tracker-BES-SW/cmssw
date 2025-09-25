@@ -1,0 +1,19 @@
+<bin name="testParameterSetCatch2" file="test_catch*.cc">
+  <use name="catch2"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="DataFormats/Provenance"/>
+  <use name="boost"/>
+</bin>
+
+<test name="TestFWCoreParameterSetDriver" command="runPythonTests.sh"/>
+
+<bin name="testDefaultModuleLabel" file="defaultModuleLabel_t.cc">
+  <use name="cppunit"/>
+  <use name="FWCore/ParameterSet"/>
+</bin>
+
+<test name="testFWCoreParameterSetEdmConfigDump" command="run_edmConfigDump.sh"/>
+<test name="testFWCoreParameterSetEdmConfigSplit" command="run_edmConfigSplit.sh"/>
+
+<test name="TestFWCoreParameterSetVarParsingList" command="python3 ${LOCALTOP}/src/FWCore/ParameterSet/test/test_varparsing_list.py"/>

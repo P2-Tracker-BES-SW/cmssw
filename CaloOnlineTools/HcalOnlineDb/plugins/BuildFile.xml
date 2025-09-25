@@ -1,0 +1,11 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="boost"/>
+<use name="xerces-c"/>
+<use name="zlib"/>
+<use name="DataFormats/HcalDetId"/>
+<use name="CalibCalorimetry/HcalTPGAlgos"/>
+<use name="CaloOnlineTools/HcalOnlineDb"/>
+<library file="*.cc" name="CaloOnlineToolsHcalOnlineDbPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

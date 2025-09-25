@@ -1,0 +1,46 @@
+#ifndef PUDumper_h
+#define PUDumper_h
+
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+
+#include "TTree.h"
+
+class PUDumper : public edm::one::EDAnalyzer<> {
+public:
+  //! ctor
+  explicit PUDumper(const edm::ParameterSet&);
+
+  //! dtor
+  ~PUDumper() override;
+
+private:
+  //! the actual analyze method
+  void analyze(const edm::Event&, const edm::EventSetup&) override;
+
+private:
+  edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupSummaryToken_;
+
+  TTree* PUTree_;
+
+  Int_t runNumber;       ///<
+  Long64_t eventNumber;  ///<
+  Int_t lumiBlock;       ///< lumi section
+
+  Int_t nBX;
+  Int_t BX_[100];
+  Int_t nPUtrue_;
+  Int_t nPUobs_[100];
+};
+
+#endif

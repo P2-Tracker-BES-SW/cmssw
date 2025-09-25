@@ -1,0 +1,59 @@
+%MSG-i AlpakaService:  (NoModuleName) 18-Jun-2025 15:20:53 CEST pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - Intel(R) Xeon(R) Silver 4216 CPU @ 2.10GHz
+%MSG
+%MSG-i CUDAService:  (NoModuleName) 18-Jun-2025 15:20:53 CEST pre-events
+CUDA runtime version 12.8, driver version 12.9, NVIDIA driver version 575.51.03
+CUDA device 0: Tesla T4 (sm_75)
+%MSG
+%MSG-i AlpakaService:  (NoModuleName) 18-Jun-2025 15:20:53 CEST pre-events
+AlpakaServiceCudaAsync succesfully initialised.
+Found 1 device:
+  - Tesla T4
+%MSG
+18-Jun-2025 15:20:55 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+18-Jun-2025 15:21:35 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+[Debug] copying 31104 ints (124416 bytes)
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 18-Jun-2025 15:21:42.275 CEST
+GPU Output: Fragment 43 (totID 43, DTC 11, Slink 3): headerWords = GPU Output: Fragment 23 (totID 23, DTC 6, Slink 3): headerWords = GPU Output: Fragment 36 (totID 36, DTC 10, Slink 0): headerWords = GPU Output: Fragment 63 (totID 63, DTC 16, Slink 3): headerWords = GPU Output: Fragment 34 (totID 34, DTC 9, Slink 2): headerWords = GPU Output: Fragment 54 (totID 54, DTC 14, Slink 2): headerWords = GPU Output: Fragment 136 (totID 136, DTC 35, Slink 0): headerWords = GPU Output: Fragment 56 (totID 56, DTC 15, Slink 0): headerWords = GPU Output: Fragment 47 (totID 47, DTC 12, Slink 3): headerWords = GPU Output: Fragment 19 (totID 19, DTC 5, Slink 3): headerWords = 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 
+
+
+
+
+
+
+
+
+
+18-Jun-2025 15:21:42 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+TimeReport> Time report complete in 54.4266 seconds
+ Time Summary: 
+ - Min event:   0.434797
+ - Max event:   0.434797
+ - Avg event:   0.434797
+ - Total loop:  6.27646
+ - Total init:  48.1501
+ - Total job:   54.4266
+ - Total EventSetup: 4.40033
+ - Total non-module: 0.0542557
+ Event Throughput: 0.159325 ev/s
+ CPU Summary: 
+ - Total loop:     5.39358
+ - Total init:     40.7616
+ - Total extra:    0
+ - Total children: 0.587395
+ - Total job:      46.1552
+ Processing Summary: 
+ - Number of Events:  1
+ - Number of Global Begin Lumi Calls:  1
+ - Number of Global Begin Run Calls: 1
+
+CondDBESSource Statistics
+DataProxy 1 setInterval 1 Runs 1 Lumis 0 Refresh 0 Actual Refresh 0 Reconnect 0 Actual Reconnect 0
+TrackerDetToDTCELinkCablingMapRcd / : frontier://FrontierProd/CMS_CONDITIONS, TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly
+  
+  Time look up, payloadIds:
+   1 - 18446744073709551615 : 677806b1c9884282be114262d53be6bc81074ff2
+
+

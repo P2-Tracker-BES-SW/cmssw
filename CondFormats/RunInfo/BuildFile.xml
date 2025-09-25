@@ -1,0 +1,10 @@
+<use name="CondFormats/Common"/>
+<use name="CondFormats/Serialization"/>
+<use name="CondCore/CondDB"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/Utilities"/>
+<use name="CoralBase"/>
+<use name="boost_serialization"/>
+<export>
+  <lib name="1"/>
+</export>

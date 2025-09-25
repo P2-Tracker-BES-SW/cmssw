@@ -1,0 +1,9 @@
+<use name="CondCore/PopCon"/>
+<use name="CondFormats/Common"/>
+<use name="CondFormats/DQMObjects"/>
+<use name="CoralBase"/>
+<use name="FWCore/ParameterSet"/>
+<use name="RelationalAccess"/>
+<export>
+  <lib name="1"/>
+</export>

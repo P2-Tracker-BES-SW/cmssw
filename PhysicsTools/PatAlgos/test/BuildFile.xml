@@ -1,0 +1,11 @@
+<export>
+</export>
+<library name="PhysicsToolsPatAlgos_testAnalyzers" file="private/*.cc">
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="DataFormats/PatCandidates"/>
+  <use name="root"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<test name="runtestPhysicsToolsPatAlgos" command="runtests.sh"/>

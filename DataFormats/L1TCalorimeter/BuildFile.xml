@@ -1,0 +1,4 @@
+<use name="DataFormats/L1Trigger"/>
+<export>
+  <lib name="1"/>
+</export>

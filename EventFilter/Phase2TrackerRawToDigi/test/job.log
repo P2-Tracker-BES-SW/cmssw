@@ -1,0 +1,335 @@
+000 (1512386.000.000) 09/29 16:02:04 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+009 (1512386.000.000) 09/29 16:11:29 Job was aborted.
+	via condor_rm (by user mmomed)
+...
+000 (1512557.000.000) 09/29 16:11:35 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1512557.000.000) 09/29 16:21:04 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_4974>
+...
+040 (1512557.000.000) 09/29 16:21:04 Finished transferring input files
+...
+001 (1512557.000.000) 09/29 16:21:04 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_857022"
+	Cpus = 2
+	Disk = 2049
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1512557.000.000) 09/29 16:21:11 Image size of job updated: 28
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+040 (1512557.000.000) 09/29 16:21:11 Started transferring output files
+...
+040 (1512557.000.000) 09/29 16:21:11 Finished transferring output files
+...
+007 (1512557.000.000) 09/29 16:21:11 Shadow exception!
+	Error from slot1_1@b9g47n5843.cern.ch: STARTER at 128.142.241.90 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_857022/nsys.log: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <128.142.241.90:38169>
+	359  -  Run Bytes Sent By Job
+	1802  -  Run Bytes Received By Job
+...
+012 (1512557.000.000) 09/29 16:21:11 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n5843.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_857022/nsys.log: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+009 (1512557.000.000) 09/29 16:22:09 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-29T14:21:11Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+000 (1512558.000.000) 09/29 16:24:52 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1512558.000.000) 09/29 16:33:04 Started transferring input files
+	Transferring to host: <188.184.195.62:9618?addrs=188.184.195.62-9618+[2001-1458-301-72--100-36d]-9618&alias=b9g47n7532.cern.ch&noUDP&sock=slot1_1_7513_568b_500>
+...
+040 (1512558.000.000) 09/29 16:33:04 Finished transferring input files
+...
+001 (1512558.000.000) 09/29 16:33:04 Job executing on host: <188.184.195.62:9618?addrs=188.184.195.62-9618+[2001-1458-301-72--100-36d]-9618&alias=b9g47n7532.cern.ch&noUDP&sock=startd_7380_a506>
+	SlotName: slot1_1@b9g47n7532.cern.ch
+	AvailableGPUs = { GPUs_GPU_79da0196 }
+	CondorScratchDir = "/pool/condor/dir_142919"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_79da0196 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "79da0196-c82c-8eb2-f434-a348c03e4cd8"; DeviceName = "Tesla V100S-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1597.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-79da0196" ]
+	Memory = 6000
+...
+006 (1512558.000.000) 09/29 16:33:10 Image size of job updated: 28
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+040 (1512558.000.000) 09/29 16:33:10 Started transferring output files
+...
+040 (1512558.000.000) 09/29 16:33:10 Finished transferring output files
+...
+007 (1512558.000.000) 09/29 16:33:10 Shadow exception!
+	Error from slot1_1@b9g47n7532.cern.ch: STARTER at 188.184.195.62 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_142919/nsys.log: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <188.184.195.62:41907>
+	359  -  Run Bytes Sent By Job
+	1820  -  Run Bytes Received By Job
+...
+012 (1512558.000.000) 09/29 16:33:10 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n7532.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_142919/nsys.log: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+009 (1512558.000.000) 09/29 16:34:35 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-29T14:33:10Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+000 (1512559.000.000) 09/29 16:36:39 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1512559.000.000) 09/29 16:44:03 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_4985>
+...
+040 (1512559.000.000) 09/29 16:44:03 Finished transferring input files
+...
+001 (1512559.000.000) 09/29 16:44:03 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_858266"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1512559.000.000) 09/29 16:44:16 Image size of job updated: 110304
+	108  -  MemoryUsage of job (MB)
+	110304  -  ResidentSetSize of job (KB)
+...
+006 (1512559.000.000) 09/29 16:47:25 Image size of job updated: 2795116
+	108  -  MemoryUsage of job (MB)
+	110304  -  ResidentSetSize of job (KB)
+...
+040 (1512559.000.000) 09/29 16:47:25 Started transferring output files
+...
+040 (1512559.000.000) 09/29 16:47:29 Finished transferring output files
+...
+005 (1512559.000.000) 09/29 16:47:29 Job terminated.
+	(1) Normal termination (return value 127)
+		Usr 0 00:05:28, Sys 0 00:00:28  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:05:28, Sys 0 00:00:28  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	80412680  -  Run Bytes Sent By Job
+	1834  -  Run Bytes Received By Job
+	80412680  -  Total Bytes Sent By Job
+	1834  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated Assigned
+	   Cpus                 :        0        2         2 
+	   Disk (KB)            :   472163        2      2048 
+	   Gpus (Average)       :                 1         1 "GPU-d93dc087"
+	   Memory (MB)          :      108     6000      6000 
+
+	Job terminated of its own accord at 2025-09-29T14:47:25Z with exit-code 127.
+...
+000 (1519892.000.000) 09/30 11:39:15 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1519892.000.000) 09/30 11:39:58 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_5659>
+...
+040 (1519892.000.000) 09/30 11:39:58 Finished transferring input files
+...
+001 (1519892.000.000) 09/30 11:39:59 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_969691"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1519892.000.000) 09/30 11:40:07 Image size of job updated: 40
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+040 (1519892.000.000) 09/30 11:40:07 Started transferring output files
+...
+040 (1519892.000.000) 09/30 11:40:07 Finished transferring output files
+...
+005 (1519892.000.000) 09/30 11:40:07 Job terminated.
+	(1) Normal termination (return value 127)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	715  -  Run Bytes Sent By Job
+	2241  -  Run Bytes Received By Job
+	715  -  Total Bytes Sent By Job
+	2241  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated Assigned
+	   Cpus                 :                 2         2 
+	   Disk (KB)            :       21        3      2048 
+	   Gpus (Average)       :                 1         1 "GPU-d93dc087"
+	   Memory (MB)          :        0     6000      6000 
+
+	Job terminated of its own accord at 2025-09-30T09:40:07Z with exit-code 127.
+...
+000 (1520111.000.000) 09/30 14:18:35 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1520111.000.000) 09/30 14:22:46 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_5751>
+...
+040 (1520111.000.000) 09/30 14:22:46 Finished transferring input files
+...
+001 (1520111.000.000) 09/30 14:22:46 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_1064952"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1520111.000.000) 09/30 14:22:56 Image size of job updated: 36
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+040 (1520111.000.000) 09/30 14:22:56 Started transferring output files
+...
+040 (1520111.000.000) 09/30 14:22:56 Finished transferring output files
+...
+007 (1520111.000.000) 09/30 14:22:56 Shadow exception!
+	Error from slot1_1@b9g47n5843.cern.ch: STARTER at 128.142.241.90 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_1064952/profile_baseline1.ncu-rep: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <128.142.241.90:35629>
+	718  -  Run Bytes Sent By Job
+	2457  -  Run Bytes Received By Job
+...
+012 (1520111.000.000) 09/30 14:22:57 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n5843.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_1064952/profile_baseline1.ncu-rep: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+009 (1520111.000.000) 09/30 16:11:21 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-30T12:22:56Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+000 (1520470.000.000) 09/30 16:14:53 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1520470.000.000) 09/30 16:20:41 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_5814>
+...
+040 (1520470.000.000) 09/30 16:20:41 Finished transferring input files
+...
+001 (1520470.000.000) 09/30 16:20:41 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_1078278"
+	Cpus = 2
+	Disk = 2049
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1520470.000.000) 09/30 16:20:54 Image size of job updated: 65168
+	64  -  MemoryUsage of job (MB)
+	65168  -  ResidentSetSize of job (KB)
+...
+040 (1520470.000.000) 09/30 16:20:54 Started transferring output files
+...
+040 (1520470.000.000) 09/30 16:20:54 Finished transferring output files
+...
+007 (1520470.000.000) 09/30 16:20:54 Shadow exception!
+	Error from slot1_1@b9g47n5843.cern.ch: STARTER at 128.142.241.90 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_1078278/profile_baseline1.ncu-rep: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <128.142.241.90:38203>
+	800  -  Run Bytes Sent By Job
+	2462  -  Run Bytes Received By Job
+...
+012 (1520470.000.000) 09/30 16:20:55 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n5843.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_1078278/profile_baseline1.ncu-rep: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+000 (1520472.000.000) 09/30 16:21:36 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+040 (1520472.000.000) 09/30 16:21:41 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_5818>
+...
+040 (1520472.000.000) 09/30 16:21:41 Finished transferring input files
+...
+001 (1520472.000.000) 09/30 16:21:41 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_1078786"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1520472.000.000) 09/30 16:21:50 Image size of job updated: 32
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+040 (1520472.000.000) 09/30 16:21:50 Started transferring output files
+...
+040 (1520472.000.000) 09/30 16:21:50 Finished transferring output files
+...
+007 (1520472.000.000) 09/30 16:21:50 Shadow exception!
+	Error from slot1_1@b9g47n5843.cern.ch: STARTER at 128.142.241.90 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_1078786/profile_baseline1.ncu-rep: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <128.142.241.90:34153>
+	786  -  Run Bytes Sent By Job
+	2455  -  Run Bytes Received By Job
+...
+012 (1520472.000.000) 09/30 16:21:50 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n5843.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_1078786/profile_baseline1.ncu-rep: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+000 (1520474.000.000) 09/30 16:27:54 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...
+009 (1520470.000.000) 09/30 16:28:19 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-30T14:20:54Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+009 (1520472.000.000) 09/30 16:28:19 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-30T14:21:50Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+040 (1520474.000.000) 09/30 16:43:43 Started transferring input files
+	Transferring to host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=slot1_1_6969_0a74_5829>
+...
+040 (1520474.000.000) 09/30 16:43:43 Finished transferring input files
+...
+001 (1520474.000.000) 09/30 16:43:43 Job executing on host: <128.142.241.90:9618?addrs=128.142.241.90-9618+[2001-1458-301-ce--100-1cf]-9618&alias=b9g47n5843.cern.ch&noUDP&sock=startd_6820_87fd>
+	SlotName: slot1_1@b9g47n5843.cern.ch
+	AvailableGPUs = { GPUs_GPU_d93dc087 }
+	CondorScratchDir = "/pool/condor/dir_1079904"
+	Cpus = 2
+	Disk = 2048
+	GPUs = 1
+	GPUs_GPU_d93dc087 = [ GlobalMemoryMb = 32494; MaxSupportedVersion = 12090; DriverVersion = 12.9; ComputeUnits = 80; ECCEnabled = true; DeviceUuid = "d93dc087-0f06-a7ee-241e-d0afdf77a74e"; DeviceName = "Tesla V100-PCIE-32GB"; CoresPerCU = 64; ClockMhz = 1380.0; DevicePciBusId = "0000:07:00.0"; Capability = 7.0; Id = "GPU-d93dc087" ]
+	Memory = 6000
+...
+006 (1520474.000.000) 09/30 16:43:57 Image size of job updated: 77176
+	76  -  MemoryUsage of job (MB)
+	77176  -  ResidentSetSize of job (KB)
+...
+006 (1520474.000.000) 09/30 16:45:00 Image size of job updated: 1126100
+	76  -  MemoryUsage of job (MB)
+	77184  -  ResidentSetSize of job (KB)
+...
+040 (1520474.000.000) 09/30 16:45:00 Started transferring output files
+...
+040 (1520474.000.000) 09/30 16:45:00 Finished transferring output files
+...
+007 (1520474.000.000) 09/30 16:45:00 Shadow exception!
+	Error from slot1_1@b9g47n5843.cern.ch: STARTER at 128.142.241.90 failed to send file(s) to <188.185.129.8:9618>: |Error: reading from file /pool/condor/dir_1079904/profile_baseline1.ncu-rep: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <128.142.241.90:35377>
+	3037  -  Run Bytes Sent By Job
+	2373  -  Run Bytes Received By Job
+...
+012 (1520474.000.000) 09/30 16:45:00 Job was held.
+	Transfer output files failure at execution point slot1_1@b9g47n5843.cern.ch while sending files to access point bigbird101. Details: reading from file /pool/condor/dir_1079904/profile_baseline1.ncu-rep: (errno 2) No such file or directory
+	Code 12 Subcode 2
+...
+009 (1520474.000.000) 10/01 10:46:34 Job was aborted.
+	via condor_rm (by user mmomed)
+
+	Job terminated by itself at 2025-09-30T14:45:00Z (using method 0: OF_ITS_OWN_ACCORD).
+...
+000 (1521522.000.000) 10/01 10:47:42 Job submitted from host: <188.185.129.8:9618?addrs=188.185.129.8-9618+[2001-1458-d03-1--100-8a]-9618&alias=bigbird101.cern.ch&noUDP&sock=schedd_3241060_289e>
+...

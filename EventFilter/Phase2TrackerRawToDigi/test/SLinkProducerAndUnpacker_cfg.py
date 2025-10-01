@@ -154,3 +154,8 @@ else:
 
 process.output = cms.EndPath(process.out)
 # process.dtc = cms.Path(process.ClustersFromPhase2TrackerDigis * process.Packer * process.Analyzer * process.Unpacker)
+
+# mark framework transitions in the NVIDIA profiler
+process.NVProfilerService = cms.Service("NVProfilerService",
+    showModulePrefetching = cms.untracked.bool(False)
+)

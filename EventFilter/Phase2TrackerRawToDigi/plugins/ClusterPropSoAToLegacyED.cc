@@ -67,8 +67,19 @@ void ClusterPropSoAToLegacyED::produce(edm::Event& iEvent, edm::EventSetup const
   perDet.reserve(1024);
   perDet.max_load_factor(0.7f);
 
+  int skippedInvalid = 0; // ADDED: counter for skipped invalid detIds
+
   for (int i = 0; i < nHits; ++i) {
     const uint32_t detId  = view[i].detId();
+
+    // --- ADDED: skip invalid placeholder entries to match CPU EDAnalyzer behavior
+    // detId == 0   → placeholder clusters (invalid, should not be output)
+    // detId <= 2   → avoids underflow in cabling lookups (invalid)
+    if (detId == 0 || detId <= 2) {
+      ++skippedInvalid;
+      continue;
+    }
+
     const uint32_t x      = view[i].x();       // legacy "firstStrip"
     const uint32_t y      = view[i].y();       // legacy "firstRow"
     const uint32_t width  = view[i].width();   // cluster size (already 0->8 fixed upstream)
@@ -96,6 +107,13 @@ void ClusterPropSoAToLegacyED::produce(edm::Event& iEvent, edm::EventSetup const
     for (auto const& c : vec)
       filler.push_back(c);
   }
+
+#ifdef EDM_ML_DEBUG
+  if (skippedInvalid > 0) {
+    edm::LogInfo("ClusterPropSoAToLegacyED")
+        << "Skipped " << skippedInvalid << " clusters with invalid detIds (0 or <= 2).";
+  }
+#endif
 
   iEvent.put(legacyOutToken_, std::move(out));
 }

@@ -1,154 +1,154 @@
 SCRAM fatal: Unable to locate the top of local release. Please run this command from a SCRAM-based area.
-%MSG-i ThreadStreamSetup:  (NoModuleName) 25-Sep-2025 14:53:21 CEST pre-events
+%MSG-i ThreadStreamSetup:  (NoModuleName) 30-Sep-2025 14:29:24 CEST pre-events
 setting # threads 8
 setting # streams 8
 %MSG
-%MSG-i Root_Information:  (NoModuleName) RTaskArenaWrapper()  25-Sep-2025 14:53:33 CEST pre-events
+%MSG-i Root_Information:  (NoModuleName) RTaskArenaWrapper()  30-Sep-2025 14:29:34 CEST pre-events
 CPU Bandwith Control Active. Proceeding with 2 threads accordingly
 %MSG
-%MSG-i CUDAService:  (NoModuleName) 25-Sep-2025 14:53:33 CEST pre-events
-CUDA runtime version 12.8, driver version 12.9, NVIDIA driver version 575.51.03
+%MSG-i CUDAService:  (NoModuleName) 30-Sep-2025 14:29:34 CEST pre-events
+CUDA runtime version 12.8, driver version 12.9, NVIDIA driver version 575.57.08
 CUDA device 0: Tesla V100S-PCIE-32GB (sm_70)
 %MSG
-%MSG-i AlpakaService:  (NoModuleName) 25-Sep-2025 14:53:34 CEST pre-events
+%MSG-i AlpakaService:  (NoModuleName) 30-Sep-2025 14:29:34 CEST pre-events
 AlpakaServiceSerialSync succesfully initialised.
 Found 1 device:
   - Intel(R) Xeon(R) Silver 4216 CPU @ 2.10GHz
 %MSG
-%MSG-i AlpakaService:  (NoModuleName) 25-Sep-2025 14:53:34 CEST pre-events
+%MSG-i AlpakaService:  (NoModuleName) 30-Sep-2025 14:29:34 CEST pre-events
 AlpakaServiceCudaAsync succesfully initialised.
 Found 1 device:
   - Tesla V100S-PCIE-32GB
 %MSG
-25-Sep-2025 14:53:38 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
-25-Sep-2025 14:54:20 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
-Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:26.248 CEST
-Begin processing the 2nd record. Run 1, Event 9501, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:26.791 CEST
-Begin processing the 3rd record. Run 1, Event 9504, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:26.800 CEST
-Begin processing the 4th record. Run 1, Event 9503, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:26.801 CEST
-Begin processing the 5th record. Run 1, Event 9506, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:26.802 CEST
-Begin processing the 6th record. Run 1, Event 9505, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:26.802 CEST
-Begin processing the 7th record. Run 1, Event 9507, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:26.802 CEST
-Begin processing the 8th record. Run 1, Event 9508, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:26.802 CEST
-Begin processing the 9th record. Run 1, Event 9509, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:30.823 CEST
-Begin processing the 10th record. Run 1, Event 9511, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:31.814 CEST
-Begin processing the 11th record. Run 1, Event 9510, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:32.661 CEST
-Begin processing the 12th record. Run 1, Event 9513, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:33.269 CEST
-Begin processing the 13th record. Run 1, Event 9512, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:33.681 CEST
-Begin processing the 14th record. Run 1, Event 9514, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:34.307 CEST
-Begin processing the 15th record. Run 1, Event 9515, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:34.857 CEST
-Begin processing the 16th record. Run 1, Event 9517, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:35.654 CEST
-Begin processing the 17th record. Run 1, Event 9516, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:36.123 CEST
-Begin processing the 18th record. Run 1, Event 9518, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:36.763 CEST
-Begin processing the 19th record. Run 1, Event 9519, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:37.251 CEST
-Begin processing the 20th record. Run 1, Event 9520, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:37.908 CEST
-Begin processing the 21st record. Run 1, Event 9521, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:38.394 CEST
-Begin processing the 22nd record. Run 1, Event 9523, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:39.114 CEST
-Begin processing the 23rd record. Run 1, Event 9522, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:39.428 CEST
-Begin processing the 24th record. Run 1, Event 9524, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:40.205 CEST
-Begin processing the 25th record. Run 1, Event 9525, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:40.596 CEST
-Begin processing the 26th record. Run 1, Event 9526, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:41.172 CEST
-Begin processing the 27th record. Run 1, Event 9527, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:41.718 CEST
-Begin processing the 28th record. Run 1, Event 9528, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:42.373 CEST
-Begin processing the 29th record. Run 1, Event 9529, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:42.791 CEST
-Begin processing the 30th record. Run 1, Event 9530, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:43.340 CEST
-Begin processing the 31st record. Run 1, Event 9531, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:43.887 CEST
-Begin processing the 32nd record. Run 1, Event 9532, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:44.669 CEST
-Begin processing the 33rd record. Run 1, Event 9533, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:45.283 CEST
-Begin processing the 34th record. Run 1, Event 9534, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:46.175 CEST
-Begin processing the 35th record. Run 1, Event 9535, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:46.717 CEST
-Begin processing the 36th record. Run 1, Event 9536, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:47.433 CEST
-Begin processing the 37th record. Run 1, Event 9538, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:47.964 CEST
-Begin processing the 38th record. Run 1, Event 9537, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:48.678 CEST
-Begin processing the 39th record. Run 1, Event 9540, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:49.143 CEST
-Begin processing the 40th record. Run 1, Event 9539, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:49.835 CEST
-Begin processing the 41st record. Run 1, Event 9541, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:50.437 CEST
-Begin processing the 42nd record. Run 1, Event 9542, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:51.090 CEST
-Begin processing the 43rd record. Run 1, Event 9543, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:51.511 CEST
-Begin processing the 44th record. Run 1, Event 9545, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:52.261 CEST
-Begin processing the 45th record. Run 1, Event 9544, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:52.753 CEST
-Begin processing the 46th record. Run 1, Event 9546, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:53.319 CEST
-Begin processing the 47th record. Run 1, Event 9547, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:53.935 CEST
-Begin processing the 48th record. Run 1, Event 9549, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:54.732 CEST
-Begin processing the 49th record. Run 1, Event 9548, LumiSection 96 on stream 3 at 25-Sep-2025 14:54:55.410 CEST
-Begin processing the 50th record. Run 1, Event 9550, LumiSection 96 on stream 2 at 25-Sep-2025 14:54:55.945 CEST
-Begin processing the 51st record. Run 1, Event 9551, LumiSection 96 on stream 5 at 25-Sep-2025 14:54:56.375 CEST
-Begin processing the 52nd record. Run 1, Event 9553, LumiSection 96 on stream 4 at 25-Sep-2025 14:54:57.069 CEST
-Begin processing the 53rd record. Run 1, Event 9552, LumiSection 96 on stream 1 at 25-Sep-2025 14:54:57.666 CEST
-Begin processing the 54th record. Run 1, Event 9554, LumiSection 96 on stream 7 at 25-Sep-2025 14:54:58.250 CEST
-Begin processing the 55th record. Run 1, Event 9556, LumiSection 96 on stream 6 at 25-Sep-2025 14:54:58.857 CEST
-Begin processing the 56th record. Run 1, Event 9555, LumiSection 96 on stream 0 at 25-Sep-2025 14:54:59.628 CEST
-Begin processing the 57th record. Run 1, Event 9557, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:00.169 CEST
-Begin processing the 58th record. Run 1, Event 9559, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:00.855 CEST
-Begin processing the 59th record. Run 1, Event 9558, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:01.339 CEST
-Begin processing the 60th record. Run 1, Event 9560, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:02.139 CEST
-Begin processing the 61st record. Run 1, Event 9562, LumiSection 96 on stream 1 at 25-Sep-2025 14:55:02.600 CEST
-Begin processing the 62nd record. Run 1, Event 9561, LumiSection 96 on stream 7 at 25-Sep-2025 14:55:03.281 CEST
-Begin processing the 63rd record. Run 1, Event 9563, LumiSection 96 on stream 6 at 25-Sep-2025 14:55:03.722 CEST
-Begin processing the 64th record. Run 1, Event 9564, LumiSection 96 on stream 0 at 25-Sep-2025 14:55:04.446 CEST
-Begin processing the 65th record. Run 1, Event 9565, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:04.966 CEST
-Begin processing the 66th record. Run 1, Event 9566, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:05.754 CEST
-Begin processing the 67th record. Run 1, Event 9567, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:06.179 CEST
-Begin processing the 68th record. Run 1, Event 9569, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:06.923 CEST
-Begin processing the 69th record. Run 1, Event 9568, LumiSection 96 on stream 1 at 25-Sep-2025 14:55:07.436 CEST
-Begin processing the 70th record. Run 1, Event 9570, LumiSection 96 on stream 7 at 25-Sep-2025 14:55:07.879 CEST
-Begin processing the 71st record. Run 1, Event 9571, LumiSection 96 on stream 6 at 25-Sep-2025 14:55:08.313 CEST
-Begin processing the 72nd record. Run 1, Event 9572, LumiSection 96 on stream 0 at 25-Sep-2025 14:55:08.921 CEST
-Begin processing the 73rd record. Run 1, Event 9573, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:09.543 CEST
-Begin processing the 74th record. Run 1, Event 9575, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:10.311 CEST
-Begin processing the 75th record. Run 1, Event 9574, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:10.736 CEST
-Begin processing the 76th record. Run 1, Event 9577, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:11.305 CEST
-Begin processing the 77th record. Run 1, Event 9578, LumiSection 96 on stream 1 at 25-Sep-2025 14:55:11.947 CEST
-Begin processing the 78th record. Run 1, Event 9576, LumiSection 96 on stream 7 at 25-Sep-2025 14:55:12.709 CEST
-Begin processing the 79th record. Run 1, Event 9579, LumiSection 96 on stream 6 at 25-Sep-2025 14:55:13.223 CEST
-Begin processing the 80th record. Run 1, Event 9580, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:13.946 CEST
-Begin processing the 81st record. Run 1, Event 9581, LumiSection 96 on stream 0 at 25-Sep-2025 14:55:14.479 CEST
-Begin processing the 82nd record. Run 1, Event 9583, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:15.120 CEST
-Begin processing the 83rd record. Run 1, Event 9582, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:15.496 CEST
-Begin processing the 84th record. Run 1, Event 9584, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:16.111 CEST
-Begin processing the 85th record. Run 1, Event 9585, LumiSection 96 on stream 1 at 25-Sep-2025 14:55:16.654 CEST
-Begin processing the 86th record. Run 1, Event 9586, LumiSection 96 on stream 7 at 25-Sep-2025 14:55:17.619 CEST
-Begin processing the 87th record. Run 1, Event 9588, LumiSection 96 on stream 6 at 25-Sep-2025 14:55:18.397 CEST
-Begin processing the 88th record. Run 1, Event 9587, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:19.160 CEST
-Begin processing the 89th record. Run 1, Event 9589, LumiSection 96 on stream 0 at 25-Sep-2025 14:55:19.627 CEST
-Begin processing the 90th record. Run 1, Event 9590, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:20.328 CEST
-Begin processing the 91st record. Run 1, Event 9591, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:20.951 CEST
-Begin processing the 92nd record. Run 1, Event 9593, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:21.648 CEST
-Begin processing the 93rd record. Run 1, Event 9592, LumiSection 96 on stream 1 at 25-Sep-2025 14:55:22.213 CEST
-Begin processing the 94th record. Run 1, Event 9595, LumiSection 96 on stream 7 at 25-Sep-2025 14:55:22.949 CEST
-Begin processing the 95th record. Run 1, Event 9596, LumiSection 96 on stream 6 at 25-Sep-2025 14:55:23.463 CEST
-Begin processing the 96th record. Run 1, Event 9594, LumiSection 96 on stream 3 at 25-Sep-2025 14:55:23.939 CEST
-Begin processing the 97th record. Run 1, Event 9598, LumiSection 96 on stream 0 at 25-Sep-2025 14:55:24.358 CEST
-Begin processing the 98th record. Run 1, Event 9597, LumiSection 96 on stream 2 at 25-Sep-2025 14:55:25.083 CEST
-Begin processing the 99th record. Run 1, Event 9599, LumiSection 96 on stream 5 at 25-Sep-2025 14:55:25.554 CEST
-Begin processing the 100th record. Run 1, Event 9600, LumiSection 96 on stream 4 at 25-Sep-2025 14:55:26.428 CEST
-25-Sep-2025 14:55:30 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
-TimeReport> Time report complete in 155.959 seconds
+30-Sep-2025 14:29:39 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+30-Sep-2025 14:30:21 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:32.388 CEST
+Begin processing the 2nd record. Run 1, Event 9501, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:32.938 CEST
+Begin processing the 3rd record. Run 1, Event 9504, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:32.939 CEST
+Begin processing the 4th record. Run 1, Event 9503, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:32.941 CEST
+Begin processing the 5th record. Run 1, Event 9506, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:32.941 CEST
+Begin processing the 6th record. Run 1, Event 9505, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:32.942 CEST
+Begin processing the 7th record. Run 1, Event 9507, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:32.942 CEST
+Begin processing the 8th record. Run 1, Event 9508, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:32.942 CEST
+Begin processing the 9th record. Run 1, Event 9509, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:36.523 CEST
+Begin processing the 10th record. Run 1, Event 9511, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:36.905 CEST
+Begin processing the 11th record. Run 1, Event 9510, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:37.229 CEST
+Begin processing the 12th record. Run 1, Event 9513, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:37.630 CEST
+Begin processing the 13th record. Run 1, Event 9512, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:38.090 CEST
+Begin processing the 14th record. Run 1, Event 9514, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:38.524 CEST
+Begin processing the 15th record. Run 1, Event 9515, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:38.919 CEST
+Begin processing the 16th record. Run 1, Event 9517, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:39.374 CEST
+Begin processing the 17th record. Run 1, Event 9516, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:39.721 CEST
+Begin processing the 18th record. Run 1, Event 9518, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:40.258 CEST
+Begin processing the 19th record. Run 1, Event 9519, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:40.682 CEST
+Begin processing the 20th record. Run 1, Event 9520, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:41.386 CEST
+Begin processing the 21st record. Run 1, Event 9521, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:41.864 CEST
+Begin processing the 22nd record. Run 1, Event 9523, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:42.517 CEST
+Begin processing the 23rd record. Run 1, Event 9522, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:43.036 CEST
+Begin processing the 24th record. Run 1, Event 9524, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:43.586 CEST
+Begin processing the 25th record. Run 1, Event 9525, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:44.030 CEST
+Begin processing the 26th record. Run 1, Event 9526, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:44.525 CEST
+Begin processing the 27th record. Run 1, Event 9527, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:45.043 CEST
+Begin processing the 28th record. Run 1, Event 9528, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:45.515 CEST
+Begin processing the 29th record. Run 1, Event 9529, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:45.940 CEST
+Begin processing the 30th record. Run 1, Event 9530, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:46.509 CEST
+Begin processing the 31st record. Run 1, Event 9531, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:46.953 CEST
+Begin processing the 32nd record. Run 1, Event 9532, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:47.571 CEST
+Begin processing the 33rd record. Run 1, Event 9533, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:48.056 CEST
+Begin processing the 34th record. Run 1, Event 9534, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:48.545 CEST
+Begin processing the 35th record. Run 1, Event 9535, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:49.118 CEST
+Begin processing the 36th record. Run 1, Event 9536, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:49.600 CEST
+Begin processing the 37th record. Run 1, Event 9538, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:50.114 CEST
+Begin processing the 38th record. Run 1, Event 9537, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:50.633 CEST
+Begin processing the 39th record. Run 1, Event 9540, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:51.145 CEST
+Begin processing the 40th record. Run 1, Event 9539, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:51.855 CEST
+Begin processing the 41st record. Run 1, Event 9541, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:52.440 CEST
+Begin processing the 42nd record. Run 1, Event 9542, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:52.856 CEST
+Begin processing the 43rd record. Run 1, Event 9543, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:53.288 CEST
+Begin processing the 44th record. Run 1, Event 9545, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:53.729 CEST
+Begin processing the 45th record. Run 1, Event 9544, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:54.160 CEST
+Begin processing the 46th record. Run 1, Event 9546, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:54.813 CEST
+Begin processing the 47th record. Run 1, Event 9547, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:55.394 CEST
+Begin processing the 48th record. Run 1, Event 9549, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:55.859 CEST
+Begin processing the 49th record. Run 1, Event 9548, LumiSection 96 on stream 0 at 30-Sep-2025 14:30:56.326 CEST
+Begin processing the 50th record. Run 1, Event 9550, LumiSection 96 on stream 3 at 30-Sep-2025 14:30:56.797 CEST
+Begin processing the 51st record. Run 1, Event 9551, LumiSection 96 on stream 6 at 30-Sep-2025 14:30:57.377 CEST
+Begin processing the 52nd record. Run 1, Event 9553, LumiSection 96 on stream 1 at 30-Sep-2025 14:30:57.813 CEST
+Begin processing the 53rd record. Run 1, Event 9552, LumiSection 96 on stream 7 at 30-Sep-2025 14:30:58.294 CEST
+Begin processing the 54th record. Run 1, Event 9554, LumiSection 96 on stream 4 at 30-Sep-2025 14:30:58.838 CEST
+Begin processing the 55th record. Run 1, Event 9556, LumiSection 96 on stream 2 at 30-Sep-2025 14:30:59.393 CEST
+Begin processing the 56th record. Run 1, Event 9555, LumiSection 96 on stream 5 at 30-Sep-2025 14:30:59.830 CEST
+Begin processing the 57th record. Run 1, Event 9557, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:00.305 CEST
+Begin processing the 58th record. Run 1, Event 9559, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:00.999 CEST
+Begin processing the 59th record. Run 1, Event 9558, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:01.455 CEST
+Begin processing the 60th record. Run 1, Event 9560, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:01.968 CEST
+Begin processing the 61st record. Run 1, Event 9562, LumiSection 96 on stream 7 at 30-Sep-2025 14:31:02.535 CEST
+Begin processing the 62nd record. Run 1, Event 9561, LumiSection 96 on stream 4 at 30-Sep-2025 14:31:03.063 CEST
+Begin processing the 63rd record. Run 1, Event 9563, LumiSection 96 on stream 2 at 30-Sep-2025 14:31:03.490 CEST
+Begin processing the 64th record. Run 1, Event 9564, LumiSection 96 on stream 5 at 30-Sep-2025 14:31:03.981 CEST
+Begin processing the 65th record. Run 1, Event 9565, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:04.450 CEST
+Begin processing the 66th record. Run 1, Event 9566, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:04.973 CEST
+Begin processing the 67th record. Run 1, Event 9567, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:05.429 CEST
+Begin processing the 68th record. Run 1, Event 9569, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:06.122 CEST
+Begin processing the 69th record. Run 1, Event 9568, LumiSection 96 on stream 7 at 30-Sep-2025 14:31:06.621 CEST
+Begin processing the 70th record. Run 1, Event 9570, LumiSection 96 on stream 4 at 30-Sep-2025 14:31:07.136 CEST
+Begin processing the 71st record. Run 1, Event 9571, LumiSection 96 on stream 2 at 30-Sep-2025 14:31:07.575 CEST
+Begin processing the 72nd record. Run 1, Event 9572, LumiSection 96 on stream 5 at 30-Sep-2025 14:31:08.030 CEST
+Begin processing the 73rd record. Run 1, Event 9573, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:08.439 CEST
+Begin processing the 74th record. Run 1, Event 9575, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:08.907 CEST
+Begin processing the 75th record. Run 1, Event 9574, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:09.594 CEST
+Begin processing the 76th record. Run 1, Event 9577, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:10.293 CEST
+Begin processing the 77th record. Run 1, Event 9578, LumiSection 96 on stream 7 at 30-Sep-2025 14:31:10.864 CEST
+Begin processing the 78th record. Run 1, Event 9576, LumiSection 96 on stream 4 at 30-Sep-2025 14:31:11.231 CEST
+Begin processing the 79th record. Run 1, Event 9579, LumiSection 96 on stream 2 at 30-Sep-2025 14:31:11.587 CEST
+Begin processing the 80th record. Run 1, Event 9580, LumiSection 96 on stream 5 at 30-Sep-2025 14:31:12.103 CEST
+Begin processing the 81st record. Run 1, Event 9581, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:12.613 CEST
+Begin processing the 82nd record. Run 1, Event 9583, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:13.171 CEST
+Begin processing the 83rd record. Run 1, Event 9582, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:13.638 CEST
+Begin processing the 84th record. Run 1, Event 9584, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:14.198 CEST
+Begin processing the 85th record. Run 1, Event 9585, LumiSection 96 on stream 7 at 30-Sep-2025 14:31:14.738 CEST
+Begin processing the 86th record. Run 1, Event 9586, LumiSection 96 on stream 4 at 30-Sep-2025 14:31:15.535 CEST
+Begin processing the 87th record. Run 1, Event 9588, LumiSection 96 on stream 5 at 30-Sep-2025 14:31:15.982 CEST
+Begin processing the 88th record. Run 1, Event 9587, LumiSection 96 on stream 2 at 30-Sep-2025 14:31:16.454 CEST
+Begin processing the 89th record. Run 1, Event 9589, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:17.051 CEST
+Begin processing the 90th record. Run 1, Event 9590, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:17.583 CEST
+Begin processing the 91st record. Run 1, Event 9591, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:18.114 CEST
+Begin processing the 92nd record. Run 1, Event 9593, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:18.812 CEST
+Begin processing the 93rd record. Run 1, Event 9592, LumiSection 96 on stream 7 at 30-Sep-2025 14:31:19.250 CEST
+Begin processing the 94th record. Run 1, Event 9595, LumiSection 96 on stream 4 at 30-Sep-2025 14:31:19.820 CEST
+Begin processing the 95th record. Run 1, Event 9596, LumiSection 96 on stream 5 at 30-Sep-2025 14:31:20.246 CEST
+Begin processing the 96th record. Run 1, Event 9594, LumiSection 96 on stream 2 at 30-Sep-2025 14:31:20.765 CEST
+Begin processing the 97th record. Run 1, Event 9598, LumiSection 96 on stream 0 at 30-Sep-2025 14:31:21.346 CEST
+Begin processing the 98th record. Run 1, Event 9597, LumiSection 96 on stream 3 at 30-Sep-2025 14:31:21.857 CEST
+Begin processing the 99th record. Run 1, Event 9599, LumiSection 96 on stream 1 at 30-Sep-2025 14:31:22.168 CEST
+Begin processing the 100th record. Run 1, Event 9600, LumiSection 96 on stream 6 at 30-Sep-2025 14:31:22.679 CEST
+30-Sep-2025 14:31:25 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+TimeReport> Time report complete in 569.517 seconds
  Time Summary: 
- - Min event:   4.1018
- - Max event:   8.84918
- - Avg event:   4.95671
- - Total loop:  85.5653
- - Total init:  70.3933
- - Total job:   155.959
- - Total EventSetup: 4.42578
- - Total non-module: 211.664
- Event Throughput: 1.1687 ev/s
+ - Min event:   2.93728
+ - Max event:   6.43067
+ - Avg event:   4.14261
+ - Total loop:  502.055
+ - Total init:  67.4624
+ - Total job:   569.517
+ - Total EventSetup: 4.73627
+ - Total non-module: 145.364
+ Event Throughput: 0.199181 ev/s
  CPU Summary: 
- - Total loop:     253.917
- - Total init:     39.8946
+ - Total loop:     217.94
+ - Total init:     40.2803
  - Total extra:    0
- - Total children: 0.266159
- - Total job:      293.812
+ - Total children: 0.269395
+ - Total job:      258.221
  Processing Summary: 
  - Number of Events:  100
  - Number of Global Begin Lumi Calls:  1
  - Number of Global Begin Run Calls: 1
 
-25-Sep-2025 14:55:50 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
-25-Sep-2025 14:56:27 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
-Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 25-Sep-2025 14:56:33.691 CEST
-25-Sep-2025 14:56:34 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+30-Sep-2025 14:38:49 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+30-Sep-2025 14:39:26 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 30-Sep-2025 14:39:33.783 CEST
+30-Sep-2025 14:39:34 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
 
 TrigReport ---------- Event  Summary ------------
 TrigReport Events total = 1 passed = 1 failed = 0
@@ -173,10 +173,10 @@ TrigReport          1          1          1          0          0 Phase2TrackerD
 
 
 TimeReport ---------- Event  Summary ---[sec]----
-TimeReport       event loop CPU/event = 5.073990
-TimeReport      event loop Real/event = 5.597822
-TimeReport     sum Streams Real/event = 0.697491
-TimeReport efficiency CPU/Real/thread = 0.906422
+TimeReport       event loop CPU/event = 5.170897
+TimeReport      event loop Real/event = 7.286579
+TimeReport     sum Streams Real/event = 0.991536
+TimeReport efficiency CPU/Real/thread = 0.709647
 
 TimeReport ---------- Path   Summary ---[Real sec]----
 TimeReport  per event     per exec  Name
@@ -185,29 +185,29 @@ TimeReport  per event     per exec  Name
 
 TimeReport -------End-Path   Summary ---[Real sec]----
 TimeReport  per event     per exec  Name
-TimeReport   0.529919     0.529919  p
+TimeReport   0.533982     0.533982  p
 
 TimeReport  per event     per exec  Name
 
 TimeReport ------ Modules in End-Path: p ---[Real sec]----
 TimeReport  per event    per visit  Name
-TimeReport   0.515642     0.515642  Phase2TrackerDumpClusters
+TimeReport   0.519642     0.519642  Phase2TrackerDumpClusters
 
 TimeReport  per event    per visit  Name
 
 TimeReport ---------- Module Summary ---[Real sec]----
 TimeReport  per event     per exec    per visit  Name
-TimeReport   0.515642     0.515642     0.515642  Phase2TrackerDumpClusters
+TimeReport   0.519642     0.519642     0.519642  Phase2TrackerDumpClusters
 
 TimeReport  per event     per exec    per visit  Name
 
 T---Report end!
 
 
-25-Sep-2025 14:56:38 CEST  Initiating request to open file file:raw2clusters.root
-25-Sep-2025 14:56:38 CEST  Successfully opened file file:raw2clusters.root
-Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 25-Sep-2025 14:56:43.281 CEST
-25-Sep-2025 14:56:43 CEST  Closed file file:raw2clusters.root
+30-Sep-2025 14:39:43 CEST  Initiating request to open file file:raw2clusters.root
+30-Sep-2025 14:39:44 CEST  Successfully opened file file:raw2clusters.root
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 30-Sep-2025 14:39:49.744 CEST
+30-Sep-2025 14:39:50 CEST  Closed file file:raw2clusters.root
 
 TrigReport ---------- Event  Summary ------------
 TrigReport Events total = 1 passed = 1 failed = 0
@@ -232,10 +232,10 @@ TrigReport          1          1          1          0          0 Phase2TrackerD
 
 
 TimeReport ---------- Event  Summary ---[sec]----
-TimeReport       event loop CPU/event = 5.118648
-TimeReport      event loop Real/event = 5.556501
-TimeReport     sum Streams Real/event = 0.656000
-TimeReport efficiency CPU/Real/thread = 0.921200
+TimeReport       event loop CPU/event = 5.103776
+TimeReport      event loop Real/event = 6.103366
+TimeReport     sum Streams Real/event = 0.542929
+TimeReport efficiency CPU/Real/thread = 0.836223
 
 TimeReport ---------- Path   Summary ---[Real sec]----
 TimeReport  per event     per exec  Name
@@ -244,19 +244,19 @@ TimeReport  per event     per exec  Name
 
 TimeReport -------End-Path   Summary ---[Real sec]----
 TimeReport  per event     per exec  Name
-TimeReport   0.655432     0.655432  p
+TimeReport   0.542374     0.542374  p
 
 TimeReport  per event     per exec  Name
 
 TimeReport ------ Modules in End-Path: p ---[Real sec]----
 TimeReport  per event    per visit  Name
-TimeReport   0.527100     0.527100  Phase2TrackerDumpClusters
+TimeReport   0.527583     0.527583  Phase2TrackerDumpClusters
 
 TimeReport  per event    per visit  Name
 
 TimeReport ---------- Module Summary ---[Real sec]----
 TimeReport  per event     per exec    per visit  Name
-TimeReport   0.527100     0.527100     0.527100  Phase2TrackerDumpClusters
+TimeReport   0.527583     0.527583     0.527583  Phase2TrackerDumpClusters
 
 TimeReport  per event     per exec    per visit  Name
 
@@ -264,50 +264,50 @@ T---Report end!
 
 
 Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterCenter.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterSize.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterGlobalX.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterCol.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_isPSModulePixel.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_isPSModulePixel.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterSize_isPSModulePixel.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_isPSModuleStrip.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_isPSModuleStrip.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterSize_isPSModuleStrip.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_is2SModule.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_is2SModule.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterSize_is2SModule.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411853973.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411853973.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_412370038.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_412370038.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411845757.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411845757.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411845758.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411845758.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_412370045.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_412370045.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_412370046.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_412370046.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411845761.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411845761.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411845762.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411845762.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_412374154.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_412374154.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411849874.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411849874.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411853978.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411853978.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_412378270.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_412378270.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411858086.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411858086.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411858085.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411858085.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411341977.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411341977.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterR_411341986.pdf has been created
-Info in <TCanvas::Print>: pdf file validation_plots/2025-09-25_14-56-47_dtc208/clusterZ_411341986.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterCenter.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterSize.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterGlobalX.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterCol.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_isPSModulePixel.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_isPSModulePixel.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterSize_isPSModulePixel.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_isPSModuleStrip.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_isPSModuleStrip.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterSize_isPSModuleStrip.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_is2SModule.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_is2SModule.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterSize_is2SModule.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411853973.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411853973.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_412370038.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_412370038.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411845757.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411845757.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411845758.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411845758.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_412370045.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_412370045.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_412370046.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_412370046.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411845761.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411845761.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411845762.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411845762.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_412374154.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_412374154.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411849874.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411849874.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411853978.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411853978.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_412378270.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_412378270.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411858086.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411858086.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411858085.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411858085.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411341977.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411341977.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterR_411341986.pdf has been created
+Info in <TCanvas::Print>: pdf file validation_plots/2025-09-30_14-40-00_dtc208/clusterZ_411341986.pdf has been created

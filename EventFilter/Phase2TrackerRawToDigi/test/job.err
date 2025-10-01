@@ -1,0 +1,31 @@
+%MSG-i ThreadStreamSetup:  (NoModuleName) 30-Sep-2025 16:43:58 CEST pre-events
+setting # threads 8
+setting # streams 8
+%MSG
+%MSG-i Root_Information:  (NoModuleName) RTaskArenaWrapper()  30-Sep-2025 16:44:02 CEST pre-events
+CPU Bandwith Control Active. Proceeding with 2 threads accordingly
+%MSG
+%MSG-i CUDAService:  (NoModuleName) 30-Sep-2025 16:44:03 CEST pre-events
+CUDA runtime version 12.8, driver version 12.9, NVIDIA driver version 575.51.03
+CUDA device 0: Tesla V100-PCIE-32GB (sm_70)
+%MSG
+%MSG-i AlpakaService:  (NoModuleName) 30-Sep-2025 16:44:03 CEST pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
+%MSG
+%MSG-i AlpakaService:  (NoModuleName) 30-Sep-2025 16:44:03 CEST pre-events
+AlpakaServiceCudaAsync succesfully initialised.
+Found 1 device:
+  - Tesla V100-PCIE-32GB
+%MSG
+30-Sep-2025 16:44:05 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+30-Sep-2025 16:44:50 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 0 at 30-Sep-2025 16:44:59.278 CEST
+Begin processing the 2nd record. Run 1, Event 9501, LumiSection 96 on stream 6 at 30-Sep-2025 16:44:59.852 CEST
+Begin processing the 3rd record. Run 1, Event 9504, LumiSection 96 on stream 1 at 30-Sep-2025 16:44:59.855 CEST
+Begin processing the 4th record. Run 1, Event 9503, LumiSection 96 on stream 2 at 30-Sep-2025 16:44:59.858 CEST
+Begin processing the 5th record. Run 1, Event 9506, LumiSection 96 on stream 5 at 30-Sep-2025 16:44:59.858 CEST
+Begin processing the 6th record. Run 1, Event 9505, LumiSection 96 on stream 7 at 30-Sep-2025 16:44:59.859 CEST
+Begin processing the 7th record. Run 1, Event 9507, LumiSection 96 on stream 3 at 30-Sep-2025 16:44:59.859 CEST
+Begin processing the 8th record. Run 1, Event 9508, LumiSection 96 on stream 4 at 30-Sep-2025 16:44:59.859 CEST

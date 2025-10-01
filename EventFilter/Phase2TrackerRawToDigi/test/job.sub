@@ -1,0 +1,24 @@
+universe               = vanilla
+executable             = performance.sh
+output                 = job.out
+error                  = job.err
+log                    = job.log
+
++RequestGPUs           = 1
+request_cpus           = 1
+request_memory         = 4GB
+
+
+# Turn on Condor transfer mechanism
+should_transfer_files        = YES
+when_to_transfer_output      = ON_EXIT_OR_EVICT
+
+# List the extra artifacts you want back
+transfer_output_files        = profile_baseline1.ncu-rep
+#nsys.log, \
+ #                              report1.nsys-rep, \
+  #                             report1.sqlite
+
+
+queue
+

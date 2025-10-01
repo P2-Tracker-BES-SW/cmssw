@@ -1,0 +1,14 @@
+===== START =====
+Host:    b9g47n5843.cern.ch
+Date:    Tue Sep 30 04:43:50 PM CEST 2025
+Job dir: /pool/condor/dir_1079904
+
+===== CMS ENVIRONMENT SETUP =====
+===== RUNNING Nsight compute  PROFILE =====
+==PROF== Connected to process 293 (/cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_15_0_4/bin/el9_amd64_gcc12/cmsRun)
+
+==ERROR== An error was reported by the driver:
+==ERROR== Profiling failed because a driver resource was unavailable. Ensure that no other tool (like DCGM) is concurrently collecting profiling data. See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq for more details.
+==ERROR== Failed to profile "gpuKernel" in process 293
+==PROF== Trying to shutdown target application
+==ERROR== The application returned an error code (9).

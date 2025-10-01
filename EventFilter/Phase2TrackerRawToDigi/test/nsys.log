@@ -1,0 +1,606 @@
+%MSG-i ThreadStreamSetup:  (NoModuleName) 29-Sep-2025 16:44:30 CEST pre-events
+setting # threads 8
+setting # streams 8
+%MSG
+%MSG-i Root_Information:  (NoModuleName) RTaskArenaWrapper()  29-Sep-2025 16:44:44 CEST pre-events
+CPU Bandwith Control Active. Proceeding with 2 threads accordingly
+%MSG
+%MSG-i CUDAService:  (NoModuleName) 29-Sep-2025 16:44:44 CEST pre-events
+CUDA runtime version 12.8, driver version 12.9, NVIDIA driver version 575.51.03
+CUDA device 0: Tesla V100-PCIE-32GB (sm_70)
+%MSG
+%MSG-i AlpakaService:  (NoModuleName) 29-Sep-2025 16:44:44 CEST pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz
+%MSG
+%MSG-i AlpakaService:  (NoModuleName) 29-Sep-2025 16:44:44 CEST pre-events
+AlpakaServiceCudaAsync succesfully initialised.
+Found 1 device:
+  - Tesla V100-PCIE-32GB
+%MSG
+29-Sep-2025 16:44:50 CEST  Initiating request to open file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+29-Sep-2025 16:45:39 CEST  Successfully opened file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+Begin processing the 1st record. Run 1, Event 9502, LumiSection 96 on stream 1 at 29-Sep-2025 16:45:46.955 CEST
+Begin processing the 2nd record. Run 1, Event 9501, LumiSection 96 on stream 6 at 29-Sep-2025 16:45:47.692 CEST
+Begin processing the 3rd record. Run 1, Event 9504, LumiSection 96 on stream 4 at 29-Sep-2025 16:45:47.694 CEST
+Begin processing the 4th record. Run 1, Event 9503, LumiSection 96 on stream 0 at 29-Sep-2025 16:45:47.696 CEST
+Begin processing the 5th record. Run 1, Event 9506, LumiSection 96 on stream 3 at 29-Sep-2025 16:45:47.696 CEST
+Begin processing the 6th record. Run 1, Event 9505, LumiSection 96 on stream 7 at 29-Sep-2025 16:45:47.697 CEST
+Begin processing the 7th record. Run 1, Event 9507, LumiSection 96 on stream 2 at 29-Sep-2025 16:45:47.697 CEST
+Begin processing the 8th record. Run 1, Event 9508, LumiSection 96 on stream 5 at 29-Sep-2025 16:45:47.721 CEST
+Begin processing the 9th record. Run 1, Event 9509, LumiSection 96 on stream 1 at 29-Sep-2025 16:45:52.421 CEST
+Begin processing the 10th record. Run 1, Event 9511, LumiSection 96 on stream 6 at 29-Sep-2025 16:45:53.138 CEST
+Begin processing the 11th record. Run 1, Event 9510, LumiSection 96 on stream 3 at 29-Sep-2025 16:45:53.785 CEST
+Begin processing the 12th record. Run 1, Event 9513, LumiSection 96 on stream 4 at 29-Sep-2025 16:45:54.803 CEST
+Begin processing the 13th record. Run 1, Event 9512, LumiSection 96 on stream 0 at 29-Sep-2025 16:45:55.179 CEST
+Begin processing the 14th record. Run 1, Event 9514, LumiSection 96 on stream 7 at 29-Sep-2025 16:45:55.865 CEST
+Begin processing the 15th record. Run 1, Event 9515, LumiSection 96 on stream 2 at 29-Sep-2025 16:45:56.331 CEST
+Begin processing the 16th record. Run 1, Event 9517, LumiSection 96 on stream 5 at 29-Sep-2025 16:45:57.236 CEST
+Begin processing the 17th record. Run 1, Event 9516, LumiSection 96 on stream 1 at 29-Sep-2025 16:45:57.859 CEST
+Begin processing the 18th record. Run 1, Event 9518, LumiSection 96 on stream 6 at 29-Sep-2025 16:45:58.694 CEST
+Begin processing the 19th record. Run 1, Event 9519, LumiSection 96 on stream 3 at 29-Sep-2025 16:45:59.166 CEST
+Begin processing the 20th record. Run 1, Event 9520, LumiSection 96 on stream 4 at 29-Sep-2025 16:45:59.961 CEST
+Begin processing the 21st record. Run 1, Event 9521, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:00.593 CEST
+Begin processing the 22nd record. Run 1, Event 9523, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:01.604 CEST
+Begin processing the 23rd record. Run 1, Event 9522, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:02.214 CEST
+Begin processing the 24th record. Run 1, Event 9524, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:02.954 CEST
+Begin processing the 25th record. Run 1, Event 9525, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:03.366 CEST
+Begin processing the 26th record. Run 1, Event 9526, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:04.282 CEST
+Begin processing the 27th record. Run 1, Event 9527, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:04.947 CEST
+Begin processing the 28th record. Run 1, Event 9528, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:05.817 CEST
+Begin processing the 29th record. Run 1, Event 9529, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:06.261 CEST
+Begin processing the 30th record. Run 1, Event 9530, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:07.087 CEST
+Begin processing the 31st record. Run 1, Event 9531, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:07.548 CEST
+Begin processing the 32nd record. Run 1, Event 9532, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:08.409 CEST
+Begin processing the 33rd record. Run 1, Event 9533, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:09.035 CEST
+Begin processing the 34th record. Run 1, Event 9534, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:09.908 CEST
+Begin processing the 35th record. Run 1, Event 9535, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:10.579 CEST
+Begin processing the 36th record. Run 1, Event 9536, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:11.643 CEST
+Begin processing the 37th record. Run 1, Event 9538, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:12.191 CEST
+Begin processing the 38th record. Run 1, Event 9537, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:13.277 CEST
+Begin processing the 39th record. Run 1, Event 9540, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:13.769 CEST
+Begin processing the 40th record. Run 1, Event 9539, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:14.484 CEST
+Begin processing the 41st record. Run 1, Event 9541, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:15.114 CEST
+Begin processing the 42nd record. Run 1, Event 9542, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:15.960 CEST
+Begin processing the 43rd record. Run 1, Event 9543, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:16.456 CEST
+Begin processing the 44th record. Run 1, Event 9545, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:17.310 CEST
+Begin processing the 45th record. Run 1, Event 9544, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:17.811 CEST
+Begin processing the 46th record. Run 1, Event 9546, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:18.553 CEST
+Begin processing the 47th record. Run 1, Event 9547, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:19.073 CEST
+Begin processing the 48th record. Run 1, Event 9549, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:19.944 CEST
+Begin processing the 49th record. Run 1, Event 9548, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:20.546 CEST
+Begin processing the 50th record. Run 1, Event 9550, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:21.250 CEST
+Begin processing the 51st record. Run 1, Event 9551, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:21.796 CEST
+Begin processing the 52nd record. Run 1, Event 9553, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:22.574 CEST
+Begin processing the 53rd record. Run 1, Event 9552, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:23.116 CEST
+Begin processing the 54th record. Run 1, Event 9554, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:23.796 CEST
+Begin processing the 55th record. Run 1, Event 9556, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:24.330 CEST
+Begin processing the 56th record. Run 1, Event 9555, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:25.430 CEST
+Begin processing the 57th record. Run 1, Event 9557, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:25.985 CEST
+Begin processing the 58th record. Run 1, Event 9559, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:26.851 CEST
+Begin processing the 59th record. Run 1, Event 9558, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:27.357 CEST
+Begin processing the 60th record. Run 1, Event 9560, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:28.181 CEST
+Begin processing the 61st record. Run 1, Event 9562, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:28.778 CEST
+Begin processing the 62nd record. Run 1, Event 9561, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:29.492 CEST
+Begin processing the 63rd record. Run 1, Event 9563, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:30.111 CEST
+Begin processing the 64th record. Run 1, Event 9564, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:30.960 CEST
+Begin processing the 65th record. Run 1, Event 9565, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:31.542 CEST
+Begin processing the 66th record. Run 1, Event 9566, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:32.474 CEST
+Begin processing the 67th record. Run 1, Event 9567, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:33.007 CEST
+Begin processing the 68th record. Run 1, Event 9569, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:33.819 CEST
+Begin processing the 69th record. Run 1, Event 9568, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:34.498 CEST
+Begin processing the 70th record. Run 1, Event 9570, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:35.367 CEST
+Begin processing the 71st record. Run 1, Event 9571, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:35.963 CEST
+Begin processing the 72nd record. Run 1, Event 9572, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:36.760 CEST
+Begin processing the 73rd record. Run 1, Event 9573, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:37.173 CEST
+Begin processing the 74th record. Run 1, Event 9575, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:37.983 CEST
+Begin processing the 75th record. Run 1, Event 9574, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:38.492 CEST
+Begin processing the 76th record. Run 1, Event 9577, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:39.382 CEST
+Begin processing the 77th record. Run 1, Event 9578, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:39.945 CEST
+Begin processing the 78th record. Run 1, Event 9576, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:41.035 CEST
+Begin processing the 79th record. Run 1, Event 9579, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:41.874 CEST
+Begin processing the 80th record. Run 1, Event 9580, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:42.696 CEST
+Begin processing the 81st record. Run 1, Event 9581, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:43.196 CEST
+Begin processing the 82nd record. Run 1, Event 9583, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:44.021 CEST
+Begin processing the 83rd record. Run 1, Event 9582, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:44.532 CEST
+Begin processing the 84th record. Run 1, Event 9584, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:45.210 CEST
+Begin processing the 85th record. Run 1, Event 9585, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:45.657 CEST
+Begin processing the 86th record. Run 1, Event 9586, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:46.490 CEST
+Begin processing the 87th record. Run 1, Event 9588, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:47.171 CEST
+Begin processing the 88th record. Run 1, Event 9587, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:47.998 CEST
+Begin processing the 89th record. Run 1, Event 9589, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:48.613 CEST
+Begin processing the 90th record. Run 1, Event 9590, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:49.411 CEST
+Begin processing the 91st record. Run 1, Event 9591, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:50.046 CEST
+Begin processing the 92nd record. Run 1, Event 9593, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:50.938 CEST
+Begin processing the 93rd record. Run 1, Event 9592, LumiSection 96 on stream 4 at 29-Sep-2025 16:46:51.600 CEST
+Begin processing the 94th record. Run 1, Event 9595, LumiSection 96 on stream 7 at 29-Sep-2025 16:46:52.393 CEST
+Begin processing the 95th record. Run 1, Event 9596, LumiSection 96 on stream 2 at 29-Sep-2025 16:46:52.855 CEST
+Begin processing the 96th record. Run 1, Event 9594, LumiSection 96 on stream 5 at 29-Sep-2025 16:46:53.568 CEST
+Begin processing the 97th record. Run 1, Event 9598, LumiSection 96 on stream 1 at 29-Sep-2025 16:46:53.978 CEST
+Begin processing the 98th record. Run 1, Event 9597, LumiSection 96 on stream 3 at 29-Sep-2025 16:46:54.777 CEST
+Begin processing the 99th record. Run 1, Event 9599, LumiSection 96 on stream 6 at 29-Sep-2025 16:46:55.449 CEST
+Begin processing the 100th record. Run 1, Event 9600, LumiSection 96 on stream 0 at 29-Sep-2025 16:46:56.420 CEST
+29-Sep-2025 16:47:01 CEST  Closed file root://eoscms.cern.ch//eos/cms/store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcRun4_realistic_v1_STD_2026D98_PU200_RV229-v1/2580000/0b2b0b0b-f312-48a8-9d46-ccbadc69bbfd.root
+TimeReport> Time report complete in 166.018 seconds
+ Time Summary: 
+ - Min event:   4.59549
+ - Max event:   9.51183
+ - Avg event:   5.70701
+ - Total loop:  80.4391
+ - Total init:  85.5788
+ - Total job:   166.018
+ - Total EventSetup: 5.13889
+ - Total non-module: 275.907
+ Event Throughput: 1.24318 ev/s
+ CPU Summary: 
+ - Total loop:     278.172
+ - Total init:     50.1468
+ - Total extra:    0
+ - Total children: 0.86131
+ - Total job:      328.319
+ Processing Summary: 
+ - Number of Events:  100
+ - Number of Global Begin Lumi Calls:  1
+ - Number of Global Begin Run Calls: 1
+
+CondDBESSource Statistics
+DataProxy 1 setInterval 1 Runs 1 Lumis 0 Refresh 0 Actual Refresh 0 Reconnect 0 Actual Reconnect 0
+TrackerDetToDTCELinkCablingMapRcd / : frontier://FrontierProd/CMS_CONDITIONS, TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly
+  
+  Time look up, payloadIds:
+   1 - 18446744073709551615 : 677806b1c9884282be114262d53be6bc81074ff2
+
+
+Collecting data...
+Generating '/pool/condor/dir_858266/tmp/nsys-report-851b.qdstrm'
+[1/8] [0%                          ] report1.nsys-rep[1/8] [0%                          ] report1.nsys-rep[1/8] [0%                          ] report1.nsys-rep[1/8] [13%                         ] report1.nsys-rep[1/8] [====25%                     ] report1.nsys-rep[1/8] [=======37%                  ] report1.nsys-rep[1/8] [=======39%                  ] report1.nsys-rep[1/8] [========40%                 ] report1.nsys-rep[1/8] [========41%                 ] report1.nsys-rep[1/8] [========42%                 ] report1.nsys-rep[1/8] [=========43%                ] report1.nsys-rep[1/8] [=========44%                ] report1.nsys-rep[1/8] [=========45%                ] report1.nsys-rep[1/8] [=========46%                ] report1.nsys-rep[1/8] [==========47%               ] report1.nsys-rep[1/8] [==========48%               ] report1.nsys-rep[1/8] [==========49%               ] report1.nsys-rep[1/8] [===========50%              ] report1.nsys-rep[1/8] [===========51%              ] report1.nsys-rep[1/8] [===========52%              ] report1.nsys-rep[1/8] [===========53%              ] report1.nsys-rep[1/8] [============54%             ] report1.nsys-rep[1/8] [============55%             ] report1.nsys-rep[1/8] [============56%             ] report1.nsys-rep[1/8] [============57%             ] report1.nsys-rep[1/8] [=============59%            ] report1.nsys-rep[1/8] [=============60%            ] report1.nsys-rep[1/8] [==============61%           ] report1.nsys-rep[1/8] [==============62%           ] report1.nsys-rep[1/8] [==============63%           ] report1.nsys-rep[1/8] [==============64%           ] report1.nsys-rep[1/8] [===============65%          ] report1.nsys-rep[1/8] [===============66%          ] report1.nsys-rep[1/8] [===============67%          ] report1.nsys-rep[1/8] [================68%         ] report1.nsys-rep[1/8] [================69%         ] report1.nsys-rep[1/8] [================70%         ] report1.nsys-rep[1/8] [================71%         ] report1.nsys-rep[1/8] [=================72%        ] report1.nsys-rep[1/8] [=================73%        ] report1.nsys-rep[1/8] [==================75%       ] report1.nsys-rep[1/8] [==================76%       ] report1.nsys-rep[1/8] [==================77%       ] report1.nsys-rep[1/8] [==================78%       ] report1.nsys-rep[1/8] [===================79%      ] report1.nsys-rep[1/8] [===================80%      ] report1.nsys-rep[1/8] [===================81%      ] report1.nsys-rep[1/8] [===================82%      ] report1.nsys-rep[1/8] [====================83%     ] report1.nsys-rep[1/8] [====================84%     ] report1.nsys-rep[1/8] [====================85%     ] report1.nsys-rep[1/8] [=====================86%    ] report1.nsys-rep[1/8] [=====================87%    ] report1.nsys-rep[1/8] [=====================88%    ] report1.nsys-rep[1/8] [=====================89%    ] report1.nsys-rep[1/8] [======================90%   ] report1.nsys-rep[1/8] [========================100%] report1.nsys-rep[1/8] [========================100%] report1.nsys-rep
+[2/8] [0%                          ] report1.sqlite[2/8] [1%                          ] report1.sqlite[2/8] [2%                          ] report1.sqlite[2/8] [3%                          ] report1.sqlite[2/8] [4%                          ] report1.sqlite[2/8] [5%                          ] report1.sqlite[2/8] [6%                          ] report1.sqlite[2/8] [7%                          ] report1.sqlite[2/8] [8%                          ] report1.sqlite[2/8] [9%                          ] report1.sqlite[2/8] [10%                         ] report1.sqlite[2/8] [11%                         ] report1.sqlite[2/8] [12%                         ] report1.sqlite[2/8] [13%                         ] report1.sqlite[2/8] [14%                         ] report1.sqlite[2/8] [=15%                        ] report1.sqlite[2/8] [=16%                        ] report1.sqlite[2/8] [=17%                        ] report1.sqlite[2/8] [==18%                       ] report1.sqlite[2/8] [==19%                       ] report1.sqlite[2/8] [==20%                       ] report1.sqlite[2/8] [==21%                       ] report1.sqlite[2/8] [===22%                      ] report1.sqlite[2/8] [===23%                      ] report1.sqlite[2/8] [===24%                      ] report1.sqlite[2/8] [====25%                     ] report1.sqlite[2/8] [====26%                     ] report1.sqlite[2/8] [====27%                     ] report1.sqlite[2/8] [====28%                     ] report1.sqlite[2/8] [=====29%                    ] report1.sqlite[2/8] [=====30%                    ] report1.sqlite[2/8] [=====31%                    ] report1.sqlite[2/8] [=====32%                    ] report1.sqlite[2/8] [======33%                   ] report1.sqlite[2/8] [======34%                   ] report1.sqlite[2/8] [======35%                   ] report1.sqlite[2/8] [=======36%                  ] report1.sqlite[2/8] [=======37%                  ] report1.sqlite[2/8] [=======38%                  ] report1.sqlite[2/8] [=======39%                  ] report1.sqlite[2/8] [========40%                 ] report1.sqlite[2/8] [========41%                 ] report1.sqlite[2/8] [========42%                 ] report1.sqlite[2/8] [=========43%                ] report1.sqlite[2/8] [=========44%                ] report1.sqlite[2/8] [=========45%                ] report1.sqlite[2/8] [=========46%                ] report1.sqlite[2/8] [==========47%               ] report1.sqlite[2/8] [==========48%               ] report1.sqlite[2/8] [==========49%               ] report1.sqlite[2/8] [===========50%              ] report1.sqlite[2/8] [===========51%              ] report1.sqlite[2/8] [===========52%              ] report1.sqlite[2/8] [===========53%              ] report1.sqlite[2/8] [============54%             ] report1.sqlite[2/8] [============55%             ] report1.sqlite[2/8] [============56%             ] report1.sqlite[2/8] [============57%             ] report1.sqlite[2/8] [=============58%            ] report1.sqlite[2/8] [=============59%            ] report1.sqlite[2/8] [=============60%            ] report1.sqlite[2/8] [==============61%           ] report1.sqlite[2/8] [==============62%           ] report1.sqlite[2/8] [==============63%           ] report1.sqlite[2/8] [==============64%           ] report1.sqlite[2/8] [===============65%          ] report1.sqlite[2/8] [===============66%          ] report1.sqlite[2/8] [===============67%          ] report1.sqlite[2/8] [================68%         ] report1.sqlite[2/8] [================69%         ] report1.sqlite[2/8] [================70%         ] report1.sqlite[2/8] [================71%         ] report1.sqlite[2/8] [=================72%        ] report1.sqlite[2/8] [=================73%        ] report1.sqlite[2/8] [=================74%        ] report1.sqlite[2/8] [==================75%       ] report1.sqlite[2/8] [==================76%       ] report1.sqlite[2/8] [==================77%       ] report1.sqlite[2/8] [==================78%       ] report1.sqlite[2/8] [===================79%      ] report1.sqlite[2/8] [===================80%      ] report1.sqlite[2/8] [===================81%      ] report1.sqlite[2/8] [===================82%      ] report1.sqlite[2/8] [====================83%     ] report1.sqlite[2/8] [====================84%     ] report1.sqlite[2/8] [====================85%     ] report1.sqlite[2/8] [=====================86%    ] report1.sqlite[2/8] [=====================87%    ] report1.sqlite[2/8] [=====================88%    ] report1.sqlite[2/8] [=====================89%    ] report1.sqlite[2/8] [======================90%   ] report1.sqlite[2/8] [======================91%   ] report1.sqlite[2/8] [======================92%   ] report1.sqlite[2/8] [=======================93%  ] report1.sqlite[2/8] [=======================94%  ] report1.sqlite[2/8] [=======================95%  ] report1.sqlite[2/8] [=======================96%  ] report1.sqlite[2/8] [========================97% ] report1.sqlite[2/8] [========================98% ] report1.sqlite[2/8] [========================99% ] report1.sqlite[2/8] [========================100%] report1.sqlite[2/8] [========================100%] report1.sqlite
+[3/8] Executing 'nvtx_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances    Avg (ns)       Med (ns)      Min (ns)     Max (ns)    StdDev (ns)    Style                                                   Range                                                
+ --------  ---------------  ---------  -------------  -------------  -----------  -----------  ------------  --------  ----------------------------------------------------------------------------------------------------
+      4.8      80114200308          1  80114200308.0  80114200308.0  80114200308  80114200308           0.0  PushPop   EDM Stream 0:stream begin run                                                                       
+      4.8      80114055120          1  80114055120.0  80114055120.0  80114055120  80114055120           0.0  PushPop   EDM Stream 1:stream begin run                                                                       
+      4.8      80113977916          1  80113977916.0  80113977916.0  80113977916  80113977916           0.0  PushPop   EDM Stream 2:stream begin run                                                                       
+      4.8      80113916773          1  80113916773.0  80113916773.0  80113916773  80113916773           0.0  PushPop   EDM Stream 7:stream begin run                                                                       
+      4.8      80113908680          1  80113908680.0  80113908680.0  80113908680  80113908680           0.0  PushPop   EDM Stream 4:stream begin run                                                                       
+      4.8      80113901567          1  80113901567.0  80113901567.0  80113901567  80113901567           0.0  PushPop   EDM Stream 6:stream begin run                                                                       
+      4.8      80113811575          1  80113811575.0  80113811575.0  80113811575  80113811575           0.0  PushPop   EDM Stream 5:stream begin run                                                                       
+      4.8      80113578790          1  80113578790.0  80113578790.0  80113578790  80113578790           0.0  PushPop   EDM Stream 3:stream begin run                                                                       
+      4.4      73232951571         13   5633303967.0   5615033333.0   4595491454   7472237535   652297614.9  StartEnd  EDM Stream 0:event                                                                                  
+      4.4      72640160001         13   5587704615.5   5552799782.0   4948865129   6250522473   326094585.2  StartEnd  EDM Stream 6:event                                                                                  
+      4.3      72167996733         13   5551384364.1   5500752234.0   5111788323   6084375107   325993210.3  StartEnd  EDM Stream 3:event                                                                                  
+      4.3      71807528239         13   5523656018.4   5460167157.0   4862186532   6076622726   300933406.8  StartEnd  EDM Stream 1:event                                                                                  
+      4.3      71508916421         12   5959076368.4   5641664580.5   5299244904   9511822235  1140374075.9  StartEnd  EDM Stream 5:event                                                                                  
+      4.2      70352476573         12   5862706381.1   5727828484.0   5244646579   8632025704   930397641.5  StartEnd  EDM Stream 2:event                                                                                  
+      4.2      69833702789         12   5819475232.4   5671100477.5   5212806748   8166367988   795818948.8  StartEnd  EDM Stream 7:event                                                                                  
+      4.2      69157299409         12   5763108284.1   5708970665.0   5148064871   7097638241   518153508.9  StartEnd  EDM Stream 4:event                                                                                  
+      3.0      50484228965          1  50484228965.0  50484228965.0  50484228965  50484228965           0.0  StartEnd  EDM Global:source construction                                                                      
+      2.9      49068593541          1  49068593541.0  49068593541.0  49068593541  49068593541           0.0  PushPop   EDM Global:open file /store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mcR…
+      1.9      31985834318         13   2460448793.7   2269521306.0   1939141701   3509578968   453907281.8  StartEnd  EDM Stream 6:ClusterConverter                                                                       
+      1.9      31947544236         13   2457503402.8   2367375049.0   1825305842   3292069317   442314662.7  StartEnd  EDM Stream 3:ClusterConverter                                                                       
+      1.9      31489282642         13   2422252510.9   2250240163.0   1821201527   3802758742   488766282.1  StartEnd  EDM Stream 0:ClusterConverter                                                                       
+      1.8      30490240324         12   2540853360.3   2440711474.5   2122193611   3241258899   368044880.4  StartEnd  EDM Stream 5:ClusterConverter                                                                       
+      1.8      30439409590         13   2341493045.4   2395107177.0   1933539834   2864530999   261542391.5  StartEnd  EDM Stream 1:ClusterConverter                                                                       
+      1.8      29887007235         12   2490583936.3   2311182715.0   1971255713   3514717443   443046519.0  StartEnd  EDM Stream 7:ClusterConverter                                                                       
+      1.8      29781574946         12   2481797912.2   2372273368.0   1967544638   3744339216   464624763.3  StartEnd  EDM Stream 4:ClusterConverter                                                                       
+      1.7      28837813494         12   2403151124.5   2398015671.0   1928705538   3490262867   415494097.9  StartEnd  EDM Stream 2:ClusterConverter                                                                       
+      0.6      10116935886         13    778225837.4    805438645.0    472703733    938902483   130837055.6  StartEnd  EDM Stream 3:out                                                                                    
+      0.6      10004559069         12    833713255.8    804786904.0    680147027   1089756694   151616343.1  StartEnd  EDM Stream 7:out                                                                                    
+      0.6       9656168878         12    804680739.8    826423969.5    462249043   1103970512   149841407.9  StartEnd  EDM Stream 5:out                                                                                    
+      0.5       8818161503         12    734846791.9    728899944.0    448417163   1060753047   192443499.1  StartEnd  EDM Stream 4:out                                                                                    
+      0.5       8718935365         13    670687335.8    639957140.0    376926742    973631328   187803850.2  StartEnd  EDM Stream 0:out                                                                                    
+      0.5       8265893436         13    635837956.6    600689870.0    408925264   1565438559   295711721.4  StartEnd  EDM Stream 1:out                                                                                    
+      0.5       7787752721         13    599057901.6    547320923.0    462198463    834454220   110168249.7  StartEnd  EDM Stream 6:out                                                                                    
+      0.4       6793999952         12    566166662.7    520780030.5    460550676    842575830   113235361.2  StartEnd  EDM Stream 2:out                                                                                    
+      0.2       4138529871         13    318348451.6    361040007.0    185842936    460183997    79050225.6  StartEnd  EDM Stream 6:Packer                                                                                 
+      0.2       4098499862         13    315269220.2    295804889.0    183361043    512707170    84284803.3  StartEnd  EDM Stream 3:Packer                                                                                 
+      0.2       3958910651         12    329909220.9    354741504.0    215082448    371072015    52245706.8  StartEnd  EDM Stream 2:Packer                                                                                 
+      0.2       3813090142         12    317757511.8    347485606.0    184420047    440275001    82004786.6  StartEnd  EDM Stream 5:Packer                                                                                 
+      0.2       3810893180         12    317574431.7    353929452.0    196729756    371490274    62795051.9  StartEnd  EDM Stream 4:Packer                                                                                 
+      0.2       3659142704         13    281472515.7    279135684.0    184412837    397033135    67874971.9  StartEnd  EDM Stream 0:Packer                                                                                 
+      0.2       3589289246         13    276099172.8    257873138.0    173403324    403755980    72561579.7  StartEnd  EDM Stream 1:Packer                                                                                 
+      0.2       3415532651         12    284627720.9    289610663.5    202151943    366700439    51903622.7  StartEnd  EDM Stream 7:Packer                                                                                 
+      0.1       2476978325          1   2476978325.0   2476978325.0   2476978325   2476978325           0.0  PushPop   EDM Stream 5:stream end run                                                                         
+      0.0        723735181         13     55671937.0        42678.0        40481    723210362   200570335.0  PushPop   EDM Stream 6:source                                                                                 
+      0.0        360989040          1    360989040.0    360989040.0    360989040    360989040           0.0  StartEnd  EDM Global:ClustersFromPhase2TrackerDigis construction                                              
+      0.0        278744890          1    278744890.0    278744890.0    278744890    278744890           0.0  StartEnd  EDM Stream 5:Unpacker stream begin run                                                              
+      0.0        239129261          1    239129261.0    239129261.0    239129261    239129261           0.0  StartEnd  EDM Stream 2:Unpacker stream begin run                                                              
+      0.0        235258748          1    235258748.0    235258748.0    235258748    235258748           0.0  StartEnd  EDM Stream 7:Unpacker stream begin run                                                              
+      0.0        234584665         13     18044974.2     17520564.0      9323571     36679367     7219859.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis                                                         
+      0.0        225744594          1    225744594.0    225744594.0    225744594    225744594           0.0  StartEnd  EDM Stream 3:Unpacker stream begin run                                                              
+      0.0        223951801         13     17227061.6     14097394.0      6454549     34034680     8466108.2  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis                                                         
+      0.0        219240547         12     18270045.6     17158969.0     10582641     29512166     5379904.8  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis                                                         
+      0.0        209278663          1    209278663.0    209278663.0    209278663    209278663           0.0  StartEnd  EDM Stream 0:Unpacker stream begin run                                                              
+      0.0        207477595         13     15959815.0     16153427.0      8929921     22484857     4392957.3  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis                                                         
+      0.0        206833755         12     17236146.3     15932765.5     10533412     29090712     5513050.2  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis                                                         
+      0.0        201872470         13     15528651.5     15147430.0      6787070     28145302     5875792.5  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis                                                         
+      0.0        191153918         12     15929493.2     15681443.5      7862634     24671339     4966272.1  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis                                                         
+      0.0        180120972          1    180120972.0    180120972.0    180120972    180120972           0.0  StartEnd  EDM Stream 4:Unpacker stream begin run                                                              
+      0.0        171159947         12     14263328.9     14903214.0      8216634     19548204     3593827.3  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis                                                         
+      0.0        169330442         13     13025418.6        43505.0        40561    168798573    46804008.1  PushPop   EDM Stream 1:source                                                                                 
+      0.0        130820970          1    130820970.0    130820970.0    130820970    130820970           0.0  StartEnd  EDM Global:Unpacker construction                                                                    
+      0.0         87830418          1     87830418.0     87830418.0     87830418     87830418           0.0  StartEnd  EDM Stream 6:Unpacker stream begin run                                                              
+      0.0         86761936          1     86761936.0     86761936.0     86761936     86761936           0.0  StartEnd  EDM Stream 1:Unpacker stream begin run                                                              
+      0.0         61887120         13      4760547.7      2235769.0      1819967     25391346     6350208.9  StartEnd  EDM Stream 1:Unpacker                                                                               
+      0.0         53451002         12      4454250.2      3270771.0      1887822     11754184     3291991.2  StartEnd  EDM Stream 5:Unpacker                                                                               
+      0.0         50251462         13      3865497.1      3851904.0      1801987      7533672     2047498.2  StartEnd  EDM Stream 0:Unpacker                                                                               
+      0.0         42844912         12      3570409.3      2925241.5      1810067      8570173     1988562.8  StartEnd  EDM Stream 4:Unpacker                                                                               
+      0.0         42365234         12      3530436.2      3423851.0      1746469      6122048     1703042.4  StartEnd  EDM Stream 2:Unpacker                                                                               
+      0.0         40003155         13      3077165.8      2220193.0      1794747      5566978     1605877.2  StartEnd  EDM Stream 3:Unpacker                                                                               
+      0.0         36610825         13      2816217.3      2087834.0      1902277      4788047     1195279.7  StartEnd  EDM Stream 6:Unpacker                                                                               
+      0.0         36416752         12      3034729.3      2475892.0      1838279      5028339     1225484.3  StartEnd  EDM Stream 7:Unpacker                                                                               
+      0.0         29579242          1     29579242.0     29579242.0     29579242     29579242           0.0  StartEnd  EDM Global:Packer construction                                                                      
+      0.0          8161121          1      8161121.0      8161121.0      8161121      8161121           0.0  PushPop   EDM Global:source lumi                                                                              
+      0.0          6937469         12       578122.4        44098.5        41303      6124596     1749005.6  PushPop   EDM Stream 5:source                                                                                 
+      0.0          6153505          1      6153505.0      6153505.0      6153505      6153505           0.0  PushPop   EDM Global:close file /store/relval/CMSSW_14_0_0_pre2/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_133X_mc…
+      0.0          5711477          1      5711477.0      5711477.0      5711477      5711477           0.0  StartEnd  EDM Global:TriggerResults construction                                                              
+      0.0          4570819          1      4570819.0      4570819.0      4570819      4570819           0.0  PushPop   EDM Global:source run                                                                               
+      0.0           946452         13        72804.0        47011.0        40959       315212       74874.9  PushPop   EDM Stream 0:source                                                                                 
+      0.0           831783         12        69315.3        44261.5        41019       325008       80887.6  PushPop   EDM Stream 4:source                                                                                 
+      0.0           827202         13        63630.9        43347.0        41101       277190       64373.6  PushPop   EDM Stream 3:source                                                                                 
+      0.0           767488         12        63957.3        43407.5        41047       265544       63794.5  PushPop   EDM Stream 7:source                                                                                 
+      0.0           759589         12        63299.1        43404.0        38625       278699       67924.6  PushPop   EDM Stream 2:source                                                                                 
+      0.0           237186          1       237186.0       237186.0       237186       237186           0.0  StartEnd  EDM Global:dtc construction                                                                         
+      0.0           175265          1       175265.0       175265.0       175265       175265           0.0  StartEnd  EDM Global:out construction                                                                         
+      0.0           119138         12         9928.2         8156.0         5269        24425        5449.9  StartEnd  EDM Stream 4:dtc                                                                                    
+      0.0           118118         13         9086.0         7968.0         6938        15351        2847.4  StartEnd  EDM Stream 1:dtc                                                                                    
+      0.0           102796         13         7907.4         7959.0         6232         9377         768.4  StartEnd  EDM Stream 0:dtc                                                                                    
+      0.0           102406         13         7877.4         7851.0         7314         8440         363.7  StartEnd  EDM Stream 3:dtc                                                                                    
+      0.0           102206         13         7862.0         7964.0         7119         8461         453.9  StartEnd  EDM Stream 6:dtc                                                                                    
+      0.0            98561         12         8213.4         7811.0         7325        12892        1509.6  StartEnd  EDM Stream 5:dtc                                                                                    
+      0.0            98463         12         8205.3         7826.5         7189        11707        1207.8  StartEnd  EDM Stream 7:dtc                                                                                    
+      0.0            93715         12         7809.6         7967.5         6721         9317         756.9  StartEnd  EDM Stream 2:dtc                                                                                    
+      0.0            84478          1        84478.0        84478.0        84478        84478           0.0  StartEnd  EDM Global:ClusterConverter construction                                                            
+      0.0            70518         13         5424.5         4352.0         3749        13508        2639.8  StartEnd  EDM Stream 1:TriggerResults                                                                         
+      0.0            66683          1        66683.0        66683.0        66683        66683           0.0  PushPop   EDM Stream 4:stream end lumi                                                                        
+      0.0            61799         13         4753.8         4905.0         3536         6567         808.7  StartEnd  EDM Stream 3:TriggerResults                                                                         
+      0.0            60899         12         5074.9         4265.5         3858        12951        2521.6  StartEnd  EDM Stream 7:TriggerResults                                                                         
+      0.0            60897         12         5074.8         4216.5         3535        11562        2242.9  StartEnd  EDM Stream 2:TriggerResults                                                                         
+      0.0            58710         13         4516.2         4010.0         3421         6537         972.0  StartEnd  EDM Stream 6:TriggerResults                                                                         
+      0.0            58028         12         4835.7         4532.0         3499         7987        1246.6  StartEnd  EDM Stream 5:TriggerResults                                                                         
+      0.0            58022         13         4463.2         4109.0         3143         6176        1000.9  StartEnd  EDM Stream 0:TriggerResults                                                                         
+      0.0            50988         12         4249.0         4167.5         3075         5350         606.9  StartEnd  EDM Stream 4:TriggerResults                                                                         
+      0.0            37632          1        37632.0        37632.0        37632        37632           0.0  PushPop   EDM Stream 5:stream end lumi                                                                        
+      0.0            35129          1        35129.0        35129.0        35129        35129           0.0  PushPop   EDM Stream 5:stream begin lumi                                                                      
+      0.0            34553          1        34553.0        34553.0        34553        34553           0.0  PushPop   EDM Stream 3:stream end lumi                                                                        
+      0.0            31893          1        31893.0        31893.0        31893        31893           0.0  PushPop   EDM Stream 2:stream end lumi                                                                        
+      0.0            30997          1        30997.0        30997.0        30997        30997           0.0  PushPop   EDM Stream 6:stream end lumi                                                                        
+      0.0            29207          1        29207.0        29207.0        29207        29207           0.0  PushPop   EDM Stream 1:stream end lumi                                                                        
+      0.0            28917          1        28917.0        28917.0        28917        28917           0.0  PushPop   EDM Stream 7:stream end lumi                                                                        
+      0.0            28767          1        28767.0        28767.0        28767        28767           0.0  PushPop   EDM Stream 7:stream end run                                                                         
+      0.0            28199          1        28199.0        28199.0        28199        28199           0.0  PushPop   EDM Stream 0:stream end lumi                                                                        
+      0.0            28056          1        28056.0        28056.0        28056        28056           0.0  PushPop   EDM Stream 0:stream end run                                                                         
+      0.0            27048          1        27048.0        27048.0        27048        27048           0.0  PushPop   EDM Stream 6:stream end run                                                                         
+      0.0            26306          1        26306.0        26306.0        26306        26306           0.0  StartEnd  EDM Stream 0:ClusterConverter stream begin run                                                      
+      0.0            26105          1        26105.0        26105.0        26105        26105           0.0  PushPop   EDM Stream 0:stream begin lumi                                                                      
+      0.0            24272          1        24272.0        24272.0        24272        24272           0.0  PushPop   EDM Global:global begin lumi                                                                        
+      0.0            24026          1        24026.0        24026.0        24026        24026           0.0  PushPop   EDM Stream 4:stream begin lumi                                                                      
+      0.0            24012          1        24012.0        24012.0        24012        24012           0.0  PushPop   EDM Stream 1:stream begin lumi                                                                      
+      0.0            23930          1        23930.0        23930.0        23930        23930           0.0  PushPop   EDM Stream 2:stream begin lumi                                                                      
+      0.0            23916          1        23916.0        23916.0        23916        23916           0.0  PushPop   EDM Stream 3:stream begin lumi                                                                      
+      0.0            21095          1        21095.0        21095.0        21095        21095           0.0  StartEnd  EDM Stream 5:ClusterConverter stream begin run                                                      
+      0.0            18491          1        18491.0        18491.0        18491        18491           0.0  PushPop   EDM Stream 7:stream begin lumi                                                                      
+      0.0            18352          1        18352.0        18352.0        18352        18352           0.0  StartEnd  EDM Stream 5:ClusterConverter stream end run                                                        
+      0.0            18180          1        18180.0        18180.0        18180        18180           0.0  PushPop   EDM Stream 6:stream begin lumi                                                                      
+      0.0            17966          1        17966.0        17966.0        17966        17966           0.0  PushPop   EDM Global:global begin run                                                                         
+      0.0            14789          1        14789.0        14789.0        14789        14789           0.0  PushPop   EDM Stream 4:stream end run                                                                         
+      0.0            12134          1        12134.0        12134.0        12134        12134           0.0  PushPop   EDM Stream 1:stream end run                                                                         
+      0.0            11577          1        11577.0        11577.0        11577        11577           0.0  PushPop   EDM Stream 2:stream end run                                                                         
+      0.0            11128          1        11128.0        11128.0        11128        11128           0.0  PushPop   EDM Stream 3:stream end run                                                                         
+      0.0            10212          1        10212.0        10212.0        10212        10212           0.0  PushPop   EDM Global:global end run                                                                           
+      0.0            10201          1        10201.0        10201.0        10201        10201           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0             9222          1         9222.0         9222.0         9222         9222           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             7019          1         7019.0         7019.0         7019         7019           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             6158          1         6158.0         6158.0         6158         6158           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             6102          1         6102.0         6102.0         6102         6102           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             6065          1         6065.0         6065.0         6065         6065           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             6046          1         6046.0         6046.0         6046         6046           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             5856          1         5856.0         5856.0         5856         5856           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             5769          1         5769.0         5769.0         5769         5769           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             5657          1         5657.0         5657.0         5657         5657           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             5586          1         5586.0         5586.0         5586         5586           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             5537          1         5537.0         5537.0         5537         5537           0.0  PushPop   EDM Global:global end lumi                                                                          
+      0.0             5490          1         5490.0         5490.0         5490         5490           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             5164          1         5164.0         5164.0         5164         5164           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis stream end lumi                                         
+      0.0             4302          1         4302.0         4302.0         4302         4302           0.0  StartEnd  EDM Stream 2:ClusterConverter stream begin lumi                                                     
+      0.0             4252          1         4252.0         4252.0         4252         4252           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             3669          1         3669.0         3669.0         3669         3669           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             3648          1         3648.0         3648.0         3648         3648           0.0  StartEnd  EDM Global:out begin job                                                                            
+      0.0             3543          1         3543.0         3543.0         3543         3543           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             3452          1         3452.0         3452.0         3452         3452           0.0  StartEnd  EDM Stream 6:ClusterConverter stream end run                                                        
+      0.0             3433          1         3433.0         3433.0         3433         3433           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             3233          1         3233.0         3233.0         3233         3233           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             3217          1         3217.0         3217.0         3217         3217           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0             3208          1         3208.0         3208.0         3208         3208           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             3169          1         3169.0         3169.0         3169         3169           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0             3142          1         3142.0         3142.0         3142         3142           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             3140          1         3140.0         3140.0         3140         3140           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis stream end run                                          
+      0.0             2898          1         2898.0         2898.0         2898         2898           0.0  StartEnd  EDM Stream 4:Unpacker stream end lumi                                                               
+      0.0             2690          1         2690.0         2690.0         2690         2690           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             2666          1         2666.0         2666.0         2666         2666           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             2613          1         2613.0         2613.0         2613         2613           0.0  StartEnd  EDM Global:Packer begin job                                                                         
+      0.0             2566          1         2566.0         2566.0         2566         2566           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             2361          1         2361.0         2361.0         2361         2361           0.0  StartEnd  EDM Global:out end job                                                                              
+      0.0             2343          1         2343.0         2343.0         2343         2343           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0             2292          1         2292.0         2292.0         2292         2292           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis stream begin lumi                                       
+      0.0             2183          1         2183.0         2183.0         2183         2183           0.0  StartEnd  EDM Global:TriggerResults end job                                                                   
+      0.0             2161          1         2161.0         2161.0         2161         2161           0.0  StartEnd  EDM Global:Packer end job                                                                           
+      0.0             1942          1         1942.0         1942.0         1942         1942           0.0  StartEnd  EDM Stream 4:ClusterConverter stream end lumi                                                       
+      0.0             1847          1         1847.0         1847.0         1847         1847           0.0  StartEnd  EDM Global:TriggerResults begin job                                                                 
+      0.0             1797          1         1797.0         1797.0         1797         1797           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0             1787          1         1787.0         1787.0         1787         1787           0.0  StartEnd  EDM Stream 1:Unpacker stream end lumi                                                               
+      0.0             1717          1         1717.0         1717.0         1717         1717           0.0  StartEnd  EDM Stream 5:Unpacker stream end lumi                                                               
+      0.0             1699          1         1699.0         1699.0         1699         1699           0.0  StartEnd  EDM Stream 4:Unpacker stream begin lumi                                                             
+      0.0             1680          1         1680.0         1680.0         1680         1680           0.0  StartEnd  EDM Stream 6:Unpacker stream end run                                                                
+      0.0             1660          1         1660.0         1660.0         1660         1660           0.0  StartEnd  EDM Stream 7:Unpacker stream end lumi                                                               
+      0.0             1650          1         1650.0         1650.0         1650         1650           0.0  StartEnd  EDM Stream 7:Unpacker stream end run                                                                
+      0.0             1648          1         1648.0         1648.0         1648         1648           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0             1632          1         1632.0         1632.0         1632         1632           0.0  StartEnd  EDM Stream 0:Unpacker stream end run                                                                
+      0.0             1623          1         1623.0         1623.0         1623         1623           0.0  StartEnd  EDM Stream 2:Unpacker stream end lumi                                                               
+      0.0             1595          1         1595.0         1595.0         1595         1595           0.0  StartEnd  EDM Stream 3:ClusterConverter stream end lumi                                                       
+      0.0             1514          1         1514.0         1514.0         1514         1514           0.0  StartEnd  EDM Stream 4:Unpacker stream end run                                                                
+      0.0             1493          1         1493.0         1493.0         1493         1493           0.0  StartEnd  EDM Global:ClustersFromPhase2TrackerDigis begin job                                                 
+      0.0             1492          1         1492.0         1492.0         1492         1492           0.0  StartEnd  EDM Stream 6:Unpacker stream end lumi                                                               
+      0.0             1470          1         1470.0         1470.0         1470         1470           0.0  StartEnd  EDM Stream 5:ClusterConverter stream end lumi                                                       
+      0.0             1460          1         1460.0         1460.0         1460         1460           0.0  StartEnd  EDM Stream 1:ClusterConverter stream end lumi                                                       
+      0.0             1459          1         1459.0         1459.0         1459         1459           0.0  StartEnd  EDM Stream 3:ClusterConverter stream begin lumi                                                     
+      0.0             1419          1         1419.0         1419.0         1419         1419           0.0  StartEnd  EDM Stream 3:Unpacker stream end lumi                                                               
+      0.0             1411          1         1411.0         1411.0         1411         1411           0.0  StartEnd  EDM Stream 0:Unpacker stream begin lumi                                                             
+      0.0             1392          1         1392.0         1392.0         1392         1392           0.0  StartEnd  EDM Stream 0:ClusterConverter stream end lumi                                                       
+      0.0             1368          1         1368.0         1368.0         1368         1368           0.0  StartEnd  EDM Stream 0:Unpacker stream end lumi                                                               
+      0.0             1351          1         1351.0         1351.0         1351         1351           0.0  StartEnd  EDM Stream 6:ClusterConverter stream end lumi                                                       
+      0.0             1159          1         1159.0         1159.0         1159         1159           0.0  StartEnd  EDM Stream 1:ClusterConverter stream begin lumi                                                     
+      0.0             1130          1         1130.0         1130.0         1130         1130           0.0  StartEnd  EDM Stream 1:ClusterConverter stream end run                                                        
+      0.0             1112          1         1112.0         1112.0         1112         1112           0.0  StartEnd  EDM Stream 0:ClusterConverter stream end run                                                        
+      0.0             1086          1         1086.0         1086.0         1086         1086           0.0  StartEnd  EDM Stream 3:Unpacker stream begin lumi                                                             
+      0.0             1076          1         1076.0         1076.0         1076         1076           0.0  StartEnd  EDM Stream 5:ClusterConverter stream begin lumi                                                     
+      0.0             1072          1         1072.0         1072.0         1072         1072           0.0  StartEnd  EDM Stream 4:ClusterConverter stream begin lumi                                                     
+      0.0             1067          1         1067.0         1067.0         1067         1067           0.0  StartEnd  EDM Stream 4:ClusterConverter stream end run                                                        
+      0.0             1047          1         1047.0         1047.0         1047         1047           0.0  StartEnd  EDM Stream 7:ClusterConverter end stream                                                            
+      0.0             1040          1         1040.0         1040.0         1040         1040           0.0  StartEnd  EDM Stream 2:ClusterConverter stream end lumi                                                       
+      0.0             1034          1         1034.0         1034.0         1034         1034           0.0  StartEnd  EDM Stream 0:ClusterConverter stream begin lumi                                                     
+      0.0             1027          1         1027.0         1027.0         1027         1027           0.0  StartEnd  EDM Global:ClustersFromPhase2TrackerDigis end job                                                   
+      0.0             1012          1         1012.0         1012.0         1012         1012           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0              988          1          988.0          988.0          988          988           0.0  StartEnd  EDM Stream 5:ClusterConverter end stream                                                            
+      0.0              986          1          986.0          986.0          986          986           0.0  StartEnd  EDM Stream 6:ClusterConverter stream begin lumi                                                     
+      0.0              977          1          977.0          977.0          977          977           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              971          1          971.0          971.0          971          971           0.0  StartEnd  EDM Stream 1:Unpacker stream begin lumi                                                             
+      0.0              958          1          958.0          958.0          958          958           0.0  StartEnd  EDM Stream 2:Unpacker stream begin lumi                                                             
+      0.0              942          1          942.0          942.0          942          942           0.0  StartEnd  EDM Stream 2:Unpacker stream end run                                                                
+      0.0              941          1          941.0          941.0          941          941           0.0  StartEnd  EDM Stream 5:Unpacker stream begin lumi                                                             
+      0.0              937          1          937.0          937.0          937          937           0.0  StartEnd  EDM Stream 7:ClusterConverter stream end lumi                                                       
+      0.0              920          1          920.0          920.0          920          920           0.0  StartEnd  EDM Stream 7:ClusterConverter stream end run                                                        
+      0.0              915          1          915.0          915.0          915          915           0.0  StartEnd  EDM Stream 7:ClusterConverter stream begin run                                                      
+      0.0              889          1          889.0          889.0          889          889           0.0  StartEnd  EDM Stream 7:Unpacker end stream                                                                    
+      0.0              872          1          872.0          872.0          872          872           0.0  StartEnd  EDM Stream 5:Unpacker stream end run                                                                
+      0.0              842          1          842.0          842.0          842          842           0.0  StartEnd  EDM Stream 6:Unpacker stream begin lumi                                                             
+      0.0              796          1          796.0          796.0          796          796           0.0  StartEnd  EDM Stream 2:ClusterConverter stream end run                                                        
+      0.0              795          1          795.0          795.0          795          795           0.0  StartEnd  EDM Stream 1:Unpacker stream end run                                                                
+      0.0              779          1          779.0          779.0          779          779           0.0  StartEnd  EDM Stream 4:ClusterConverter stream begin run                                                      
+      0.0              768          1          768.0          768.0          768          768           0.0  StartEnd  EDM Stream 7:ClusterConverter stream begin lumi                                                     
+      0.0              767          1          767.0          767.0          767          767           0.0  StartEnd  EDM Stream 7:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0              752          1          752.0          752.0          752          752           0.0  StartEnd  EDM Stream 7:Unpacker stream begin lumi                                                             
+      0.0              742          1          742.0          742.0          742          742           0.0  StartEnd  EDM Global:Unpacker begin job                                                                       
+      0.0              707          1          707.0          707.0          707          707           0.0  StartEnd  EDM Stream 6:Unpacker end stream                                                                    
+      0.0              702          1          702.0          702.0          702          702           0.0  StartEnd  EDM Stream 3:ClusterConverter stream begin run                                                      
+      0.0              687          1          687.0          687.0          687          687           0.0  StartEnd  EDM Stream 3:Unpacker stream end run                                                                
+      0.0              684          1          684.0          684.0          684          684           0.0  StartEnd  EDM Stream 1:ClusterConverter stream begin run                                                      
+      0.0              679          1          679.0          679.0          679          679           0.0  StartEnd  EDM Stream 5:Unpacker end stream                                                                    
+      0.0              671          1          671.0          671.0          671          671           0.0  StartEnd  EDM Stream 3:ClusterConverter end stream                                                            
+      0.0              670          1          670.0          670.0          670          670           0.0  StartEnd  EDM Stream 6:ClusterConverter stream begin run                                                      
+      0.0              665          1          665.0          665.0          665          665           0.0  StartEnd  EDM Stream 3:ClusterConverter stream end run                                                        
+      0.0              664          1          664.0          664.0          664          664           0.0  StartEnd  EDM Stream 7:Packer end stream                                                                      
+      0.0              659          1          659.0          659.0          659          659           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0              612          1          612.0          612.0          612          612           0.0  StartEnd  EDM Stream 4:ClusterConverter end stream                                                            
+      0.0              592          1          592.0          592.0          592          592           0.0  StartEnd  EDM Stream 6:Packer begin stream                                                                    
+      0.0              580          1          580.0          580.0          580          580           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              565          1          565.0          565.0          565          565           0.0  StartEnd  EDM Global:ClusterConverter begin job                                                               
+      0.0              562          1          562.0          562.0          562          562           0.0  StartEnd  EDM Stream 2:ClusterConverter stream begin run                                                      
+      0.0              551          1          551.0          551.0          551          551           0.0  StartEnd  EDM Stream 7:Unpacker begin stream                                                                  
+      0.0              536          1          536.0          536.0          536          536           0.0  StartEnd  EDM Stream 3:Unpacker begin stream                                                                  
+      0.0              509          1          509.0          509.0          509          509           0.0  StartEnd  EDM Stream 6:ClusterConverter end stream                                                            
+      0.0              500          1          500.0          500.0          500          500           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              498          1          498.0          498.0          498          498           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              494          1          494.0          494.0          494          494           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis stream begin run                                        
+      0.0              489          1          489.0          489.0          489          489           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              477          1          477.0          477.0          477          477           0.0  StartEnd  EDM Stream 2:Unpacker begin stream                                                                  
+      0.0              466          1          466.0          466.0          466          466           0.0  StartEnd  EDM Stream 2:ClusterConverter end stream                                                            
+      0.0              463          1          463.0          463.0          463          463           0.0  StartEnd  EDM Stream 1:Unpacker begin stream                                                                  
+      0.0              461          1          461.0          461.0          461          461           0.0  StartEnd  EDM Stream 7:Packer begin stream                                                                    
+      0.0              453          1          453.0          453.0          453          453           0.0  StartEnd  EDM Stream 5:Packer begin stream                                                                    
+      0.0              450          1          450.0          450.0          450          450           0.0  StartEnd  EDM Stream 1:ClusterConverter end stream                                                            
+      0.0              442          1          442.0          442.0          442          442           0.0  StartEnd  EDM Stream 0:ClusterConverter begin stream                                                          
+      0.0              440          1          440.0          440.0          440          440           0.0  StartEnd  EDM Stream 0:Unpacker end stream                                                                    
+      0.0              438          1          438.0          438.0          438          438           0.0  StartEnd  EDM Stream 5:Unpacker begin stream                                                                  
+      0.0              438          1          438.0          438.0          438          438           0.0  StartEnd  EDM Stream 6:out end stream                                                                         
+      0.0              436          1          436.0          436.0          436          436           0.0  StartEnd  EDM Stream 2:ClusterConverter begin stream                                                          
+      0.0              436          1          436.0          436.0          436          436           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              428          1          428.0          428.0          428          428           0.0  StartEnd  EDM Stream 5:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              427          1          427.0          427.0          427          427           0.0  StartEnd  EDM Global:Unpacker end job                                                                         
+      0.0              427          1          427.0          427.0          427          427           0.0  StartEnd  EDM Stream 2:out end stream                                                                         
+      0.0              426          1          426.0          426.0          426          426           0.0  StartEnd  EDM Stream 7:ClusterConverter begin stream                                                          
+      0.0              425          1          425.0          425.0          425          425           0.0  StartEnd  EDM Stream 4:Unpacker end stream                                                                    
+      0.0              422          1          422.0          422.0          422          422           0.0  StartEnd  EDM Stream 6:Packer end stream                                                                      
+      0.0              421          1          421.0          421.0          421          421           0.0  StartEnd  EDM Stream 3:Unpacker end stream                                                                    
+      0.0              418          1          418.0          418.0          418          418           0.0  StartEnd  EDM Stream 6:Unpacker begin stream                                                                  
+      0.0              415          1          415.0          415.0          415          415           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis end stream                                              
+      0.0              411          1          411.0          411.0          411          411           0.0  StartEnd  EDM Stream 2:Unpacker end stream                                                                    
+      0.0              410          1          410.0          410.0          410          410           0.0  StartEnd  EDM Stream 4:out end stream                                                                         
+      0.0              408          1          408.0          408.0          408          408           0.0  StartEnd  EDM Stream 3:out end stream                                                                         
+      0.0              408          1          408.0          408.0          408          408           0.0  StartEnd  EDM Stream 7:out begin stream                                                                       
+      0.0              407          1          407.0          407.0          407          407           0.0  StartEnd  EDM Stream 0:ClusterConverter end stream                                                            
+      0.0              405          1          405.0          405.0          405          405           0.0  StartEnd  EDM Stream 3:ClusterConverter begin stream                                                          
+      0.0              399          1          399.0          399.0          399          399           0.0  StartEnd  EDM Stream 1:ClusterConverter begin stream                                                          
+      0.0              396          1          396.0          396.0          396          396           0.0  StartEnd  EDM Stream 7:out end stream                                                                         
+      0.0              386          1          386.0          386.0          386          386           0.0  StartEnd  EDM Stream 4:Unpacker begin stream                                                                  
+      0.0              384          1          384.0          384.0          384          384           0.0  StartEnd  EDM Stream 1:Unpacker end stream                                                                    
+      0.0              380          1          380.0          380.0          380          380           0.0  StartEnd  EDM Stream 1:Packer end stream                                                                      
+      0.0              380          1          380.0          380.0          380          380           0.0  StartEnd  EDM Stream 6:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              377          1          377.0          377.0          377          377           0.0  StartEnd  EDM Global:dtc end job                                                                              
+      0.0              372          1          372.0          372.0          372          372           0.0  StartEnd  EDM Stream 2:Packer end stream                                                                      
+      0.0              371          1          371.0          371.0          371          371           0.0  StartEnd  EDM Global:ClusterConverter end job                                                                 
+      0.0              369          1          369.0          369.0          369          369           0.0  StartEnd  EDM Stream 0:Unpacker begin stream                                                                  
+      0.0              362          1          362.0          362.0          362          362           0.0  StartEnd  EDM Stream 0:Packer end stream                                                                      
+      0.0              362          1          362.0          362.0          362          362           0.0  StartEnd  EDM Stream 5:Packer end stream                                                                      
+      0.0              353          1          353.0          353.0          353          353           0.0  StartEnd  EDM Stream 2:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              350          1          350.0          350.0          350          350           0.0  StartEnd  EDM Stream 5:out end stream                                                                         
+      0.0              348          1          348.0          348.0          348          348           0.0  StartEnd  EDM Global:dtc begin job                                                                            
+      0.0              348          1          348.0          348.0          348          348           0.0  StartEnd  EDM Stream 1:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              343          1          343.0          343.0          343          343           0.0  StartEnd  EDM Stream 4:ClusterConverter begin stream                                                          
+      0.0              334          1          334.0          334.0          334          334           0.0  StartEnd  EDM Stream 0:out begin stream                                                                       
+      0.0              332          1          332.0          332.0          332          332           0.0  StartEnd  EDM Stream 5:ClusterConverter begin stream                                                          
+      0.0              331          1          331.0          331.0          331          331           0.0  StartEnd  EDM Stream 3:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              324          1          324.0          324.0          324          324           0.0  StartEnd  EDM Stream 5:out begin stream                                                                       
+      0.0              315          1          315.0          315.0          315          315           0.0  StartEnd  EDM Stream 4:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              312          1          312.0          312.0          312          312           0.0  StartEnd  EDM Stream 4:out begin stream                                                                       
+      0.0              311          1          311.0          311.0          311          311           0.0  StartEnd  EDM Stream 6:ClusterConverter begin stream                                                          
+      0.0              309          1          309.0          309.0          309          309           0.0  StartEnd  EDM Stream 2:out begin stream                                                                       
+      0.0              308          1          308.0          308.0          308          308           0.0  StartEnd  EDM Stream 0:ClustersFromPhase2TrackerDigis begin stream                                            
+      0.0              302          1          302.0          302.0          302          302           0.0  StartEnd  EDM Stream 6:out begin stream                                                                       
+      0.0              288          1          288.0          288.0          288          288           0.0  StartEnd  EDM Stream 4:Packer end stream                                                                      
+      0.0              282          1          282.0          282.0          282          282           0.0  StartEnd  EDM Stream 4:Packer begin stream                                                                    
+      0.0              279          1          279.0          279.0          279          279           0.0  StartEnd  EDM Stream 3:out begin stream                                                                       
+      0.0              278          1          278.0          278.0          278          278           0.0  StartEnd  EDM Stream 1:Packer begin stream                                                                    
+      0.0              278          1          278.0          278.0          278          278           0.0  StartEnd  EDM Stream 3:Packer end stream                                                                      
+      0.0              277          1          277.0          277.0          277          277           0.0  StartEnd  EDM Stream 1:out begin stream                                                                       
+      0.0              276          1          276.0          276.0          276          276           0.0  StartEnd  EDM Stream 2:Packer begin stream                                                                    
+      0.0              275          1          275.0          275.0          275          275           0.0  StartEnd  EDM Stream 3:Packer begin stream                                                                    
+      0.0              274          1          274.0          274.0          274          274           0.0  StartEnd  EDM Stream 0:Packer begin stream                                                                    
+      0.0              267          1          267.0          267.0          267          267           0.0  StartEnd  EDM Stream 0:out end stream                                                                         
+      0.0              242          1          242.0          242.0          242          242           0.0  StartEnd  EDM Stream 1:out end stream                                                                         
+
+[4/8] Executing 'osrt_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls    Avg (ns)      Med (ns)     Min (ns)     Max (ns)    StdDev (ns)            Name         
+ --------  ---------------  ---------  ------------  ------------  ----------  ------------  ------------  ----------------------
+     49.2    1313702744999       1492   880497818.4     7102923.5        1327  131418603729  9153344201.1  epoll_wait            
+     22.0     586428522556       4396   133400482.8      290073.0        2205   50622702705  2010648676.1  futex                 
+     14.7     393566941472        659   597218424.1    74326679.0      145602   46391678881  3169874653.1  sem_wait              
+      5.2     138325422857       6471    21376205.0      352134.0        1467     487387498    40780029.6  poll                  
+      4.9     131408932572        132   995522216.5  1000440996.0   291519093    1013933949    61758798.3  nanosleep             
+      2.8      73618113025        118   623882313.8   631267483.0      106336    4446353599   515738096.2  pthread_cond_wait     
+      0.3       7474862818      20740      360408.0       79505.0        2813      99715143     2648767.6  open                  
+      0.3       6684967628       1348     4959174.8     1582743.5        2358      58028296     8195043.9  open64                
+      0.1       3000603648          3  1000201216.0  1000214424.0  1000146739    1000242485       49220.6  pthread_cond_clockwait
+      0.1       2959715205          2  1479857602.5  1479857602.5   514838881    2444876324  1364742563.9  system                
+      0.1       2320202682      11266      205947.3       85959.5        3344      43170160      818098.2  stat64                
+      0.0       1197178922      30476       39282.7        3759.0        1653      16506821      173311.6  stat                  
+      0.0       1031254675       2269      454497.4       19667.0        1690     141985077     5912211.3  ioctl                 
+      0.0       1000941223        128     7819853.3       24693.0        1597     904975242    80091390.4  fgets                 
+      0.0        848137727        493     1720360.5      825842.0        2826      73065259     4944203.2  fopen64               
+      0.0        794963702      10463       75978.6       78583.0        2952       1718068       37695.5  lstat64               
+      0.0        743158968         13    57166074.5      198573.0        1674     731068425   202499971.1  getdelim              
+      0.0        718988954          1   718988954.0   718988954.0   718988954     718988954           0.0  waitpid               
+      0.0        680628783       1894      359360.5        8162.0        2054       7950927      850799.3  write                 
+      0.0        586023777       7412       79064.2        4613.0        1377      79358468     1230855.6  read                  
+      0.0        328476080        335      980525.6      227560.0        3195      66733588     4296874.6  fopen                 
+      0.0        178135101       1562      114043.0      102807.0        2460       2046648       73386.6  pread                 
+      0.0        127073562         47     2703692.8      675197.0       74473      29697654     5008832.9  pthread_mutex_lock    
+      0.0        124489146         27     4610709.1      114577.0       72462      61050526    15974626.3  pthread_create        
+      0.0        100298418        333      301196.5       16598.0        2504      11854951     1727682.7  mmap                  
+      0.0         46356139       1576       29413.8        1711.0        1576       9076908      373548.6  fwrite                
+      0.0         45581077       2547       17896.0       17184.0        4238        421664       13826.9  send                  
+      0.0         42422687       1132       37475.9        2689.0        1425       6918198      379253.4  epoll_ctl             
+      0.0         41252378        716       57615.1        9743.0        1520      11893844      453075.0  fread                 
+      0.0         27748968       2300       12064.8       12773.0        1878        109019        5703.4  recv                  
+      0.0         17570348        234       75087.0       78835.5        2407        274710       42823.9  lstat                 
+      0.0         17243707          1    17243707.0    17243707.0    17243707      17243707           0.0  getc                  
+      0.0         15434902        224       68905.8       14643.5        5660       2835920      346489.0  mmap64                
+      0.0         14910492          3     4970164.0     5424515.0     2192869       7293108     2580297.6  fdatasync             
+      0.0         11012239        116       94933.1       10631.0        1067       6447353      620638.9  pthread_cond_signal   
+      0.0          8804203         58      151796.6      141706.5      102835        270093       32356.3  sem_timedwait         
+      0.0          8679161        806       10768.2        9888.0        1241        209380       11541.9  fclose                
+      0.0          8058464       3360        2398.4        2147.0        1423         55880        1481.5  fstat                 
+      0.0          5868293          7      838327.6      935814.0      258387       1316491      415699.6  pthread_join          
+      0.0          5680513       2098        2707.6        2438.0        1396         74448        2285.9  fstat64               
+      0.0          4973169          1     4973169.0     4973169.0     4973169       4973169           0.0  posix_spawnp          
+      0.0          3988924         18      221606.9       79061.0       36518       1670148      391336.8  connect               
+      0.0          2782036          4      695509.0      707847.5      610313        756028       62257.7  popen                 
+      0.0          2484306         70       35490.1       13725.0        3669        406669       70115.5  munmap                
+      0.0          1785581         82       21775.4        9283.5        3835        300987       52090.7  mprotect              
+      0.0          1330007         21       63333.7       85910.0        3777        127908       42838.8  fstatat64             
+      0.0          1240609         32       38769.0       12233.5        4952        277883       74283.4  socket                
+      0.0           636963        480        1327.0        1197.0        1136          8561         525.4  sigaction             
+      0.0           449706         84        5353.6        2955.5        2386         64169        9773.2  openat64              
+      0.0           402323        230        1749.2        1673.5        1226          6227         466.5  fcntl                 
+      0.0           221826         34        6524.3        2366.0        1832        130438       21919.5  recvmsg               
+      0.0           206134          3       68711.3       99390.0        5073        101671       55124.2  fgetc                 
+      0.0           204727         98        2089.1        1217.5        1007         18438        3328.7  fflush                
+      0.0           195459         11       17769.0       12674.0        9978         64135       15562.1  sendto                
+      0.0           193887         28        6924.5        7720.0        1024         13820        3739.5  pthread_cond_broadcast
+      0.0           173417         19        9127.2        9097.0        3514         14417        2494.1  pipe2                 
+      0.0            78436          4       19609.0       15264.0       12503         35405       10642.7  pthread_cancel        
+      0.0            43772         27        1621.2        1472.0        1231          4500         612.9  dup                   
+      0.0            37046         12        3087.2        3246.0        1800          4180         821.8  bind                  
+      0.0            22038          7        3148.3        3087.0        2832          3533         251.5  ppoll                 
+      0.0            21584         14        1541.7        1276.5        1177          3209         621.5  signal                
+      0.0            18759          1       18759.0       18759.0       18759         18759           0.0  sendmsg               
+      0.0            15265          7        2180.7        2148.0        1440          3110         683.5  fcntl64               
+      0.0            12300          1       12300.0       12300.0       12300         12300           0.0  fflush_unlocked       
+      0.0             8929          6        1488.2        1193.0        1157          2920         702.8  prctl                 
+      0.0             8036          1        8036.0        8036.0        8036          8036           0.0  fwrite_unlocked       
+      0.0             3721          2        1860.5        1860.5        1778          1943         116.7  listen                
+      0.0             2240          1        2240.0        2240.0        2240          2240           0.0  putc                  
+      0.0             2191          1        2191.0        2191.0        2191          2191           0.0  fputc                 
+
+[5/8] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)   StdDev (ns)                Name               
+ --------  ---------------  ---------  ----------  ----------  --------  ---------  -----------  ---------------------------------
+     45.4        771420243         40  19285506.1      3331.5      2456  143305075   40988995.5  cudaHostAlloc                    
+     24.5        416846377        200   2084231.9     27439.0      3643    7742148    2261303.7  cudaEventSynchronize             
+      9.5        162026861        525    308622.6     53569.0      1560    7253202     730859.1  cudaStreamSynchronize            
+      6.6        111463463         40   2786586.6      9703.0      3995   14468521    5545004.1  cudaFreeHost                     
+      5.1         86924520          2  43462260.0  43462260.0  39368701   47555819    5789166.7  cudaDeviceReset                  
+      2.9         48655939        532     91458.5     11735.5      3228    5530821     425983.0  cudaMemcpyAsync                  
+      1.8         31300485        600     52167.5      7718.0      3941    4300128     315373.9  cudaMemsetAsync                  
+      1.6         27357772        101    270869.0     16347.0     14392   21524461    2170480.5  cudaLaunchKernel                 
+      1.2         20386036          1  20386036.0  20386036.0  20386036   20386036          0.0  cudaProfilerStop                 
+      0.4          6664157        932      7150.4      2846.5      1570      82395      10235.5  cudaEventRecord                  
+      0.4          6512912         46    141585.0      2513.0      1939    1904349     336762.4  cudaMalloc                       
+      0.3          5616827        874      6426.6      2584.5      1336     209393      12738.6  cudaEventQuery                   
+      0.1          1871412         46     40682.9      4327.5      2434     173282      59438.2  cudaFree                         
+      0.0           705237          3    235079.0     25382.0     17959     661896     369653.0  cudaMemGetInfo                   
+      0.0           494034         17     29060.8     15145.0      3699     309688      72720.4  cudaStreamCreateWithFlags        
+      0.0           376922          2    188461.0    188461.0    168952     207970      27589.9  cudaGetDeviceProperties_v2_v12000
+      0.0           219467         26      8441.0      5226.5      4267      30842       7384.3  cudaStreamDestroy                
+      0.0           163837          9     18204.1      9267.0      5050      73971      22835.5  cudaStreamCreate                 
+      0.0           130887         62      2111.1      1077.0       529      13397       2219.9  cudaEventCreateWithFlags         
+      0.0            90151         62      1454.0       694.0       508       6854       1614.7  cudaEventDestroy                 
+      0.0            49320          1     49320.0     49320.0     49320      49320          0.0  cudaMemcpy                       
+      0.0            29124          2     14562.0     14562.0      5723      23401      12500.2  cudaDeviceSynchronize            
+      0.0            27388          1     27388.0     27388.0     27388      27388          0.0  cudaProfilerStart                
+      0.0            26173          1     26173.0     26173.0     26173      26173          0.0  cudaMemset                       
+      0.0             5887          2      2943.5      2943.5      2208       3679       1040.2  cuCtxSynchronize                 
+      0.0             2557          2      1278.5      1278.5      1137       1420        200.1  cuModuleGetLoadingMode           
+
+[6/8] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0         91433240        100  914332.4  915146.0    746524   1101177      68744.3  void alpaka::detail::gpuKernel<alpaka_cuda_async::Unpacker, alpaka::ApiCudaRt, alpaka::AccGpuUnifor…
+      0.0             2048          1    2048.0    2048.0      2048      2048          0.0  setSupported(bool *)                                                                                
+
+[7/8] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)            Operation           
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ------------------------------
+     92.5        397159814    101  3932275.4  3971751.0      1984   4011047     395319.0  [CUDA memcpy Device-to-Host]  
+      3.0         12868462    100   128684.6   128544.0    127839    139615       1158.4  [CUDA memcpy Device-to-Device]
+      2.9         12656821    601    21059.6     2176.0       704     69536      27487.3  [CUDA memset]                 
+      1.6          6882171    332    20729.4     1536.0      1504     70176      27067.1  [CUDA memcpy Host-to-Device]  
+
+[8/8] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)            Operation           
+ ----------  -----  --------  --------  --------  --------  -----------  ------------------------------
+  10422.463    601    17.342     0.007     0.000    51.757       24.326  [CUDA memset]                 
+   5175.706    101    51.245    51.757     0.000    51.757        5.150  [CUDA memcpy Device-to-Host]  
+   5175.706    100    51.757    51.757    51.757    51.757        0.000  [CUDA memcpy Device-to-Device]
+     75.033    332     0.226     0.007     0.007     0.801        0.312  [CUDA memcpy Host-to-Device]  
+
+Generated:
+    /pool/condor/dir_858266/report1.nsys-rep
+    /pool/condor/dir_858266/report1.sqlite

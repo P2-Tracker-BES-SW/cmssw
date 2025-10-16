@@ -12,21 +12,18 @@ class SensorHybrid
 {
     private:
 
-        std::vector<Phase2TrackerCluster1D*> get_clusters_on_cic(edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator, const bool clusters_exist, const bool& cic_id, const TrackerGeometry& trackerGeometry, const int internal_id) 
+        std::vector<Phase2TrackerCluster1D*> get_clusters_on_cic(const DetId& det_id, edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator, const bool clusters_exist, const bool& cic_id, const TrackerGeometry& trackerGeometry, const int internal_id) 
         {
             using namespace Phase2TrackerSpecifications;
             using namespace Phase2DAQFormatSpecification;
 
             std::vector<Phase2TrackerCluster1D*> filteredClusters;
-            if (!clusters_exist)
-              return filteredClusters;
-            
-            const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(clusterIterator->detId());
+            const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(det_id);
             unsigned int cic_boundary_in_z = CIC_Z_BOUNDARY_STRIPS;
 
             if (sensor_unit) 
             {
-                TrackerGeometry::ModuleType moduleType = trackerGeometry.getDetectorType(clusterIterator->detId()); 
+                TrackerGeometry::ModuleType moduleType = trackerGeometry.getDetectorType(det_id);
                 switch (moduleType)
                 {
                     case TrackerGeometry::ModuleType::Ph2PSS:
@@ -70,6 +67,8 @@ class SensorHybrid
                 }
             }
 
+            if (!clusters_exist)
+                return filteredClusters;
 
             if ( clusterIterator != edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator{} ) 
             {
@@ -98,7 +97,7 @@ class SensorHybrid
             uint32_t currentWord = 0;
             int bitsFilled = 0;
 
-            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
+            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP && sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
             {
 
                 // For PS, sensor_2 is always strip and sensor_1 is always pixel
@@ -233,6 +232,8 @@ class SensorHybrid
                 {
                     payload.push_back(currentWord);
                 }
+            } else {
+                edm::LogError("SensorHybrid") << "Sensor 1 and 2 have inconsistent types";
             }
         }
 
@@ -249,13 +250,14 @@ class SensorHybrid
 
     public:
 
-        SensorHybrid(edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator sensor_1, 
+        SensorHybrid(const DetId& det_id,
+                    edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator sensor_1, 
                     edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator sensor_2, 
                     const bool sensor_1_clusters_exist, const bool sensor_2_clusters_exist,
                     const bool cic_id, const TrackerGeometry& trackerGeometry, const unsigned int eventId) : cic_id_(cic_id), eventId_(eventId)
         {
-            sensor_1_clusters_ = get_clusters_on_cic(sensor_1, sensor_1_clusters_exist, cic_id, trackerGeometry, 1);
-            sensor_2_clusters_ = get_clusters_on_cic(sensor_2, sensor_2_clusters_exist, cic_id, trackerGeometry, 2);
+            sensor_1_clusters_ = get_clusters_on_cic(det_id, sensor_1, sensor_1_clusters_exist, cic_id, trackerGeometry, 1);
+            sensor_2_clusters_ = get_clusters_on_cic(det_id, sensor_2, sensor_2_clusters_exist, cic_id, trackerGeometry, 2);
         }
 
         unsigned int    get_payload_size() 
@@ -288,7 +290,7 @@ class SensorHybrid
         }
         unsigned int  get_number_of_pixel_clusters()  
         {
-            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
+            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP)
             {
                 return sensor_1_clusters_.size();
             }

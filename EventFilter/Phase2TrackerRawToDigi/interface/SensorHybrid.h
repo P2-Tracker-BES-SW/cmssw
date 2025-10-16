@@ -18,7 +18,7 @@ class SensorHybrid
             using namespace Phase2DAQFormatSpecification;
 
             std::vector<Phase2TrackerCluster1D*> filteredClusters;
-            const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(det_id);
+            const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(det_id+1);
             unsigned int cic_boundary_in_z = CIC_Z_BOUNDARY_STRIPS;
 
             if (sensor_unit) 
@@ -84,7 +84,6 @@ class SensorHybrid
                     }
                 }
             }
-
             return filteredClusters;
         }
 
@@ -97,7 +96,7 @@ class SensorHybrid
             uint32_t currentWord = 0;
             int bitsFilled = 0;
 
-            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP && sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
+            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
             {
 
                 // For PS, sensor_2 is always strip and sensor_1 is always pixel
@@ -290,7 +289,7 @@ class SensorHybrid
         }
         unsigned int  get_number_of_pixel_clusters()  
         {
-            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP)
+            if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS)
             {
                 return sensor_1_clusters_.size();
             }

@@ -203,7 +203,8 @@ private:
         payload.push_back(currentWord);
       }
     } else {
-      edm::LogError("SensorHybrid") << "Sensors 1 and 2 have inconsistent types";
+	    // LogError is not a valid member for a GPU backend hence for alpaka code it is commented out can be added conditionally is super nessasary 
+     // edm::LogError("SensorHybrid") << "Sensors 1 and 2 have inconsistent types";
     }
   }
 

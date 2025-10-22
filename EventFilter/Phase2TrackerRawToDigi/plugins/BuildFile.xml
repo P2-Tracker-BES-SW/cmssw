@@ -2,5 +2,34 @@
   <use name="EventFilter/Phase2TrackerRawToDigi"/>
   <use name="Geometry/Records"/>
   <use name="CondFormats/DataRecord"/>
+  <!-- Added for ClusterConverterSoAToLegacy dependencies -->
+  <use name="alpaka"/>
+  <use name="HeterogeneousCore/AlpakaInterface"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<!-- alpaka -->
+<library file="alpaka/*.cc" name="Phase2RawToClusterProducer">
+  <use name="alpaka"/>
+  <use name="L1Trigger/TrackerDTC"/>
+  <use name="root"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="PhysicsTools/UtilAlgos"/>
+  <use name="CondFormats/DataRecord"/>
+  <use name="DataFormats/Math"/>
+  <use name="DataFormats/TestObjects"/>
+  <use name="FWCore/Framework"/>
+  <use name="FWCore/MessageLogger"/>
+  <use name="FWCore/ParameterSet"/>
+  <use name="FWCore/Utilities"/>
+  <use name="Geometry/Records"/>
+  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="CondFormats/SiPhase2TrackerObjects"/>
+  <use name="HeterogeneousCore/AlpakaCore"/>
+  <use name="HeterogeneousCore/AlpakaInterface"/>
+  <use name="DataFormats/FEDRawData"/>
+  <use name="DataFormats/Phase2TrackerCluster"/>
+
+  <flags ALPAKA_BACKENDS="1"/>
   <flags EDM_PLUGIN="1"/>
 </library>

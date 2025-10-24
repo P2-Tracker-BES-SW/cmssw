@@ -53,7 +53,7 @@ ClusterPropSoAToLegacyED::ClusterPropSoAToLegacyED(const edm::ParameterSet& pset
 void ClusterPropSoAToLegacyED::fillDescriptions(edm::ConfigurationDescriptions& descs) {
   edm::ParameterSetDescription d;
   // by default read the SoA produced by the Unpacker in this same process
-  d.add<edm::InputTag>("clusterSoASource", edm::InputTag("Unpacker", "", "PACKANDUNPACK"));
+  d.add<edm::InputTag>("clusterSoASource", edm::InputTag("alpakaUnpacker", "", "PACKANDUNPACK"));
   descs.addWithDefaultLabel(d);
 }
 

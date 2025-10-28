@@ -14,7 +14,7 @@ process.MessageLogger = cms.Service(
     "MessageLogger",
     destinations=cms.untracked.vstring('logFile', 'cout'),
     logFile=cms.untracked.PSet(
-        threshold=cms.untracked.string('INFO'),  # Change to 'DEBUG' if needed
+        threshold=cms.untracked.string('DEBUG'),  # Change to 'DEBUG' if needed
     ),
     cout=cms.untracked.PSet(
         threshold=cms.untracked.string('WARNING'),  # Only show warnings/errors on console
@@ -27,12 +27,12 @@ process.source = cms.Source("EmptySource")
 
 # Limit the number of events processed based on the raw file content
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(268) #Adjust this as needed
+    input = cms.untracked.int32(1) #Adjust this as needed
 )
 
 # Define the DTHDAQToFEDRawDataConverter module
 process.dthDAQToFEDRawData = cms.EDProducer('DTHDAQToFEDRawDataConverter',
-    inputFile = cms.string('orbit_stream.raw-fed00000-index000.raw'),  # Path to your input raw file
+    inputFile = cms.string('module_to_pc_sourceid01230_index000.raw'),  # Path to your input raw file
 )
 
 # Define the output module to write FEDRawData to a ROOT file

@@ -188,15 +188,54 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
             size_t payloadStart = trailerPos - payloadSizeBytes;
 
             FragmentData frag;
-            frag.orbitIdx = orbitIdx + 1;
-            frag.runNumber = runNumber;
-            frag.orbitNumber = orbitNumber;
-            frag.sourceId = sourceId;
-            frag.fragFlags = fragFlags;
-            frag.fragSize = fragSize;
-            frag.eventId = eventId;
-            frag.crc = crc;
-            frag.payloadBytes.assign(buffer.begin() + payloadStart, buffer.begin() + payloadStart + payloadSizeBytes);
+            frag.orbitIdx   = orbitIdx + 1;
+            frag.runNumber  = runNumber;
+            frag.orbitNumber= orbitNumber;
+            frag.sourceId   = sourceId;
+            frag.fragFlags  = fragFlags;
+            frag.fragSize   = fragSize;
+            frag.eventId    = eventId;
+            frag.crc        = crc;
+            frag.payloadBytes.assign(buffer.begin() + payloadStart,
+                                    buffer.begin() + payloadStart + payloadSizeBytes);
+
+            std::cout << "Fragment " << fragIdx << ":\n"
+                    << "  orbitIdx    = " << frag.orbitIdx << "\n"
+                    << "  runNumber   = " << frag.runNumber << "\n"
+                    << "  orbitNumber = " << frag.orbitNumber << "\n"
+                    << "  sourceId    = " << frag.sourceId << "\n"
+                    << "  fragFlags   = 0x" << std::hex << frag.fragFlags << std::dec << "\n"
+                    << "  fragSize    = " << frag.fragSize << "\n"
+                    << "  eventId     = " << frag.eventId << "\n"
+                    << "  crc         = 0x" << std::hex << frag.crc << std::dec << "\n";
+            std::cout << "  payloadBytes (" << frag.payloadBytes.size() << " bytes) as 64-bit words (LE):\n";
+
+            auto read_u64_le = [](const std::vector<char>& v, size_t off) -> uint64_t {
+                uint64_t val = 0;
+                const size_t n = std::min<size_t>(8, v.size() - off);
+                for (size_t i = 0; i < n; ++i) {
+                    val |= (uint64_t)(static_cast<unsigned char>(v[off + i])) << (8 * i);
+                }
+                return val;
+            };
+
+            // set a cap if you want (0 = no cap)
+            const size_t max_words_to_print = 0; // e.g. set to 12 to print first 12 words only
+
+            const size_t nwords = (frag.payloadBytes.size() + 7) / 8;
+            const size_t words_to_print = (max_words_to_print == 0) ? nwords
+                                                                    : std::min(nwords, max_words_to_print);
+
+            for (size_t w = 0; w < words_to_print; ++w) {
+                const uint64_t val = read_u64_le(frag.payloadBytes, w * 8);
+                std::cout << "  [" << std::setw(2) << std::setfill('0') << w << "] 0x"
+                        << std::hex << std::setw(16) << std::setfill('0') << val
+                        << std::dec << "\n";
+            }
+
+            if (words_to_print < nwords) {
+                std::cout << "  ... (" << (nwords - words_to_print) << " more 64-bit words)\n";
+            }
 
             eventIdToFragments_[eventId].emplace_back(std::move(frag));
             currentPos = payloadStart;

@@ -1,3 +1,4 @@
+//================================== Defines the SoA data structure holding the unpacked cluster properties.====================================
 #ifndef DataFormats_Phase2TrackerCluster_interface_ClusterPropSoA_h
 #define DataFormats_Phase2TrackerCluster_interface_ClusterPropSoA_h
 

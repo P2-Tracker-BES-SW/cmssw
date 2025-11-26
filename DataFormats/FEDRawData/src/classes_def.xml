@@ -29,9 +29,4 @@
  <class name="edm::RefProd<FEDRawDataCollection>"/>
  <class name="edm::Wrapper<RawDataBuffer>" splitLevel="0"/>
  <class name="edm::RefProd<RawDataBuffer>"/>
- <!-- alpaka -->
- <class name="Phase2RawToCluster::StripPixelSoA"/>
- <class name="Phase2RawToCluster::StripPixelSoA::View"/>
- <class name="Phase2RawToCluster::StripPixelHostCollection"/>
- <class name="edm::Wrapper<Phase2RawToCluster::StripPixelHostCollection>" splitLevel="0"/>
 </lcgdict>

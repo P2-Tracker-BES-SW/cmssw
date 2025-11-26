@@ -1,4 +1,4 @@
-// ================================ GPU kernels File ================================
+// ================================ The alpaka device-side implementation (kernels) of the unpacking algorithm. ================================
 
 // alpaka-related imports
 #include <alpaka/alpaka.hpp>
@@ -6,7 +6,6 @@
 #include "HeterogeneousCore/AlpakaInterface/interface/traits.h"
 #include "HeterogeneousCore/AlpakaInterface/interface/workdivision.h"
 
-#include "DataFormats/FEDRawData/interface/alpaka/StripPixelDeviceCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"  // uses the SoA layout
 #include "EventFilter/Phase2TrackerRawToDigi/interface/SensorHybrid.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"

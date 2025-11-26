@@ -1,9 +1,5 @@
-// Host-only converter: ClusterProp SoA  ->  edmNew::DetSetVector<Phase2TrackerCluster1D>
-// Produces legacy AoS clusters from the unpacker SoA output.
-//
-// This module deliberately avoids any device-side/alpaka queue usage.
-// It consumes a PortableHostCollection<Phase2RawToCluster::ClusterPropSoALayout<> >
-// and emits Phase2TrackerCluster1DCollectionNew via FastFiller.
+// ================================ Host-only EDProducer that converts ClusterPropSoA into the legacy edmNew::DetSetVector ========================
+// ================================ (SoA → AoS conversion) =======================================================================================
 
 #include <algorithm>
 #include <cstdint>
@@ -67,12 +63,12 @@ void ClusterPropSoAToLegacyED::produce(edm::Event& iEvent, edm::EventSetup const
   perDet.reserve(1024);
   perDet.max_load_factor(0.7f);
 
-  int skippedInvalid = 0; // ADDED: counter for skipped invalid detIds
+  int skippedInvalid = 0; // counter for skipped invalid detIds
 
   for (int i = 0; i < nHits; ++i) {
     const uint32_t detId  = view[i].detId();
 
-    // --- ADDED: skip invalid placeholder entries to match CPU EDAnalyzer behavior
+    // skip invalid placeholder entries to match CPU EDAnalyzer behavior
     // detId == 0    placeholder clusters (invalid, should not be output)
     // detId <= 2    avoids underflow in cabling lookups (invalid)
     if (detId == 0 || detId <= 2) {

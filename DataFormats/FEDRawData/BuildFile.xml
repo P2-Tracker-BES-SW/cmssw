@@ -1,11 +1,5 @@
 <use name="DataFormats/Common"/>
 <use name="FWCore/Utilities"/>
-<!-- alpaka --> 
-<use name="eigen"/>
-<use name="rootcore"/>
-<use name="DataFormats/DetId"/>
-<use name="HeterogeneousCore/AlpakaInterface"/>
-<flags ALPAKA_BACKENDS="cuda rocm"/>
 <export>
   <lib name="1"/>
 </export>

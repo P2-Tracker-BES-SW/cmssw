@@ -8,7 +8,3 @@
 #include <DataFormats/FEDRawData/src/fed_trailer.h>
 #include <DataFormats/Common/interface/Wrapper.h>
 #include <DataFormats/Common/interface/RefProd.h>
-//alpaka
-#include "DataFormats/FEDRawData/interface/StripPixelCollection.h"
-#include "DataFormats/FEDRawData/interface/StripPixelHostCollection.h"
-#include "DataFormats/FEDRawData/interface/StripPixelSoA.h"

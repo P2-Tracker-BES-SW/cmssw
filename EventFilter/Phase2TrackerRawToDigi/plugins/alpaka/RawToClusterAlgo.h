@@ -1,9 +1,9 @@
+//====================== Header with helper functions and shared algorithmic components used by the unpacker. ==========================
 #ifndef EventFilter_Phase2TrackerRawToDigi_RawToClusterAlgo_h
 #define EventFilter_Phase2TrackerRawToDigi_RawToClusterAlgo_h
 
 #include "HeterogeneousCore/AlpakaInterface/interface/config.h"
 #include "HeterogeneousCore/AlpakaCore/interface/alpaka/Event.h"
-#include "DataFormats/FEDRawData/interface/alpaka/StripPixelDeviceCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"

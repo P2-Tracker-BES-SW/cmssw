@@ -1,3 +1,4 @@
+//================================== alpaka host-side collection wrapper for ClusterPropSoA. ==========================================
 #ifndef DataFormats_Phase2TrackerCluster_interface_ClusterPropHostCollection_h
 #define DataFormats_Phase2TrackerCluster_interface_ClusterPropHostCollection_h
 

@@ -1,7 +1,6 @@
-// ================================ EDProducer ================================
-#include "DataFormats/FEDRawData/interface/StripPixelHostCollection.h"
+// ================================ The alpaka EDProducer that unpacks FEDRawData and produces a ClusterPropSoA, which ==================================
+// ================================ contains Phase-2 Outer Tracker cluster information.==================================================================
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropHostCollection.h"
-#include "DataFormats/FEDRawData/interface/alpaka/StripPixelDeviceCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"
 
 #include "DataFormats/Portable/interface/alpaka/PortableCollection.h"
@@ -85,8 +84,8 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     const edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord>                       trackerGeometryToken_;
     const edm::ESGetToken<TrackerTopology, TrackerTopologyRcd>                               trackerTopologyToken_;
 
-    // SoA output token (keep!)
-    device::EDPutToken<Phase2RawToCluster::ClusterPropSoACollection> outputToken_;
+    // SoA output token
+    device::EDPutToken<Phase2RawToCluster::ClusterPropDeviceCollection> outputToken_;
 
     // cached ES pointers
     const TrackerDetToDTCELinkCablingMap* cablingMap_      = nullptr;
@@ -110,7 +109,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     cms::alpakatools::device_buffer<Device, uint32_t[]> innerDetIdDevice_;
     cms::alpakatools::device_buffer<Device, uint32_t[]> outerDetIdDevice_;
 
-    // flat detId per flatIdx (kept for parity)
+    // flat detId per flatIdx
     cms::alpakatools::host_buffer<int[]> detIdMapHost_;
     cms::alpakatools::device_buffer<Device, int[]> detIdMapDevice_;
   };
@@ -294,7 +293,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     );
 
     // 5) Copy output to host SoA
-    Phase2RawToCluster::ClusterPropSoACollection hostClusterPropSoA(MaxTotalClusters, queue);
+    Phase2RawToCluster::ClusterPropDeviceCollection hostClusterPropSoA(MaxTotalClusters, queue);
     auto hostBuf = hostClusterPropSoA.buffer();
     alpaka::memset(queue, hostBuf, 0x00);
     alpaka::memcpy(queue, hostBuf, devClusterProp.const_buffer());

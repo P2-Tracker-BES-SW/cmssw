@@ -16,7 +16,7 @@ namespace Phase2RawToCluster {
 //   y         : sensor row
 //   z         : PS pixel column
 //   width     : cluster width
-//   isSeed    : 1 for PS pixels (seed), 0 for strips (non seed)
+//   isSeed    : 1 = seed sensor (2S inner strips or PS pixels), 0 = correlated sensor (2S outer strips or PS strips)
 //   mip       : PS strip MIP bit (0 for pixels and 2S)
 //   moduleType: 1=2S, 2=PS
 //

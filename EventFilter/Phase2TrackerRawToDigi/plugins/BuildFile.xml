@@ -11,7 +11,6 @@
 <!-- alpaka -->
 <library file="alpaka/*.cc" name="Phase2RawToClusterProducer">
   <use name="alpaka"/>
-  <use name="L1Trigger/TrackerDTC"/>
   <use name="root"/>
   <use name="FWCore/ServiceRegistry"/>
   <use name="PhysicsTools/UtilAlgos"/>

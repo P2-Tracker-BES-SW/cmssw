@@ -65,3 +65,17 @@ Alternatively, you can make your own raw input file:
 cmsRun startBU.py runNumber=100101 fffBaseDir=myOutputDir maxLS=2 fedMeanSize=128
 eventsPerFile=2 eventsPerLS=3 frdFileVersion=0 dataType=DTH
 ```
+=== Instruction to run the alpaka based unpacker
+
+To run the alpaka unpacker, log in to your machine where a GPU is availabe, then from the src directory;
+```
+cd EventFilter/Phase2TrackerRawToDigi/test/
+cmsRun PackerAndUnpackerProducer_cfg.py
+
+```
+The `PackerAndUnpackerProducer_cfg.py` file runs the packing and unpacking steps, where unpacking is run both with only CPU based unpacker labeled in the file as Unpacker process and the alpaka unpacker labeld as alpakaUnpacker process. Additionally, this file includes a flag `Legacy_Format` which run the conversion step from the `SoA` output product of the alpaka unpacking EDProducer to the `edmNew::DetSetVector` which is the output product of the only CPU based unpacking EDproducer. 
+
+--- Note: 
+If the alpaka based code is run on a machine with no GPU, it still runs but only using the serial backend of alpaka which only involves CPUs.   
+
+

@@ -1,5 +1,5 @@
-// ================================ The alpaka EDProducer that unpacks FEDRawData and produces a ClusterPropSoA, which ==================================
-// ================================ contains Phase-2 Outer Tracker cluster information.==================================================================
+// =================== The alpaka EDProducer that unpacks DAQ output-format(FEDRawData) and produces an SoA containing the cluster information(ClusterPropSoA) =============
+
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropHostCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"
 

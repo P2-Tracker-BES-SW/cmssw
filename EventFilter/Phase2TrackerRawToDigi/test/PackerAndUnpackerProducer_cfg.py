@@ -53,13 +53,11 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
 
 process.source = cms.Source("PoolSource",
 #    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
-     #fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
-     fileNames = cms.untracked.vstring("file:/eos/user/m/mmomed/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
-
+     fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
      )
 
 ## in case of local file
@@ -97,9 +95,9 @@ process.Unpacker = cms.EDProducer("RawToClusterProducer",
 )
 # -- alpaka --
 process.alpakaUnpacker = cms.EDProducer("Phase2RawToClusterProducer@alpaka",
-#process.Unpacker = cms.EDProducer("alpaka_serial_sync::Phase2RawToClusterProducer",
-#process.Unpacker = cms.EDProducer("alpaka_cuda_async::Phase2RawToClusterProducer",
-#process.Unpacker = cms.EDProducer("alpaka_rocm_async::Phase2RawToClusterProducer",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_serial_sync::Phase2RawToClusterProducer",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_cuda_async::Phase2RawToClusterProducer",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_rocm_async::Phase2RawToClusterProducer",
     fedRawDataCollection = cms.InputTag("Packer"),
 )
 process.ClusterConverter = cms.EDProducer("ClusterPropSoAToLegacyED",
@@ -143,7 +141,6 @@ else:
     # run without legacy conversion,
     process.dtc = cms.Path(
         process.Packer *
-        process.Analyzer *
         process.Unpacker *
         process.alpakaUnpacker
     )

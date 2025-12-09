@@ -1,5 +1,5 @@
-// ================================ Host-only EDProducer that converts ClusterPropSoA into the legacy edmNew::DetSetVector ========================
-// ================================ (SoA → AoS conversion) =======================================================================================
+// ================================ EDProducer that converts the end product SoA of alpaka Unpacker (ClusterPropSoA) into the end product of CPU only based unpacker (edmNew::DetSetVector)===================
+// ================================ This EDProdcer is only necessary if the use of an `edmNew:DetSetVector` format is required by the next step in the pipeline ====================
 
 #include <algorithm>
 #include <cstdint>

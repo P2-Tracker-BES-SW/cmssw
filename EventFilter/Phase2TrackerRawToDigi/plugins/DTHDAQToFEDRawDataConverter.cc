@@ -1,6 +1,6 @@
 // A utility to read and parse a .raw orbit aggregation file from the DTH,
 // and convert all event fragments belonging to the same event ID into one FEDRawDataCollection per CMSSW event.
-// By Alaa Adel Abdelhamid, May 2025
+// By Alaa Adel Abdelhamid, May 2025. Modified in 2026.
 
 #include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -190,6 +190,7 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
       size_t payloadSizeBytes = fragSize * fragmentPayloadWordSize;
       if (trailerPos < payloadSizeBytes)
         break;
+      
       size_t payloadStart = trailerPos - payloadSizeBytes;
 
       FragmentData frag;
@@ -201,7 +202,43 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
       frag.fragSize = fragSize;
       frag.eventId = eventId;
       frag.crc = crc;
-      frag.payloadBytes.assign(buffer.begin() + payloadStart, buffer.begin() + payloadStart + payloadSizeBytes);
+
+      // Define offsets (128 bits = 16 bytes each)
+      const size_t headerOffsetBytes = 16;
+      const size_t trailerOffsetBytes = 16;
+
+      // 1. Validate BOE (Header bits 127:120)
+      // In little-endian, BOE is the 16th byte of the header block.
+      uint8_t boeByte = static_cast<uint8_t>(buffer[payloadStart + 15]);
+      if (boeByte != 0x55) {
+          edm::LogWarning("DTHDAQToFEDRawDataConverter") 
+              << "BOE mismatch! Expected 0x55, found 0x" << std::hex << (int)boeByte 
+              << " at index " << std::dec << (payloadStart + 15);
+      }
+
+      // 2. Validate EOE (Trailer bits 127:120)
+      // EOE is the very last byte of the total payloadSizeBytes window.
+      uint8_t eoeByte = static_cast<uint8_t>(buffer[payloadStart + payloadSizeBytes - 1]);
+      if (eoeByte != 0xaa) {
+          edm::LogWarning("DTHDAQToFEDRawDataConverter") 
+              << "EOE mismatch! Expected 0xaa, found 0x" << std::hex << (int)eoeByte
+              << " at index " << std::dec << (payloadStart + payloadSizeBytes - 1);
+      }
+
+      // 3. Extract actual data (Skipping 16 bytes at start and 16 bytes at end)
+      if (payloadSizeBytes > (headerOffsetBytes + trailerOffsetBytes)) {
+          size_t actualDataSize = payloadSizeBytes - headerOffsetBytes - trailerOffsetBytes;
+          frag.payloadBytes.assign(
+              buffer.begin() + payloadStart + headerOffsetBytes, 
+              buffer.begin() + payloadStart + headerOffsetBytes + actualDataSize
+          );
+      } else {
+          frag.payloadBytes.clear();
+          edm::LogWarning("DTHDAQToFEDRawDataConverter") 
+              << "Fragment payload size (" << payloadSizeBytes 
+              << ") is too small to contain a header. Skipping.";
+      }
+
       if (eventIdToFragments_.find(eventId) == eventIdToFragments_.end()) {
         eventInsertionOrder_.push_back(eventId);
       }

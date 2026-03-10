@@ -44,7 +44,8 @@ process.trackerGeometry.applyAlignment = False
 
 ## to read local cabling map you need to use the following configuration lines: 
 process.load("CondCore.CondDB.CondDB_cfi")
-process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/again/CMSSW_16_0_0_pre4/src/Geometry/TrackerCommonData/data/CRack_PhaseII/crackCablingMap.db'
+# process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/again/CMSSW_16_0_0_pre4/src/Geometry/TrackerCommonData/data/CRack_PhaseII/crackCablingMap.db'
+process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_16_0_0_pre4/src/CondTools/SiPhase2Tracker/test/my_crack.db'
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     process.CondDB,
     toGet = cms.VPSet(cms.PSet(
@@ -59,7 +60,12 @@ process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDB
 process.source = cms.Source("PoolSource",
 #      fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
      fileNames = cms.untracked.vstring(
-       "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/output_dataset.root"
+#        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/output_dataset.root"
+#        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/outputFEDRawData_alaa.root"
+#        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_sourceid01230_index000.root"
+#        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_Noise.root"
+       "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_VCTH500_50Hz_Random_L1As.root"
+#        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/output_dataset_BES_Reference_Binary_VCTH500_50Hz_Random_L1As.root"
      )
 )
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
@@ -75,8 +81,20 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
 
 
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedRawDataCollection = cms.InputTag("rawDataCollector")
+#     fedRawDataCollection = cms.InputTag("rawDataCollector") ## srecko
+    fedRawDataCollection = cms.InputTag("dthDAQToFEDRawData") ## alaa
 )
+
+# process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',
+#     ProductLabel = cms.InputTag("Unpacker")
+# )
+# 
+# process.TFileService = cms.Service('TFileService', 
+#     fileName = cms.string(
+#         'ClusterAnalyzer_TTree.root'
+#     ), 
+#     closeFileFast = cms.untracked.bool(True)
+# )
 
 process.out = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
@@ -88,7 +106,8 @@ process.out = cms.OutputModule("PoolOutputModule",
       'keep *_Unpacker_*_*',
       'keep *_mix_Tracker_*',
       ),
-    fileName = cms.untracked.string('crackClusters.root')
+#     fileName = cms.untracked.string('crackClustersAlaa.root')
+    fileName = cms.untracked.string('crackClustersAlaa_BES_Reference_Binary_VCTH500_50Hz_Random_L1A.root')
 )
 
 process.Timing = cms.Service("Timing",
@@ -96,5 +115,5 @@ process.Timing = cms.Service("Timing",
     useJobReport = cms.untracked.bool(True)  # This will also log timings in the job report.
 )
 
-process.dtc = cms.Path(process.Unpacker)
+process.dtc = cms.Path(process.Unpacker)# + process.ClusterAnalyzer)
 process.output = cms.EndPath(process.out)

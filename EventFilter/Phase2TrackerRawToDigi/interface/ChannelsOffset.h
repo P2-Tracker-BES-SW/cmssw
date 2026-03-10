@@ -12,12 +12,13 @@ using namespace Phase2DAQFormatSpecification;
 
 class ChannelsOffset {
 public:
-  std::vector<uint32_t> values_;
+  std::vector<uint64_t> values_;
   std::vector<uint16_t> offsetMap_{std::vector<uint16_t>(CICs_PER_SLINK, 0)};
 
-  void setValue(std::vector<uint32_t>& newValues) {
+  void setValue(std::vector<uint64_t>& newValues) {
     values_ = newValues;
-    fillOffsetMap();
+    fillOffsetMap64();
+//     fillOffsetMap();
   }
 
   void printValues() const {
@@ -31,10 +32,22 @@ public:
               << std::endl;
   }
 
+  // this is for the 32b version of the offset
+  void fillOffsetMap64() {
+    offsetMap_[0] = static_cast<uint16_t>(0);  
+    for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
+      // extract the upper 8 bits of the lower 32 bits 
+      offsetMap_[i * 2 + 1] = static_cast<uint16_t>((values_[i] >> 24) & 0xFF);
+      // extract the upper 8 bits of the upper 32 bits
+      if (i > 0)
+        offsetMap_[i * 2] = static_cast<uint8_t>((values_[i-1] >> 56) & 0xFF);
+    }
+  }
+
   void fillOffsetMap() {
     for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
       // extract the lower 16 bits by masking with 0xFFFF
-      offsetMap_[i * 2] = static_cast<uint16_t>(values_[i] & 0xFFFF);
+      offsetMap_[i * 2] = static_cast<uint16_t>(values_[i] & 0xFFFF);  // this one should become a 32
       // extract the upper 16 bits by shifting right by 16
       offsetMap_[i * 2 + 1] = static_cast<uint16_t>(values_[i] >> 16);
     }
@@ -49,7 +62,9 @@ public:
 
   void printMap() const {
     for (size_t i = 0; i < offsetMap_.size(); ++i) {
-      std::cout << "offsetMap[" << i << "]: " << offsetMap_[i] << std::endl;
+      std::cout << "offsetMap[" << i << "]: " << offsetMap_[i] 
+                << "   " << std::bitset<16>(offsetMap_[i])
+                << std::endl;
     }
   }
 };

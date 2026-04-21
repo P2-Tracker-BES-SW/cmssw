@@ -275,7 +275,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
                 << " (n lines = " << nLines << ")";
           }
 
-          std::cout << "nLines = " << nLines << std::endl;
           // first retrieve all lines filled with clusters
           std::vector<uint32_t> lines;
           for (unsigned int iline = 0; iline < nLines; iline++) {
@@ -285,7 +284,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             int aligned_idx = initial_offset + (cluster_payload_idx / 2) * (2 * N_BYTES_PER_WORD);
 
             std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr, aligned_idx);
-            // even payload words are in the lower 32 bits (first), odds are in the upper (second)
+            // even payload are in the lower 32 bits (first), odds are in the upper (second)
             if (cluster_payload_idx % 2 == 0) {
               lines.push_back(two_words.first);
               std::cout << "iline " << iline << " (even cluster idx " << cluster_payload_idx 
@@ -443,7 +442,6 @@ std::pair<uint32_t,uint32_t> RawToClusterProducer::split64bLine(const unsigned c
         (static_cast<uint64_t>(dataPtr[lineIdx + 5]) << 8   ) |
         (static_cast<uint64_t>(dataPtr[lineIdx + 6]) << 16  ) |
         (static_cast<uint64_t>(dataPtr[lineIdx + 7]) << 24  );
-//     std::cout << "upper = " << std::bitset<32>(upper) << " " << std::bitset<32>(lower)<< std::endl;
 //     std::cout << "  lower = " << std::bitset<32>(lower) << "\t\t upper = " << std::bitset<32>(upper) << std::endl;
     return {lower,upper};
 }

@@ -243,7 +243,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr,idx);  
             headerWord = two_words.second;          
           } 
-          std::cout << "CHANNEL " << iChannel << "\t offset = " << idx << "\t HEADER " <<std::bitset<32>(headerWord) << std::endl;
+          std::cout << "\nCHANNEL " << iChannel << "\t offset = " << idx << "\t HEADER " <<std::bitset<32>(headerWord) << std::endl;
           
           // unsigned long eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
           // int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
@@ -277,12 +277,30 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
           std::cout << "nLines = " << nLines << std::endl;
           // first retrieve all lines filled with clusters
-          if (nLines > 0)
-            std::cout << "CLUSTERS PAYLOAD  ";
           std::vector<uint32_t> lines;
           for (unsigned int iline = 0; iline < nLines; iline++) {
-            lines.push_back(readLineBE(dataPtr, getLineIndex(idx, iline)));
+            // header is at channelOffset, so payload starts at channelOffset + 1
+            int cluster_payload_idx = channelOffset + 1 + iline;
+            // calculate the 64b aligned byte index (8 bytes per 64b line)
+            int aligned_idx = initial_offset + (cluster_payload_idx / 2) * (2 * N_BYTES_PER_WORD);
+
+            std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr, aligned_idx);
+            // even payload words are in the lower 32 bits (first), odds are in the upper (second)
+            if (cluster_payload_idx % 2 == 0) {
+              lines.push_back(two_words.first);
+              std::cout << "iline " << iline << " (even cluster idx " << cluster_payload_idx 
+                        << ") / cluster payload = " << std::bitset<32>(two_words.first) << std::endl;
+            } else {
+              lines.push_back(two_words.second);
+              std::cout << "iline " << iline << " (odd cluster idx " << cluster_payload_idx 
+                        << ") / cluster payload = " << std::bitset<32>(two_words.second) << std::endl;
+            }   
           }
+
+//           for (unsigned int iline = 0; iline < nLines; iline++) {
+//             std::cout << iline << "\t";
+//             lines.push_back(readLineBE(dataPtr, getLineIndex(idx, iline)));
+//           }
           if (lines.size() != nLines) {
             edm::LogError("RawtoClusterProducer")
                 << "ERROR: Numbers of stored lines does not match with size of lines to be read!";
@@ -389,6 +407,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 }
 
 int RawToClusterProducer::getLineIndex(int channelIdx, unsigned int iline) {
+//   std::cout << "cluster index = "  <<  channelIdx + N_BYTES_PER_WORD + iline * N_BYTES_PER_WORD << std::endl;      
   return channelIdx + N_BYTES_PER_WORD + iline * N_BYTES_PER_WORD;
 }
 
@@ -407,7 +426,7 @@ uint32_t RawToClusterProducer::readLineBE(const unsigned char* dataPtr, int line
                   (static_cast<uint32_t>(dataPtr[lineIdx + 1]) << 8) |
                   (static_cast<uint32_t>(dataPtr[lineIdx + 2]) << 16) |
                   (static_cast<uint32_t>(dataPtr[lineIdx + 3]) << 24);
-//   std::cout << std::bitset<32>(line) << std::endl;                  
+  std::cout << std::bitset<32>(line) << std::endl;                  
   return line;
 }
 

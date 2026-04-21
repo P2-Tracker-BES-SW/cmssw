@@ -32,18 +32,16 @@ public:
               << std::endl;
   }
 
-  // this is for the 32b version of the offset
+  // this is for the 64b version of the offset
   void fillOffsetMap64() {
+    // channel 0 offset is always 0 
     offsetMap_[0] = static_cast<uint16_t>(0);  
-    for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
-      // extract the upper 8 bits of the lower 32 bits 
-      offsetMap_[i * 2 + 1] = static_cast<uint16_t>((values_[i] >> 24) & 0xFF);
-      // extract the upper 8 bits of the upper 32 bits
-      if (i > 0)
-        offsetMap_[i * 2] = static_cast<uint8_t>((values_[i-1] >> 56) & 0xFF);
+    for (size_t i = 1; i < CICs_PER_SLINK ; ++i) {
+      offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFF) - 1 ;
     }
   }
 
+  // this was for the 32b version of the offset
   void fillOffsetMap() {
     for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
       // extract the lower 16 bits by masking with 0xFFFF

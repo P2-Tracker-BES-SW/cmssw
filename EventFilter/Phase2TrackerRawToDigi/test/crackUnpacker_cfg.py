@@ -64,11 +64,13 @@ process.source = cms.Source("PoolSource",
 #        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/outputFEDRawData_alaa.root"
 #        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_sourceid01230_index000.root"
 #        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_Noise.root"
+
        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/alaa_update/CMSSW_16_0_0_pre1/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_BES_Reference_Binary_VCTH500_50Hz_Random_L1As.root"
+
 #        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_15_0_4/src/EventFilter/Utilities/test/output_dataset_BES_Reference_Binary_VCTH500_50Hz_Random_L1As.root"
      )
 )
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
 
 
 # algo = process.mix.digitizers.pixel.SSDigitizerAlgorithm

@@ -207,7 +207,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // where clusters from channel X are split into 2*i and 2*i+1 based on being from CIC0 or CIC1
           
           // sara for crack: gbt_id should be 49
-          unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          unsigned int gbt_id = iSlink * 24 + std::div(iChannel, 2).quot; // temp for crack
+//           unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
           DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
 
           int thisDetId = -1;
@@ -218,13 +219,14 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
                 thisDTCElinkId);  // this returns a pair, detid will be an uint32_t (not a DetId)
             thisDetId = possibleDetIds->second;
 //             LogTrace("RawToClusterProducer") << "slink: " << iSlink << "\tiDTC: " << unsigned(dtcID) << "\tiGBT: " << unsigned(gbt_id)
-//                 << "\tielink: " << unsigned(0) << "\t -> detId:" << thisDetId;
+            std::cout  << "slink: " << iSlink << "\tiDTC: " << unsigned(dtcID) << "\tiGBT: " << unsigned(gbt_id)
+                << "\tielink: " << unsigned(0) << "\t -> detId:" << thisDetId;
             is2SModule =
                 trackerGeometry_->getDetectorType(stackMap_[thisDetId].first) == TrackerGeometry::ModuleType::Ph2SS;
           } else {
 //             LogTrace("RawToClusterProducer") << "slink: " << iSlink << "\tiDTC: " << unsigned(dtcID)
             std::cout  << "slink: " << iSlink << "\tiDTC: " << unsigned(dtcID)
-                                             << "\tiGBT: " << unsigned(gbt_id) << " -> not connected? ";
+                                              << "\tiGBT: " << unsigned(gbt_id) << " -> not connected? ";
             std::cout << std::endl;
             continue;
           }

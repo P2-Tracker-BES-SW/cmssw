@@ -12,6 +12,8 @@ process = cms.Process("Analysis")
 # the original clusters will be analyzed.
 # If it is False, then the original clusters will be analyzed.
 ANALYZE_PACKUNPACK = False
+# If this is True, the clusters from the unpacked CRack data will be analyzed.
+ANALYZE_CRACK = True
 
 # Enable summary at the end of the job
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
@@ -26,12 +28,27 @@ process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring("file:raw2clusters.root"))
 
+
 if ANALYZE_PACKUNPACK:
 
   print("\n === Analyzing clusters created by pack + unpack sequence ===\n")
   
   # Update label to match the output from the digi-raw-digi process
   process.ClusterAnalyzer.ProductLabel = cms.InputTag("Unpacker", "", "PACKANDUNPACK")
+
+
+elif ANALYZE_CRACK:
+
+  print("\n === Analyzing clusters created by CRack unpacker sequence ===\n")
+  
+  process.source = cms.Source("PoolSource", 
+      fileNames = cms.untracked.vstring(
+          "file:crackClustersAlaa_BES_Reference_Binary_VCTH500_50Hz_Random_L1A.root"
+      )
+  )
+  # Update label to match the output from the unpacker process
+  process.ClusterAnalyzer.ProductLabel = cms.InputTag("Unpacker", "", "UNPACK")
+
 
 else:
   print("\n === Analyzing original clusters ===\n")
@@ -49,19 +66,35 @@ process.TFileService = cms.Service('TFileService',
     closeFileFast = cms.untracked.bool(True)
 )
 
-## Load Geometry for the D98 configuration
-process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
 
 # Load the standard sequences for conditions and global tags
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 
-# Set the GlobalTag (adjust as necessary for your geometry)
-#process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+if not ANALYZE_CRACK:
+    ## Load Geometry for the D110 configuration
+    process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
+    # Set the GlobalTag (adjust as necessary for your geometry)
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 
-process.load("CondCore.CondDB.CondDB_cfi")
-process.CondDB.connect = 'frontier://FrontierProd/CMS_CONDITIONS'
+
+else:
+    ## customise for C-rack geometry
+    process.load('Configuration.Geometry.GeometryExtendedRun4D500Reco_cff')
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_0T', '')
+
+    process.trackerGeometry.applyAlignment = False
+
+    process.load("CondCore.CondDB.CondDB_cfi")
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_16_0_0_pre4/src/CondTools/SiPhase2Tracker/test/my_crack.db'
+    process.PoolDBESSource = cms.ESSource("PoolDBESSource",
+        process.CondDB,
+        toGet = cms.VPSet(cms.PSet(
+            record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
+            tag = cms.string("DTCCablingMapProducerUserRun"))
+        )
+    )
+    process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDBESSource","")
 
 #process.PoolDBESSource = cms.ESSource("PoolDBESSource",
 #    process.CondDB,

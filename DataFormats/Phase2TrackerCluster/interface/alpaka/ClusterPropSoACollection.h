@@ -1,17 +1,9 @@
 //================================== alpaka proxy collection providing unified Host/Device handling for ClusterPropSoA. ======================================
 #ifndef DataFormats_Phase2TrackerCluster_interface_alpaka_ClusterPropSoACollection_h
 #define DataFormats_Phase2TrackerCluster_interface_alpaka_ClusterPropSoACollection_h
-
-#include <type_traits>
-
-#include <alpaka/alpaka.hpp>
-
-#include "DataFormats/Portable/interface/alpaka/PortableCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropHostCollection.h"
-#include "HeterogeneousCore/AlpakaInterface/interface/AssertDeviceMatchesHostCollection.h"
 #include "HeterogeneousCore/AlpakaInterface/interface/CopyToHost.h"
-#include "HeterogeneousCore/AlpakaInterface/interface/config.h"
 
 namespace Phase2RawToCluster {
 

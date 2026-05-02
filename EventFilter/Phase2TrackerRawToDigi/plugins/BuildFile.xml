@@ -12,17 +12,7 @@
 <library file="alpaka/*.cc" name="Phase2RawToClusterProducer">
   <use name="alpaka"/>
   <use name="root"/>
-  <use name="FWCore/ServiceRegistry"/>
-  <use name="PhysicsTools/UtilAlgos"/>
   <use name="CondFormats/DataRecord"/>
-  <use name="DataFormats/Math"/>
-  <use name="DataFormats/TestObjects"/>
-  <use name="FWCore/Framework"/>
-  <use name="FWCore/MessageLogger"/>
-  <use name="FWCore/ParameterSet"/>
-  <use name="FWCore/Utilities"/>
-  <use name="Geometry/Records"/>
-  <use name="Geometry/TrackerGeometryBuilder"/>
   <use name="CondFormats/SiPhase2TrackerObjects"/>
   <use name="HeterogeneousCore/AlpakaCore"/>
   <use name="HeterogeneousCore/AlpakaInterface"/>

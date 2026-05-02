@@ -2,9 +2,7 @@
 <use name="DataFormats/Phase2TrackerDigi"/>
 <use name="rootrflx"/>
 <!-- alpaka -->
-<use name="FWCore/Utilities"/>
 <use name="eigen"/>
-<use name="rootcore"/>
 <use name="DataFormats/DetId"/>
 <use name="HeterogeneousCore/AlpakaInterface"/>
 <flags ALPAKA_BACKENDS="cuda rocm"/>

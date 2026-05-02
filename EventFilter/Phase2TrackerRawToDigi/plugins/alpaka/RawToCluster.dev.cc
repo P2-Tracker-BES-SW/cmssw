@@ -5,15 +5,13 @@
 
 #include "HeterogeneousCore/AlpakaInterface/interface/traits.h"
 #include "HeterogeneousCore/AlpakaInterface/interface/workdivision.h"
+// Andrea
+#include "HeterogeneousCore/AlpakaCore/interface/alpaka/chooseDevice.h"
 
 #include "DataFormats/Phase2TrackerCluster/interface/ClusterPropDeviceCollection.h"  // uses the SoA layout
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
-#include "DataFormats/FEDRawData/interface/FEDRawData.h"
-#include "EventFilter/Phase2TrackerRawToDigi/interface/TrackerHeader.h"
 
-using namespace cms::alpakatools;
-using namespace Phase2RawToCluster;
 using namespace Phase2TrackerSpecifications;
 using namespace Phase2DAQFormatSpecification;
 using namespace ALPAKA_ACCELERATOR_NAMESPACE;
@@ -95,10 +93,14 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 	// Unpacking Kernel, decodes raw FED data into cluster Properties SoA  
 	struct Unpacker {
 		template <
-			typename Acc, typename RawBufView, typename SizeBufView, typename OffBufView,
-				 typename ModuleTypeView, typename InnerDetIdView, typename OuterDetIdView, typename OutView
-					 >
-					 ALPAKA_FN_ACC void operator()(Acc const& acc,
+			typename RawBufView,
+				 typename SizeBufView,
+				 typename OffBufView,
+				 typename ModuleTypeView,
+				 typename InnerDetIdView,
+				 typename OuterDetIdView,
+				 typename OutView>
+					 ALPAKA_FN_ACC void operator()(Acc1D const& acc,
 							 RawBufView in,
 							 SizeBufView sizes,
 							 OffBufView offsets,
@@ -106,22 +108,16 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 							 InnerDetIdView const& innerDetIdForFlatIdx,
 							 OuterDetIdView const& outerDetIdForFlatIdx,
 							 OutView out,
-							 uint32_t* globalCounter) const {
+							 uint32_t* globalCounter) const {	
 						 // per thread scratch arrays in registers/local memory
 						 uint32_t offsetWords[MaxOffsetWords];
 						 uint32_t lines[MaxPayloadLines];
 						 uint32_t stripClusterWords[MaxStripClusters];
 						 uint32_t pixelClusterWords[MaxPixelClusters];
-
-						 // alpaka global thread
-						 const uint32_t gtid = alpaka::getIdx<alpaka::Grid, alpaka::Threads>(acc)[0u];
-						 // total number of threads in the grid
-						 const uint32_t gdim = alpaka::getWorkDiv<alpaka::Grid, alpaka::Threads>(acc)[0u];
 						 // Total number of S-Links (FED fragments) to parse across all DTCs 
 						 const uint32_t NSlinks = (MAX_DTC_ID - MIN_DTC_ID + 1) * SLINKS_PER_DTC;
-
 						 // loop over FEDs assigned to this thread (grid stride loop)
-						 for (uint32_t frdId = gtid; frdId < NSlinks; frdId += gdim) {
+						 for (uint32_t frdId : cms::alpakatools::uniform_elements(acc, NSlinks)) {
 							 if (sizes[frdId] == 0) continue;
 
 							 const unsigned char* dataPtr = in + offsets[frdId];
@@ -292,14 +288,15 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 
 	void launchUnpacker(
 			Queue& queue,
-			cms::alpakatools::device_buffer<Device, unsigned char[]> rawdatabuff,
-			cms::alpakatools::device_buffer<Device, size_t[]>        sizedatabuff,
-			cms::alpakatools::device_buffer<Device, size_t[]>        offsetdatabuff,
-			cms::alpakatools::device_buffer<Device, int[]>           detIdxModuleTypeDevice,
-			cms::alpakatools::device_buffer<Device, uint32_t[]>      innerDetIdDevice,
-			cms::alpakatools::device_buffer<Device, uint32_t[]>      outerDetIdDevice,
+			cms::alpakatools::device_buffer<Device, unsigned char[]> const& rawdatabuff,
+			cms::alpakatools::device_buffer<Device, size_t[]>        const& sizedatabuff,
+			cms::alpakatools::device_buffer<Device, size_t[]>        const& offsetdatabuff,
+			cms::alpakatools::device_buffer<Device, int[]>           const& detIdxModuleTypeDevice,
+			cms::alpakatools::device_buffer<Device, uint32_t[]>      const& innerDetIdDevice,
+			cms::alpakatools::device_buffer<Device, uint32_t[]>      const& outerDetIdDevice,
 			Phase2RawToCluster::ClusterPropDeviceCollection::View out,
-			uint32_t* globalCounter) {
+			uint32_t* globalCounter)
+	{
 
 		const uint32_t NSlinks = (MAX_DTC_ID - MIN_DTC_ID + 1) * SLINKS_PER_DTC;
 		const uint32_t threadsPerBlock = 128;
@@ -322,4 +319,4 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 				);
 	}
 
-} // namespace ALPAKA_ACCELERATOR_NAMESPACE
+	} // namespace ALPAKA_ACCELERATOR_NAMESPACE

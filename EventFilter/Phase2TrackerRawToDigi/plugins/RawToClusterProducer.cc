@@ -62,11 +62,13 @@ public:
   Phase2TrackerCluster1D unpackPixelOnPS(uint32_t, unsigned int);
   
   void dumpRawFile(const unsigned char*, size_t, bool);
+  bool nextIsSlinkTrailer(const unsigned char*, int);
 
 private:
   void produce(edm::Event&, const edm::EventSetup&) override;
 
   const edm::EDGetTokenT<FEDRawDataCollection> fedRawDataToken_;
+  int n_slink_bits_;
   const edm::ESGetToken<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd> cablingMapToken_;
   const edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeometryToken_;
   const edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopologyToken_;
@@ -80,6 +82,7 @@ private:
 
 RawToClusterProducer::RawToClusterProducer(const edm::ParameterSet& iConfig)
     : fedRawDataToken_(consumes<FEDRawDataCollection>(iConfig.getParameter<edm::InputTag>("fedRawDataCollection"))),
+      n_slink_bits_(iConfig.getUntrackedParameter<int>("nSlinkBits")),
       cablingMapToken_(
           esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>()),
@@ -142,11 +145,20 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         const unsigned char* dataPtr = fedData.data();
 //         dumpRawFile(dataPtr, fedData.size(), false);
+//         std::cout << "\n"<< std::endl;
 //         dumpRawFile(dataPtr, fedData.size(), true);
+
+        /// skip the first 128bits, corresponding to the S-link header
+        size_t slinkHeader_bits = n_slink_bits_; 
+        // double check if we see the BOE magic word
+        bool isBOE = (static_cast<uint8_t>(dataPtr[slinkHeader_bits-1]) == 0x55) ? true : false;
+        if (!isBOE)
+            edm::LogWarning("RawToClusterProducer") 
+                << "WARNING: Couldn't find BOE in the S-Link Header " ;
 
         // read the header
         std::vector<uint32_t> headerWords;
-        for (size_t i = 0; i < HEADER_N_LINES * N_BYTES_PER_WORD;
+        for (size_t i = slinkHeader_bits; i < HEADER_N_LINES * N_BYTES_PER_WORD;
              i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
         {
           // Extract 4 bytes (32 bits) and pack them into a uint32_t word
@@ -157,9 +169,10 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
         std::vector<uint64_t> offsetWords; 
         // CICs_PER_SLINK = 36   N_BITS_PER_WORD = 32;
+        
 //         size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD;  // 32b offsets
         size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD ; // 16b offsets
-        size_t initByte = HEADER_N_LINES * N_BYTES_PER_WORD;
+        size_t initByte = slinkHeader_bits + HEADER_N_LINES * N_BYTES_PER_WORD;
         size_t endByte =
             (nOffsetsLines - 1) * N_BYTES_PER_WORD + initByte;  // -1 because we only need the starting i of the line
 
@@ -296,6 +309,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             // calculate the 64b aligned byte index (8 bytes per 64b line)
             int aligned_idx = initial_offset + (cluster_payload_idx / 2) * (2 * N_BYTES_PER_WORD);
 
+//             bool isSlink = nextIsSlinkTrailer(dataPtr, aligned_idx);
+//             if (isSlink) break;
             std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr, aligned_idx);
             // even payload are in the lower 32 bits (first), odds are in the upper (second)
             if (cluster_payload_idx % 2 == 0) {
@@ -430,6 +445,15 @@ uint32_t RawToClusterProducer::readLine(const unsigned char* dataPtr, int lineId
   return line;
 }
 
+bool RawToClusterProducer::nextIsSlinkTrailer(const unsigned char* dataPtr, int lineIdx) {
+  uint32_t EOE = static_cast<uint8_t>(dataPtr[lineIdx]+15);
+  
+  bool isEOE = (EOE == 0xAA) ? true : false;
+  if (isEOE) 
+      std::cout << " TRUE " ; 
+  std::cout << " FOUND " << std::hex << std::setw(2) << std::setfill('0') << EOE << "  at line index " << lineIdx << std::endl;
+  return isEOE;
+}
 
 std::pair<uint32_t,uint32_t> RawToClusterProducer::split64bLine(const unsigned char* dataPtr, int lineIdx) {
     uint32_t upper =
@@ -615,7 +639,6 @@ void RawToClusterProducer::readPayload(std::vector<uint32_t>& clusterWords,
 void RawToClusterProducer::dumpRawFile(const unsigned char* dataPtr, size_t data_size, bool hexa) {
 
     if (hexa) {
-
         for (size_t i = 0; i < data_size; ++i)
         {
             std::cout << " "

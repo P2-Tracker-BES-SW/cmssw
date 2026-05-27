@@ -67,7 +67,6 @@ private:
   void produce(edm::Event&, const edm::EventSetup&) override;
 
   const edm::EDGetTokenT<FEDRawDataCollection> fedRawDataToken_;
-  int n_slink_bits_;
   const edm::ESGetToken<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd> cablingMapToken_;
   const edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeometryToken_;
   const edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopologyToken_;
@@ -81,7 +80,6 @@ private:
 
 RawToClusterProducer::RawToClusterProducer(const edm::ParameterSet& iConfig)
     : fedRawDataToken_(consumes<FEDRawDataCollection>(iConfig.getParameter<edm::InputTag>("fedRawDataCollection"))),
-      n_slink_bits_(iConfig.getUntrackedParameter<int>("nSlinkBits")),
       cablingMapToken_(
           esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>()),
@@ -137,24 +135,21 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       unsigned totID = iSlink + SLINKS_PER_DTC * (dtcID - 1) + CMSSW_TRACKER_ID;
       const FEDRawData& fedData = fedRawDataCollection->FEDData(totID);
       if (fedData.size() > 0 ) {
-        std::cout << "DTCID: " << dtcID << " /  Slink: " << iSlink <<  "  totId = " << totID << " / fedData.size(): " << fedData.size() << std::endl;
 
         const unsigned char* dataPtr = fedData.data();
 //         dumpRawFile(dataPtr, fedData.size(), false);
-//         std::cout << "\n"<< std::endl;
 //         dumpRawFile(dataPtr, fedData.size(), true);
 
-        /// skip the first 128bits, corresponding to the S-link header
-        size_t slinkHeader_bits = n_slink_bits_; 
-        // double check if we see the BOE magic word
-        bool isBOE = (static_cast<uint8_t>(dataPtr[slinkHeader_bits-1]) == SLINK_BOE) ? true : false;
+        // double check if we see the BOE magic word in the S-link header
+        bool isBOE = (static_cast<uint8_t>(dataPtr[SLINK_HEADER_BYTES-1]) == SLINK_BOE) ? true : false;
         if (!isBOE)
             edm::LogWarning("RawToClusterProducer") 
                 << "WARNING: Couldn't find BOE in the S-Link Header " ;
 
         // read the header
         std::vector<uint32_t> headerWords;
-        for (size_t i = slinkHeader_bits; i < HEADER_N_LINES * N_BYTES_PER_WORD;
+        /// skip the first 128bits, corresponding to the S-link header
+        for (size_t i = SLINK_HEADER_BYTES; i < HEADER_N_LINES * N_BYTES_PER_WORD;
              i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
         {
           // Extract 4 bytes (32 bits) and pack them into a uint32_t word
@@ -166,7 +161,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         std::vector<uint64_t> offsetWords; 
         
         size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD ; 
-        size_t initByte = slinkHeader_bits + HEADER_N_LINES * N_BYTES_PER_WORD;
+        size_t initByte = SLINK_HEADER_BYTES + HEADER_N_LINES * N_BYTES_PER_WORD;
         size_t endByte =
             (nOffsetsLines - 1) * N_BYTES_PER_WORD + initByte;  // -1 because we only need the starting i of the line
 

@@ -63,7 +63,7 @@ process.source = cms.Source("PoolSource",
        "file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/again/CMSSW_16_0_0_pre4/src/EventFilter/Phase2TrackerRawToDigi/test/outputFEDRawData_CRACK_4_LADDERS_May_6th_SourceID0005.root"
      ),
 )
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(25238))
 
 
 # algo = process.mix.digitizers.pixel.SSDigitizerAlgorithm
@@ -78,7 +78,6 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
 #     fedRawDataCollection = cms.InputTag("rawDataCollector"), ## srecko
     fedRawDataCollection = cms.InputTag("dthDAQToFEDRawData"), ## alaa
-    nSlinkBits = cms.untracked.int32(16)
 )
 
 # process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',

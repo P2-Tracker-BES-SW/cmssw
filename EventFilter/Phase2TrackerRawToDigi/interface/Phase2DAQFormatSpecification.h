@@ -50,6 +50,7 @@ namespace Phase2DAQFormatSpecification {
   static const int PX_CLUSTER_WORD_MASK = 0x1FFFF;
   
   static const int SLINK_BOE = 0x55;
+  static const int SLINK_HEADER_BYTES = 16;
 
   typedef std::bitset<32> Word32Bits;
 

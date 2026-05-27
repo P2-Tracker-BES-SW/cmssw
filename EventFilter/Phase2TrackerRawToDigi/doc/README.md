@@ -65,3 +65,10 @@ Alternatively, you can make your own raw input file:
 cmsRun startBU.py runNumber=100101 fffBaseDir=myOutputDir maxLS=2 fedMeanSize=128
 eventsPerFile=2 eventsPerLS=3 frdFileVersion=0 dataType=DTH
 ```
+
+=== Unpacking of clusters from CMSSW RAW EDProduct to Phase2TrackerCluster1D EDProduct
+
+RawToClusterProducer.cc plugin reads the FEDRawDataCollection from the `.root` file created in the previous step, and produces a collection of Phase2TrackerCluster1D clusters.
+
+To run the code, specifically for the C-Rack: `cmsRun crackUnpacker_cfg.py`
+<!-- any comment on the cabling map -->

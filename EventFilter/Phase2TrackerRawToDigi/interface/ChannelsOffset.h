@@ -18,7 +18,6 @@ public:
   void setValue(std::vector<uint64_t>& newValues) {
     values_ = newValues;
     fillOffsetMap64();
-//     fillOffsetMap();
   }
 
   void printValues() const {

@@ -149,7 +149,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         // read the header
         std::vector<uint32_t> headerWords;
         /// skip the first 128bits, corresponding to the S-link header
-        for (size_t i = SLINK_HEADER_BYTES; i < HEADER_N_LINES * N_BYTES_PER_WORD;
+        for (size_t i = SLINK_HEADER_BYTES; i < HEADER_N_LINES * N_BYTES_PER_WORD + SLINK_HEADER_BYTES;
              i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
         {
           // Extract 4 bytes (32 bits) and pack them into a uint32_t word

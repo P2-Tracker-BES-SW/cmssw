@@ -1,6 +1,14 @@
 // A utility to read and parse a .raw orbit aggregation file from the DTH,
-// and convert all event fragments belonging to the same event ID into one FEDRawDataCollection per CMSSW event.
+// and convert all event fragments belonging to the same event ID into one
+// FEDRawDataCollection per CMSSW event.
 // By Alaa Adel Abdelhamid, May 2025
+// Modified June 2026
+//
+// Important:
+//   The outer DTH Orbit Header has a source ID.
+//   The inner SLinkRocket fragment header also has a source ID.
+//   For FEDRawDataCollection::FEDData(...), use the inner SLinkRocket source ID,
+//   not the outer DTH Orbit Header source ID.
 
 #include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -23,7 +31,12 @@
 // Include the constants for bit field widths, markers, and size in BYTES:
 #include "EventFilter/Phase2TrackerRawToDigi/interface/DTHOrbitFieldSizes.h"
 
-// helper for endianness, the LXPLUS architecture is little-endian, so is the raw data from the DTH
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+
+// Helper for endianness.
+// The DTH data in these files is little-endian at the byte-field level.
 uint64_t readLittleEndian(const char* data, size_t size) {
   uint64_t value = 0;
   for (size_t i = 0; i < size; ++i) {
@@ -32,20 +45,115 @@ uint64_t readLittleEndian(const char* data, size_t size) {
   return value;
 }
 
-// Represents a single fragment (part of a full event).
+// SLinkRocket event fragment header/trailer are 128-bit = 16 bytes each.
+namespace {
+  constexpr size_t kSLinkRocketWordSizeBytes = 16;
+  constexpr size_t kSLinkRocketHeaderSizeBytes = 16;
+  constexpr size_t kSLinkRocketTrailerSizeBytes = 16;
+
+  // In the byte stream used here, the SLinkRocket 128-bit header appears
+  // little-endian with Source ID in bytes [0:3] and BOE=0x55 at byte [15].
+  //
+  // Header logical layout:
+  //   bits 127:120 : BOE = 0x55
+  //   ...
+  //   bits 31:0    : Source ID
+  //
+  // Therefore in the little-endian byte stream:
+  //   payload[0..3]  = Source ID
+  //   payload[15]    = BOE marker
+  constexpr size_t kSLinkRocketSourceIdOffset = 0;
+  constexpr size_t kSLinkRocketBOEOffset = 15;
+  constexpr size_t kSLinkRocketEOEOffsetFromEnd = 1;
+
+  constexpr unsigned char kSLinkRocketBOEMarker = 0x55;
+  constexpr unsigned char kSLinkRocketEOEMarker = 0xaa;
+
+  uint32_t readSLinkRocketSourceId(const std::vector<char>& payloadBytes) {
+    if (payloadBytes.size() < kSLinkRocketHeaderSizeBytes) {
+      throw cms::Exception("InvalidSLinkRocketFragment")
+          << "Fragment payload is too small to contain a SLinkRocket header. "
+          << "payloadBytes.size() = " << payloadBytes.size()
+          << ", required at least " << kSLinkRocketHeaderSizeBytes;
+    }
+
+    const auto boe = static_cast<unsigned char>(payloadBytes[kSLinkRocketBOEOffset]);
+    if (boe != kSLinkRocketBOEMarker) {
+      std::ostringstream msg;
+      msg << "Invalid SLinkRocket BOE marker. Expected 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(kSLinkRocketBOEMarker)
+          << ", got 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(boe)
+          << ". This usually means the fragment payload does not start at the "
+          << "SLinkRocket header, or the byte layout assumption is wrong.";
+      throw cms::Exception("InvalidSLinkRocketHeader") << msg.str();
+    }
+
+    return static_cast<uint32_t>(
+        readLittleEndian(payloadBytes.data() + kSLinkRocketSourceIdOffset, sizeof(uint32_t)));
+  }
+
+  void verifySLinkRocketTrailerMarker(const std::vector<char>& payloadBytes) {
+    if (payloadBytes.size() < kSLinkRocketHeaderSizeBytes + kSLinkRocketTrailerSizeBytes) {
+      throw cms::Exception("InvalidSLinkRocketFragment")
+          << "Fragment payload is too small to contain both a SLinkRocket header and trailer. "
+          << "payloadBytes.size() = " << payloadBytes.size()
+          << ", required at least "
+          << (kSLinkRocketHeaderSizeBytes + kSLinkRocketTrailerSizeBytes);
+    }
+
+    const auto eoe =
+        static_cast<unsigned char>(payloadBytes[payloadBytes.size() - kSLinkRocketEOEOffsetFromEnd]);
+
+    if (eoe != kSLinkRocketEOEMarker) {
+      std::ostringstream msg;
+      msg << "Invalid SLinkRocket EOE marker. Expected 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(kSLinkRocketEOEMarker)
+          << ", got 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(eoe)
+          << ". This usually means the fragment payload does not include the "
+          << "full SLinkRocket trailer, or the byte layout assumption is wrong.";
+      throw cms::Exception("InvalidSLinkRocketTrailer") << msg.str();
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Represents a single fragment belonging to one event.
+// -----------------------------------------------------------------------------
+
 struct FragmentData {
   unsigned int orbitIdx = 0;
   uint32_t runNumber = 0;
   uint32_t orbitNumber = 0;
-  uint32_t sourceId = 0;
+
+  // Source ID from the OUTER DTH Orbit Header.
+  // Example from SourceID0005.raw: this is 5.
+  // Do NOT use this as the FEDRawDataCollection index.
+  uint32_t dthOrbitSourceId = 0;
+
+  // Source ID from the INNER SLinkRocket fragment header.
+  // This is the correct FEDRawDataCollection index.
+  // Example from the same SourceID0005.raw fragment: this is 0.
+  uint32_t fedSourceId = 0;
+
   uint16_t fragFlags = 0;
   uint32_t fragSize = 0;
   uint64_t eventId = 0;
   uint16_t crc = 0;
 
-  // The actual binary payload for this fragment
+  // The actual binary payload for this fragment.
+  // This should include the SLinkRocket header and SLinkRocket trailer.
   std::vector<char> payloadBytes;
 };
+
+// -----------------------------------------------------------------------------
+// Producer
+// -----------------------------------------------------------------------------
 
 class DTHDAQToFEDRawDataConverter : public edm::one::EDProducer<> {
 public:
@@ -58,7 +166,7 @@ public:
 private:
   std::string inputFile_;
 
-  // Store all fragments grouped by eventId
+  // Store all fragments grouped by eventId.
   std::unordered_map<uint64_t, std::vector<FragmentData>> eventIdToFragments_;
   std::vector<uint64_t> eventInsertionOrder_;
   size_t currentEventIndex_ = 0;
@@ -75,9 +183,12 @@ DTHDAQToFEDRawDataConverter::DTHDAQToFEDRawDataConverter(const edm::ParameterSet
 
 void DTHDAQToFEDRawDataConverter::beginJob() {
   edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Reading raw file: " << inputFile_;
+
   std::vector<char> buffer = readRawFile(inputFile_);
   parseAllOrbitsAndFragments(buffer);
-  edm::LogInfo("DTHDAQToFEDRawDataConverter") << "Total unique eventIds found: " << eventIdToFragments_.size();
+
+  edm::LogInfo("DTHDAQToFEDRawDataConverter")
+      << "Total unique eventIds found: " << eventIdToFragments_.size();
 }
 
 void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSetup&) {
@@ -86,18 +197,43 @@ void DTHDAQToFEDRawDataConverter::produce(edm::Event& event, const edm::EventSet
     return;
   }
 
-  uint64_t eventId = eventInsertionOrder_[currentEventIndex_];
+  const uint64_t eventId = eventInsertionOrder_[currentEventIndex_];
   const auto& fragments = eventIdToFragments_.at(eventId);
 
   edm::LogInfo("DTHDAQToFEDRawDataConverter")
-      << "Producing CMSSW event for eventId=" << eventId << " with " << fragments.size() << " fragments.";
+      << "Producing CMSSW event for eventId=" << eventId
+      << " with " << fragments.size() << " fragments.";
 
   auto fedRawDataCollection = std::make_unique<FEDRawDataCollection>();
 
   for (const auto& frag : fragments) {
-    FEDRawData& fedData = fedRawDataCollection->FEDData(frag.sourceId);
+    // Correct: use the INNER SLinkRocket source ID as the FED collection index.
+    //
+    // Wrong old behavior:
+    //   FEDData(frag.dthOrbitSourceId)
+    //
+    // Correct behavior:
+    //   FEDData(frag.fedSourceId)
+    FEDRawData& fedData = fedRawDataCollection->FEDData(frag.fedSourceId);
+
+    if (fedData.size() != 0) {
+      edm::LogWarning("DTHDAQToFEDRawDataConverter")
+          << "FEDRawDataCollection already has data for fedSourceId="
+          << frag.fedSourceId
+          << " in eventId=" << eventId
+          << ". Existing payload will be overwritten. "
+          << "Existing size=" << fedData.size()
+          << ", new size=" << frag.payloadBytes.size();
+    }
+
     fedData.resize(frag.payloadBytes.size());
     std::copy(frag.payloadBytes.begin(), frag.payloadBytes.end(), fedData.data());
+
+    edm::LogInfo("DTHDAQToFEDRawDataConverter")
+        << "Filled FEDRawDataCollection slot fedSourceId=" << frag.fedSourceId
+        << " using fragment from DTH orbit sourceId=" << frag.dthOrbitSourceId
+        << ", eventId=" << frag.eventId
+        << ", payloadBytes=" << frag.payloadBytes.size();
   }
 
   event.put(std::move(fedRawDataCollection));
@@ -110,8 +246,9 @@ std::vector<char> DTHDAQToFEDRawDataConverter::readRawFile(const std::string& in
     throw cms::Exception("FileOpenError") << "Could not open input file: " << inputFile;
   }
 
-  std::streamsize fileSize = rawFile.tellg();
+  const std::streamsize fileSize = rawFile.tellg();
   rawFile.seekg(0, std::ios::beg);
+
   std::vector<char> buffer(fileSize);
   if (!rawFile.read(buffer.data(), fileSize)) {
     throw cms::Exception("FileReadError") << "Could not read input file: " << inputFile;
@@ -123,89 +260,216 @@ std::vector<char> DTHDAQToFEDRawDataConverter::readRawFile(const std::string& in
 
 void DTHDAQToFEDRawDataConverter::printHex(const std::vector<char>& buffer, size_t maxLength) {
   std::ostringstream hexOutput;
-  hexOutput << "Raw bitstream (up to " << maxLength << " bytes): ";
-  size_t length = std::min(buffer.size(), maxLength);
+  hexOutput << "Raw bitstream up to " << maxLength << " bytes: ";
+
+  const size_t length = std::min(buffer.size(), maxLength);
   for (size_t i = 0; i < length; ++i) {
     hexOutput << std::hex << std::setw(2) << std::setfill('0')
               << static_cast<unsigned int>(static_cast<unsigned char>(buffer[i])) << " ";
   }
+
   edm::LogInfo("DTHDAQToFEDRawDataConverter") << hexOutput.str();
 }
 
-// Parse entire .raw file buffer into fragments grouped by eventId
+// -----------------------------------------------------------------------------
+// Parse entire .raw file buffer into fragments grouped by eventId.
+// -----------------------------------------------------------------------------
+
 void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<char>& buffer) {
   size_t startIdx = 0;
   unsigned int orbitIdx = 0;
 
   while (startIdx < buffer.size()) {
-    if (buffer.size() - startIdx < orbitHeaderSize)
+    if (buffer.size() - startIdx < orbitHeaderSize) {
+      edm::LogWarning("DTHDAQToFEDRawDataConverter")
+          << "Remaining buffer is smaller than orbitHeaderSize. Stopping parse. "
+          << "remaining=" << (buffer.size() - startIdx)
+          << ", orbitHeaderSize=" << orbitHeaderSize;
       break;
-    if (buffer[startIdx] != orbitHeaderMarkerH || buffer[startIdx + 1] != orbitHeaderMarkerO)
+    }
+
+    if (static_cast<unsigned char>(buffer[startIdx]) != static_cast<unsigned char>(orbitHeaderMarkerH) ||
+        static_cast<unsigned char>(buffer[startIdx + 1]) != static_cast<unsigned char>(orbitHeaderMarkerO)) {
+      edm::LogWarning("DTHDAQToFEDRawDataConverter")
+          << "Orbit header marker not found at byte offset " << startIdx
+          << ". Got bytes 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(static_cast<unsigned char>(buffer[startIdx]))
+          << " 0x"
+          << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(static_cast<unsigned char>(buffer[startIdx + 1]))
+          << ". Stopping parse.";
       break;
+    }
+
+    // Orbit Header:
+    //   marker bytes
+    //   version
+    //   source ID
+    //   run number
+    //   orbit number
+    //   event count / reserved or lumi/event field depending format constants
+    //   packet word count
+    //   flags
+    //   checksum
     startIdx += 2;
 
-    uint16_t version = readLittleEndian(&buffer[startIdx], orbitVersionSize);
+    const uint16_t version = static_cast<uint16_t>(
+        readLittleEndian(&buffer[startIdx], orbitVersionSize));
     startIdx += orbitVersionSize;
-    uint32_t sourceId = readLittleEndian(&buffer[startIdx], sourceIdSize);
+
+    const uint32_t dthOrbitSourceId = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], sourceIdSize));
     startIdx += sourceIdSize;
-    uint32_t runNumber = readLittleEndian(&buffer[startIdx], runNumberSize);
+
+    const uint32_t runNumber = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], runNumberSize));
     startIdx += runNumberSize;
-    uint32_t orbitNumber = readLittleEndian(&buffer[startIdx], orbitNumberSize);
+
+    const uint32_t orbitNumber = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], orbitNumberSize));
     startIdx += orbitNumberSize;
-    uint32_t eventCountReserved = readLittleEndian(&buffer[startIdx], eventCountResSize);
-    uint16_t eventCount = eventCountReserved & 0xFFF;
+
+    const uint32_t eventCountReserved = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], eventCountResSize));
+    const uint16_t eventCount = static_cast<uint16_t>(eventCountReserved & 0xFFF);
     startIdx += eventCountResSize;
-    uint32_t packetWordCount = readLittleEndian(&buffer[startIdx], packetWordCountSize);
+
+    const uint32_t packetWordCount = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], packetWordCountSize));
     startIdx += packetWordCountSize;
-    uint32_t flags = readLittleEndian(&buffer[startIdx], flagsSize);
+
+    const uint32_t flags = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], flagsSize));
     startIdx += flagsSize;
-    uint32_t checksum = readLittleEndian(&buffer[startIdx], checksumSize);
+
+    const uint32_t checksum = static_cast<uint32_t>(
+        readLittleEndian(&buffer[startIdx], checksumSize));
     startIdx += checksumSize;
 
     edm::LogInfo("DTHDAQToFEDRawDataConverter")
-        << "Orbit " << (orbitIdx + 1) << ": Version=" << version << ", SourceID=" << sourceId
-        << ", RunNumber=" << runNumber << ", OrbitNumber=" << orbitNumber << ", EventCount=" << eventCount
-        << ", PacketWordCount=" << packetWordCount << ", Flags=" << flags << ", Checksum=" << checksum;
+        << "Orbit " << (orbitIdx + 1)
+        << ": Version=" << version
+        << ", DTHOrbitSourceID=" << dthOrbitSourceId
+        << ", RunNumber=" << runNumber
+        << ", OrbitNumber=" << orbitNumber
+        << ", EventCount=" << eventCount
+        << ", PacketWordCount=" << packetWordCount
+        << ", Flags=" << flags
+        << ", Checksum=" << checksum;
 
-    size_t orbitDataSizeBytes = packetWordCount * fragmentPayloadWordSize - orbitHeaderSize;
-    size_t orbitDataEnd = startIdx + orbitDataSizeBytes;
-    if (orbitDataEnd > buffer.size())
+    const size_t orbitDataSizeBytes =
+        static_cast<size_t>(packetWordCount) * fragmentPayloadWordSize - orbitHeaderSize;
+
+    const size_t orbitDataEnd = startIdx + orbitDataSizeBytes;
+    if (orbitDataEnd > buffer.size()) {
+      edm::LogWarning("DTHDAQToFEDRawDataConverter")
+          << "Orbit data extends beyond file buffer. Stopping parse. "
+          << "orbitDataEnd=" << orbitDataEnd
+          << ", buffer.size()=" << buffer.size();
       break;
+    }
+
+    // Fragment trailers are at the end of the orbit payload, so walk backwards.
     size_t currentPos = orbitDataEnd;
+
+    // Move startIdx to next orbit before decoding fragments.
     startIdx += orbitDataSizeBytes;
 
     for (unsigned int fragIdx = 0; fragIdx < eventCount; ++fragIdx) {
-      if (currentPos < fragmentTrailerSize)
+      if (currentPos < fragmentTrailerSize) {
+        edm::LogWarning("DTHDAQToFEDRawDataConverter")
+            << "currentPos < fragmentTrailerSize while parsing orbit "
+            << (orbitIdx + 1)
+            << ", fragIdx=" << fragIdx
+            << ". Stopping fragment parse for this orbit.";
         break;
-      size_t trailerPos = currentPos - fragmentTrailerSize;
+      }
 
-      if (buffer[trailerPos] != fragmentTrailerMarkerT || buffer[trailerPos + 1] != fragmentTrailerMarkerF)
+      const size_t trailerPos = currentPos - fragmentTrailerSize;
+
+      if (static_cast<unsigned char>(buffer[trailerPos]) !=
+              static_cast<unsigned char>(fragmentTrailerMarkerT) ||
+          static_cast<unsigned char>(buffer[trailerPos + 1]) !=
+              static_cast<unsigned char>(fragmentTrailerMarkerF)) {
+        edm::LogWarning("DTHDAQToFEDRawDataConverter")
+            << "Fragment trailer marker not found at byte offset " << trailerPos
+            << " while parsing orbit " << (orbitIdx + 1)
+            << ", fragIdx=" << fragIdx
+            << ". Got bytes 0x"
+            << std::hex << std::setw(2) << std::setfill('0')
+            << static_cast<unsigned int>(static_cast<unsigned char>(buffer[trailerPos]))
+            << " 0x"
+            << std::hex << std::setw(2) << std::setfill('0')
+            << static_cast<unsigned int>(static_cast<unsigned char>(buffer[trailerPos + 1]))
+            << ". Stopping fragment parse for this orbit.";
         break;
+      }
 
-      uint16_t fragFlags = readLittleEndian(&buffer[trailerPos + fragFlagSize], fragFlagSize);
-      uint32_t fragSize = readLittleEndian(&buffer[trailerPos + fragSizeSize], fragSizeSize);
-      uint64_t eventId = readLittleEndian(&buffer[trailerPos + trailerOffsetEventId], eventIdSize) & eventIdMask;
-      uint16_t crc = readLittleEndian(&buffer[trailerPos + trailerOffsetCRC], crcSize);
+      const uint16_t fragFlags = static_cast<uint16_t>(
+          readLittleEndian(&buffer[trailerPos + fragFlagSize], fragFlagSize));
 
-      size_t payloadSizeBytes = fragSize * fragmentPayloadWordSize;
-      if (trailerPos < payloadSizeBytes)
+      const uint32_t fragSize = static_cast<uint32_t>(
+          readLittleEndian(&buffer[trailerPos + fragSizeSize], fragSizeSize));
+
+      const uint64_t eventId =
+          readLittleEndian(&buffer[trailerPos + trailerOffsetEventId], eventIdSize) & eventIdMask;
+
+      const uint16_t crc = static_cast<uint16_t>(
+          readLittleEndian(&buffer[trailerPos + trailerOffsetCRC], crcSize));
+
+      const size_t payloadSizeBytes =
+          static_cast<size_t>(fragSize) * fragmentPayloadWordSize;
+
+      if (trailerPos < payloadSizeBytes) {
+        edm::LogWarning("DTHDAQToFEDRawDataConverter")
+            << "Fragment payload would start before beginning of buffer. "
+            << "orbit=" << (orbitIdx + 1)
+            << ", fragIdx=" << fragIdx
+            << ", trailerPos=" << trailerPos
+            << ", payloadSizeBytes=" << payloadSizeBytes
+            << ". Stopping fragment parse for this orbit.";
         break;
-      size_t payloadStart = trailerPos - payloadSizeBytes;
+      }
+
+      const size_t payloadStart = trailerPos - payloadSizeBytes;
 
       FragmentData frag;
       frag.orbitIdx = orbitIdx + 1;
       frag.runNumber = runNumber;
       frag.orbitNumber = orbitNumber;
-      frag.sourceId = sourceId;
+      frag.dthOrbitSourceId = dthOrbitSourceId;
       frag.fragFlags = fragFlags;
       frag.fragSize = fragSize;
       frag.eventId = eventId;
       frag.crc = crc;
-      frag.payloadBytes.assign(buffer.begin() + payloadStart, buffer.begin() + payloadStart + payloadSizeBytes);
+
+      frag.payloadBytes.assign(
+          buffer.begin() + payloadStart,
+          buffer.begin() + payloadStart + payloadSizeBytes);
+
+      // Verify this is a SLinkRocket fragment and extract the correct FED source ID.
+      verifySLinkRocketTrailerMarker(frag.payloadBytes);
+      frag.fedSourceId = readSLinkRocketSourceId(frag.payloadBytes);
+
+      edm::LogInfo("DTHDAQToFEDRawDataConverter")
+          << "Parsed fragment: "
+          << "orbitIdx=" << frag.orbitIdx
+          << ", eventId=" << frag.eventId
+          << ", DTHOrbitSourceID=" << frag.dthOrbitSourceId
+          << ", FEDSourceIDFromSLinkRocketHeader=" << frag.fedSourceId
+          << ", fragFlags=" << frag.fragFlags
+          << ", fragSizeWords=" << frag.fragSize
+          << ", payloadBytes=" << frag.payloadBytes.size()
+          << ", crc=" << frag.crc;
+
       if (eventIdToFragments_.find(eventId) == eventIdToFragments_.end()) {
         eventInsertionOrder_.push_back(eventId);
       }
+
       eventIdToFragments_[eventId].emplace_back(std::move(frag));
+
+      // Move backwards to the previous fragment payload/trailer.
       currentPos = payloadStart;
     }
 

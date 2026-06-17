@@ -137,8 +137,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       if (fedData.size() > 0 ) {
 
         const unsigned char* dataPtr = fedData.data();
-//         dumpRawFile(dataPtr, fedData.size(), false);
-//         dumpRawFile(dataPtr, fedData.size(), true);
+        dumpRawFile(dataPtr, fedData.size(), false);
+        dumpRawFile(dataPtr, fedData.size(), true);
 
         // double check if we see the BOE magic word in the S-link header
         bool isBOE = (static_cast<uint8_t>(dataPtr[SLINK_HEADER_BYTES-1]) == SLINK_BOE) ? true : false;
@@ -175,6 +175,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             offsetWords.push_back(ioffset);
         }  
         theOffsets.setValue(offsetWords);
+        theOffsets.printValues();
 
         int initial_offset = initByte + (nOffsetsLines - 1) * N_BYTES_PER_WORD + N_BYTES_PER_WORD;
         
@@ -228,11 +229,13 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           if (channelOffset % 2 == 0){
             idx = initial_offset + theOffsets.getOffsetForChannel(iChannel) * N_BYTES_PER_WORD;
             std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr,idx);  
-            headerWord = two_words.first;
+            headerWord = two_words.second;
+//             headerWord = two_words.first;
           } else {
             idx = initial_offset + (theOffsets.getOffsetForChannel(iChannel) - 1) * N_BYTES_PER_WORD;
             std::pair<uint32_t,uint32_t> two_words = split64bLine(dataPtr,idx);  
-            headerWord = two_words.second;          
+            headerWord = two_words.first;          
+//             headerWord = two_words.second;          
           } 
           
           // unsigned long eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
@@ -243,7 +246,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
               N_CLUSTER_MASK;                                           // 7-bit field
           unsigned int numPixelClusters = (headerWord)&N_CLUSTER_MASK;  // 7-bit field
 
-          LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " <<std::bitset<32>(headerWord) 
+//           LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " <<std::bitset<32>(headerWord) 
+          std::cout  << "CHANNEL " << iChannel << " HEADER " <<std::bitset<32>(headerWord) 
                                            << " (" << channelErrors << " channelErrors, "
                                            << numPixelClusters << " pixel clusters, "
                                            << numStripClusters << " strip clusters)\n";
@@ -266,10 +270,11 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
                   : 0;
 
           if (numStripClusters + numPixelClusters > 0) {
-            LogTrace("RawToClusterProducer")
+            std::cout
+//             LogTrace("RawToClusterProducer")
                 << "\tchannel " << iChannel << "\theader: " << std::bitset<N_BITS_PER_WORD>(headerWord)
                 << "\tn strip clusters = " << numStripClusters << "\tn pixel clusters = " << numPixelClusters
-                << " (n lines = " << nLines << ")";
+                << " (n lines = " << nLines << ")" << std::endl;
           }
           
           // first retrieve all lines filled with clusters
@@ -409,18 +414,27 @@ uint32_t RawToClusterProducer::readLine(const unsigned char* dataPtr, int lineId
 
 std::pair<uint32_t,uint32_t> RawToClusterProducer::split64bLine(const unsigned char* dataPtr, int lineIdx) {
     uint32_t upper =
-        (static_cast<uint64_t>(dataPtr[lineIdx]    )) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 1]) << 8  ) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 2]) << 16 ) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 3]) << 24 );
+        (static_cast<uint64_t>(dataPtr[lineIdx]      << 24)) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 1]) << 16  ) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 2]) << 8 ) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 3])  );
+//         (static_cast<uint64_t>(dataPtr[lineIdx]    )) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 1]) << 8  ) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 2]) << 16 ) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 3]) << 24 );
         
     uint32_t lower =
-        (static_cast<uint64_t>(dataPtr[lineIdx + 4])        ) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 5]) << 8   ) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 6]) << 16  ) |
-        (static_cast<uint64_t>(dataPtr[lineIdx + 7]) << 24  );
+        (static_cast<uint64_t>(dataPtr[lineIdx]      << 24)) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 1]) << 16  ) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 2]) << 8 ) |
+        (static_cast<uint64_t>(dataPtr[lineIdx + 3])  );
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 4])        ) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 5]) << 8   ) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 6]) << 16  ) |
+//         (static_cast<uint64_t>(dataPtr[lineIdx + 7]) << 24  );
 //     std::cout << "  lower = " << std::bitset<32>(lower) << "\t\t upper = " << std::bitset<32>(upper) << std::endl;
-    return {lower,upper};
+//     return {lower,upper};
+    return {upper,lower};
 }
 
 std::vector<uint16_t> RawToClusterProducer::read16bOffsets(const unsigned char* dataPtr, int lineIdx) {
@@ -436,7 +450,8 @@ std::vector<uint16_t> RawToClusterProducer::read16bOffsets(const unsigned char* 
     uint16_t one =
         (static_cast<uint64_t>(dataPtr[lineIdx + 6])) |
         (static_cast<uint64_t>(dataPtr[lineIdx + 7]) << 8 );
-    return {one,two,three,four};
+    return {four,three,two,one};
+//     return {one,two,three,four};
 }
 
 
@@ -584,19 +599,37 @@ void RawToClusterProducer::readPayload(std::vector<uint32_t>& clusterWords,
 void RawToClusterProducer::dumpRawFile(const unsigned char* dataPtr, size_t data_size, bool hexa) {
 
   if (hexa) {
-    for (size_t i = 0; i < data_size; ++i)
+
+    for (size_t i = 0; i < data_size; i += 2)
     {
-      std::cout << " "
-                << std::hex
-                << std::uppercase
-                << std::setw(2)
-                << std::setfill('0')
-                << static_cast<int>(dataPtr[i])
-                << " ";
-      if ((i + 1) % 8 == 0)
-          std::cout << "\n" << std::dec << i + 1 << "    ";
+        if (i % 16 == 0)
+        {
+            std::cout << std::hex
+                      << std::setw(7)
+                      << std::setfill('0')
+                      << std::nouppercase
+                      << i
+                      << " ";
+        }
+    
+        // Combine two bytes into a 16-bit value (original byte order: high byte first)
+        uint16_t word = static_cast<uint16_t>(static_cast<uint8_t>(dataPtr[i])) << 8;
+        if (i + 1 < data_size)
+            word |= static_cast<uint8_t>(dataPtr[i + 1]);
+    
+        std::cout << std::hex
+                  << std::setw(4)
+                  << std::setfill('0')
+                  << std::nouppercase
+                  << word;
+    
+        if ((i + 2) % 16 == 0 || i + 2 >= data_size)
+            std::cout << "\n";
+        else
+            std::cout << " ";
     }
-    std::cout << std::dec << std::endl;  
+
+//     std::cout << std::dec << std::endl;  
   } else {
     std::cout << "    " ;
     for (size_t i = 0; i < data_size; ++i)

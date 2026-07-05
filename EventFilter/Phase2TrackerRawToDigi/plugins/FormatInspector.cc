@@ -22,7 +22,7 @@ private:
   edm::EDGetTokenT<FEDRawDataCollection> fedRawDataToken_;
   uint32_t get32bWordAtLine(const unsigned char*& data, size_t index, bool debug);
   void dumpPacket(const FEDRawData&);
-  size_t getNumberOf32bWords(const unsigned char*& data, size_t dataSize);
+  size_t getNumberOf32bWords(size_t dataSize);
   DTCHeader getDTCHeader(const unsigned char*& data);
   
 };
@@ -55,10 +55,16 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             edm::LogInfo("FormatInspector")
                 << "CMSSW Unpacker Version: v" << Phase2DAQFormatSpecification::VERSION_MAJOR << "." << Phase2DAQFormatSpecification::VERSION_MINOR << ".0";
 
+            for (size_t LineID = 0; LineID < getNumberOf32bWords(dataSize); LineID++) {
+                uint32_t word_at_line_id = get32bWordAtLine(data, LineID, false);
+                printf("Word @ Line ID %05lu: %08X \n", LineID, (unsigned int)word_at_line_id);
+            }
+
             DTCHeader ExtractedDTCHeader = getDTCHeader(data);
             ExtractedDTCHeader.printFields();
 
-            if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
+            if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && 
+                Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
                 edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
             }
 
@@ -69,6 +75,11 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
     return;
 }
 
+/**
+ * @brief Dumps the entire DAQ Packet, in order of LineID, defined here 
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ * @return void
+ */
 void FormatInspector::dumpPacket(const FEDRawData& fedData) {
     const unsigned char* data = fedData.data();
     size_t dataSize = fedData.size();
@@ -82,6 +93,13 @@ void FormatInspector::dumpPacket(const FEDRawData& fedData) {
     }
 }
 
+/**
+ * @brief Retrives a specific 32b word from the DAQ Payload.
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @param LineID Carefully defined in this google sheet
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ * @return 32bit word. MSB on the far left. LSB on the far right.
+ */
 uint32_t FormatInspector::get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug = false) {
     int group = LineID / 4;
     int offset = LineID % 4;
@@ -99,10 +117,21 @@ uint32_t FormatInspector::get32bWordAtLine(const unsigned char*& data, size_t Li
     return word;
 }
 
-size_t FormatInspector::getNumberOf32bWords(const unsigned char*& data, size_t dataSize) {
-    return dataSize / 4;  // Each 32-bit word is 4 bytes
+/**
+ * @brief Returns the number of 32b words in the DAQ Payload. This includes the SLink Header Words.
+ * @param dataSize the size of the FEDRawData in bytes.
+ * @note DAQ Packets are always multiples of 32bits. So the return below should be well defined for all cases.
+ * @return Returns the number of 32b words in the DAQ Payload
+ */
+size_t FormatInspector::getNumberOf32bWords(size_t dataSize) {
+    return dataSize / 4;  // Each 32-bit word is 4 bytes long
 }
 
+/**
+ * @brief Returns DTC Header from the DAQ Packet.
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @return DTCHeader Class Object.
+ */
 DTCHeader FormatInspector::getDTCHeader(const unsigned char*& data) {
     std::array<uint32_t, 4> words;
     for (int i = 0; i < Phase2DAQFormatSpecification::DTC_HEADER_SIZE; ++i) {

@@ -9,6 +9,12 @@ namespace Phase2DAQFormatSpecification {
   static const int DTC_HEADER_OFFSET = 4; // location where DTC HEADER Starts
   static const int DTC_HEADER_SIZE = 4;   // in 32bit words
 
+  static const int DTC_CHANNEL_MASK_OFFSET = 26;
+  static const int DTC_CHANNEL_MASK_SIZE = 2;
+
+  static const int DTC_TRAILER_OFFSET = 26;
+  static const int DTC_TRAILER_SIZE = 4;
+
   // This CMSSW Version should be compatible against the versioining variables below.
   static const int VERSION_MAJOR = 0x1;
   static const int VERSION_MINOR = 0x0;

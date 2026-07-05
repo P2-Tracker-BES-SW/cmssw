@@ -9,6 +9,8 @@
 
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/DTCHeader.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/DTCTrailer.h"
 
 #include <iostream>
 
@@ -24,6 +26,7 @@ private:
   void dumpPacket(const FEDRawData&);
   size_t getNumberOf32bWords(size_t dataSize);
   DTCHeader getDTCHeader(const unsigned char*& data);
+  ChannelsMask getChannelMaskingProfile(const unsigned char*& data);
   
 };
 
@@ -68,6 +71,13 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
                 edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
             }
 
+            ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(data);
+            ExtractedChannelsMask.print();
+            ExtractedChannelsMask.printSummary();
+
+            for (size_t i = 0; i < 35; i++) {
+                printf("Channel %02lu Masked? %u \n", i, ExtractedChannelsMask.isChannelEnabled(i));
+            }
         }
 
     }
@@ -139,6 +149,20 @@ DTCHeader FormatInspector::getDTCHeader(const unsigned char*& data) {
     }
     DTCHeader captureHeader(words);
     return captureHeader;
+}
+
+/**
+ * @brief Returns the Channel Masking for this Run
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @return ChannelsMask Class Object.
+ */
+ChannelsMask FormatInspector::getChannelMaskingProfile(const unsigned char*& data) {
+    std::array<uint32_t, 2> words;
+    for (int i = 0; i < Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_SIZE; ++i) {
+        words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_OFFSET + i);
+    }
+    ChannelsMask captureMasking(words);
+    return captureMasking;
 }
 
 DEFINE_FWK_MODULE(FormatInspector);

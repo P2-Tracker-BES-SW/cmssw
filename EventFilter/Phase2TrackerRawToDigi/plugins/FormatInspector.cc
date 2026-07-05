@@ -1,5 +1,5 @@
 // Empty analyzer skeleton for inspecting FEDRawDataCollection
-// By [Your Name], July 2026
+// By @amastron (A. Mastronikolis), July 2026
 
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"

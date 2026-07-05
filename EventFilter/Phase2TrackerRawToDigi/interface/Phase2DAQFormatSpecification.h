@@ -1,7 +1,18 @@
 #ifndef Phase2DAQFormatSpecification_H
 #define Phase2DAQFormatSpecification_H
 
+#include <bitset>
+
 namespace Phase2DAQFormatSpecification {
+
+  // 
+  static const int DTC_HEADER_OFFSET = 4; // location where DTC HEADER Starts
+  static const int DTC_HEADER_SIZE = 4;   // in 32bit words
+
+  // This CMSSW Version should be compatible against the versioining variables below.
+  static const int VERSION_MAJOR = 0x1;
+  static const int VERSION_MINOR = 0x0;
+
   static const int DTC_DAQ_HEADER = 0xFFFFFFFF;
   static const int N_BITS_PER_WORD = 32;
   static const int N_BYTES_PER_WORD = 4;

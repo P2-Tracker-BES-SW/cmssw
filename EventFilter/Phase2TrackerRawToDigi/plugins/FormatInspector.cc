@@ -76,7 +76,10 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             ExtractedChannelsMask.printSummary();
 
             for (size_t i = 0; i < 35; i++) {
-                printf("Channel %02lu Masked? %u \n", i, ExtractedChannelsMask.isChannelEnabled(i));
+                printf("Channel %02lu Masked? %s. Ignore Offset: %s\n", 
+                i,
+                ExtractedChannelsMask.isChannelEnabled(i) ? "Yes" : "No ",
+                ExtractedChannelsMask.isChannelEnabled(i) ? "Yes" : "No ");
             }
         }
 

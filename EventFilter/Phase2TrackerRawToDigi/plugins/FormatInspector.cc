@@ -86,9 +86,10 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             offset_words.push_back(0); // channel #0 always @ 0.
 
             for (size_t i = 8; i < 26; i++) {
-                // offset low
                 uint32_t word32b = get32bWordAtLine(data, i, false);
+                // offset low
                 uint16_t low  = static_cast<uint16_t>(word32b & 0xFFFF);
+                // offset high
                 uint16_t high = static_cast<uint16_t>((word32b >> 16) & 0xFFFF);
                 offset_words.push_back(high);
                 offset_words.push_back(low);

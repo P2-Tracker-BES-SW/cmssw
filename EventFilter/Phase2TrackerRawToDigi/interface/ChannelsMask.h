@@ -74,7 +74,7 @@ public:
      * @param channel Channel number (0-35)
      * @return true if channel is enabled, false otherwise
      */
-    bool isChannelEnabled(int channel) const {
+    bool isChannelMasked(int channel) const {
         if (channel < 0 || channel > 35) return false;
         return (globalMask_ >> channel) & 0x1ULL;
     }

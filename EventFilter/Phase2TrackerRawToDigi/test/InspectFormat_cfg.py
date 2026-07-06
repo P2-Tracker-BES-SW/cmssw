@@ -23,7 +23,7 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 process.dthDAQToFEDRawData = cms.EDProducer('DTHDAQToFEDRawDataConverter',
-    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/DAQ_FMT_v1_0_Packet_Format_Release_Validation.raw'), 
+    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/DAQ_FMT_v1_0_Noise_Test_1_Ladder.raw'), 
 )
 
 process.formatInspector = cms.EDAnalyzer('FormatInspector',

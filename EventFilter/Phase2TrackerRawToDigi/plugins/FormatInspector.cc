@@ -78,9 +78,31 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             for (size_t i = 0; i < 35; i++) {
                 printf("Channel %02lu Masked? %s. Ignore Offset: %s\n", 
                 i,
-                ExtractedChannelsMask.isChannelEnabled(i) ? "Yes" : "No ",
-                ExtractedChannelsMask.isChannelEnabled(i) ? "Yes" : "No ");
+                ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ",
+                ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ");
             }
+
+            std::vector<uint16_t> offset_words; 
+            offset_words.push_back(0); // channel #0 always @ 0.
+
+            for (size_t i = 8; i < 26; i++) {
+                // offset low
+                uint32_t word32b = get32bWordAtLine(data, i, false);
+                uint16_t low  = static_cast<uint16_t>(word32b & 0xFFFF);
+                uint16_t high = static_cast<uint16_t>((word32b >> 16) & 0xFFFF);
+                offset_words.push_back(high);
+                offset_words.push_back(low);
+            }
+
+            printf("Extractin CIC Headers from Non-Masked Channels\n");
+            unsigned long channels_num = 0;
+            for (size_t i = 0; i < 35; i++) {
+                if (!ExtractedChannelsMask.isChannelMasked(i)) {
+                    get32bWordAtLine(data, 28 + offset_words[i], true);
+                    channels_num++;
+                }
+            }
+            printf("Found %02lu Channels Active!\n", channels_num);
         }
 
     }

@@ -58,6 +58,8 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             edm::LogInfo("FormatInspector")
                 << "CMSSW Unpacker Version: v" << Phase2DAQFormatSpecification::VERSION_MAJOR << "." << Phase2DAQFormatSpecification::VERSION_MINOR << ".0";
 
+            dumpPacket(fedData);
+
             for (size_t LineID = 0; LineID < getNumberOf32bWords(dataSize); LineID++) {
                 uint32_t word_at_line_id = get32bWordAtLine(data, LineID, false);
                 printf("Word @ Line ID %05lu: %08X \n", LineID, (unsigned int)word_at_line_id);
@@ -112,8 +114,7 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
 }
 
 /**
- * @brief Dumps the entire DAQ Packet, in order of LineID, defined here 
- * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ * @brief Dumps the entire DAQ Packet, in hexdump -C view.
  * @return void
  */
 void FormatInspector::dumpPacket(const FEDRawData& fedData) {

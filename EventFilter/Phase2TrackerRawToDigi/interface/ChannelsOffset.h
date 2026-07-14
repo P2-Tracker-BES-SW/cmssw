@@ -36,7 +36,7 @@ public:
     // channel 0 offset is always 0 
     offsetMap_[0] = static_cast<uint16_t>(0);  
     for (size_t i = 1; i < CICs_PER_SLINK ; ++i) {
-      offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFF);
+      offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFFFF);
 //       offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFF) - 1 ;
     }
   }

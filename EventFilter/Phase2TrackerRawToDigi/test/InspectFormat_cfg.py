@@ -6,10 +6,10 @@ process.MessageLogger = cms.Service(
     "MessageLogger",
     destinations=cms.untracked.vstring('logFile', 'cout'),
     logFile=cms.untracked.PSet(
-        threshold=cms.untracked.string('INFO'),
+        threshold=cms.untracked.string('WARNING'),
     ),
     cout=cms.untracked.PSet(
-        threshold=cms.untracked.string('INFO'),  # Changed from 'WARNING' to 'INFO'
+        threshold=cms.untracked.string('WARNING'),  # Changed from 'WARNING' to 'INFO'
     ),
     categories=cms.untracked.vstring(
         'FormatInspector'  # Add your analyzer category
@@ -19,15 +19,16 @@ process.MessageLogger = cms.Service(
 process.source = cms.Source("EmptySource")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(180)
 )
 
 process.dthDAQToFEDRawData = cms.EDProducer('DTHDAQToFEDRawDataConverter',
-    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/DAQ_FMT_v1_0_Noise_Test_1_Ladder.raw'), 
+    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/ff_large_run_sourceid00004_index000.raw'), 
 )
 
 process.formatInspector = cms.EDAnalyzer('FormatInspector',
-    fedRawDataCollectionTag = cms.InputTag('dthDAQToFEDRawData')
+    fedRawDataCollectionTag = cms.InputTag('dthDAQToFEDRawData'),
+    Debug = cms.bool(False)  # or False to disable
 )
 
 process.p = cms.Path(

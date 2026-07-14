@@ -13,6 +13,7 @@
 #include "EventFilter/Phase2TrackerRawToDigi/interface/DTCTrailer.h"
 
 #include <iostream>
+#include <tuple>
 
 class FormatInspector : public edm::one::EDAnalyzer<> {
 public:
@@ -27,12 +28,17 @@ private:
   size_t getNumberOf32bWords(size_t dataSize);
   DTCHeader getDTCHeader(const unsigned char*& data);
   ChannelsMask getChannelMaskingProfile(const unsigned char*& data);
+  std::tuple<uint32_t, uint32_t, uint32_t, uint32_t> extractFields(uint32_t data);
+
+  bool verbose_;
   
 };
 
 FormatInspector::FormatInspector(const edm::ParameterSet& pset)
     : fedRawDataToken_(consumes<FEDRawDataCollection>(
-          pset.getParameter<edm::InputTag>("fedRawDataCollectionTag"))) {std::cout << "Hi" << std::endl;}
+          pset.getParameter<edm::InputTag>("fedRawDataCollectionTag"))),
+      verbose_(pset.getParameter<bool>("Debug"))  // default false if not specified
+{}
 
 void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es) {
 
@@ -51,37 +57,44 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             const unsigned char* data = fedData.data();
             size_t dataSize = fedData.size();
 
-            edm::LogInfo("FormatInspector") 
-                << "FED ID: " << fedId 
-                << " Size: " << dataSize << " bytes";
+            if (verbose_) {
+                edm::LogInfo("FormatInspector") 
+                    << "FED ID: " << fedId 
+                    << " Size: " << dataSize << " bytes";
+                edm::LogInfo("FormatInspector")
+                    << "CMSSW Unpacker Version: v" << Phase2DAQFormatSpecification::VERSION_MAJOR << "." << Phase2DAQFormatSpecification::VERSION_MINOR << ".0";
+            }
 
-            edm::LogInfo("FormatInspector")
-                << "CMSSW Unpacker Version: v" << Phase2DAQFormatSpecification::VERSION_MAJOR << "." << Phase2DAQFormatSpecification::VERSION_MINOR << ".0";
+            if (verbose_) {
+                dumpPacket(fedData);
+            }
 
-            dumpPacket(fedData);
-
-            for (size_t LineID = 0; LineID < getNumberOf32bWords(dataSize); LineID++) {
-                uint32_t word_at_line_id = get32bWordAtLine(data, LineID, false);
-                printf("Word @ Line ID %05lu: %08X \n", LineID, (unsigned int)word_at_line_id);
+            if (verbose_) {
+                for (size_t LineID = 0; LineID < getNumberOf32bWords(dataSize); LineID++) {
+                    uint32_t word_at_line_id = get32bWordAtLine(data, LineID, false);
+                    printf("Word @ Line ID %05lu: %08X \n", LineID, (unsigned int)word_at_line_id);
+                }
             }
 
             DTCHeader ExtractedDTCHeader = getDTCHeader(data);
-            ExtractedDTCHeader.printFields();
+            if (verbose_) ExtractedDTCHeader.printFields();
 
             if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && 
                 Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
-                edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
+                if (verbose_) edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
             }
 
             ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(data);
-            ExtractedChannelsMask.print();
-            ExtractedChannelsMask.printSummary();
+            if (verbose_) ExtractedChannelsMask.print();
+            if (verbose_) ExtractedChannelsMask.printSummary();
 
-            for (size_t i = 0; i < 35; i++) {
-                printf("Channel %02lu Masked? %s. Ignore Offset: %s\n", 
-                i,
-                ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ",
-                ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ");
+            if (verbose_) {
+                for (size_t i = 0; i < 35; i++) {
+                    printf("Channel %02lu Masked? %s. Ignore Offset: %s\n", 
+                    i,
+                    ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ",
+                    ExtractedChannelsMask.isChannelMasked(i) ? "Yes" : "No ");
+                }
             }
 
             std::vector<uint16_t> offset_words; 
@@ -97,20 +110,36 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
                 offset_words.push_back(low);
             }
 
-            printf("Extractin CIC Headers from Non-Masked Channels\n");
+            if (verbose_) printf("Extracting CIC Headers from Non-Masked Channels\n");
             unsigned long channels_num = 0;
+            double previous_end = -1;
             for (size_t i = 0; i < 35; i++) {
                 if (!ExtractedChannelsMask.isChannelMasked(i)) {
-                    get32bWordAtLine(data, 28 + offset_words[i], true);
+                    uint32_t word = get32bWordAtLine(data, 28 + offset_words[i], false);
+                    auto [L1ID, feError, pixelClusters, stripClusters] = extractFields(word);
+                    const double start = 28 + offset_words[i];
+                    const double end = start + std::ceil(stripClusters * 14.0 / 32.0);
+                    if (previous_end != -1 && start != previous_end + 1) {
+                        throw std::runtime_error("Non-contiguous intervals detected!");
+                    }
+                    previous_end = end;
                     channels_num++;
                 }
             }
-            printf("Found %02lu Channels Active!\n", channels_num);
+            if (verbose_) printf("Found %02lu Channels Active!\n", channels_num);
         }
-
     }
 
     return;
+}
+
+std::tuple<uint32_t, uint32_t, uint32_t, uint32_t> FormatInspector::extractFields(uint32_t data) {
+    uint32_t L1ID = (data >> 23) & 0x1FF;           // 9 bits (31-23)
+    uint32_t feErrorBits = (data >> 14) & 0x1FF;    // 9 bits (22-14)
+    uint32_t numPixelClusters = (data >> 7) & 0x7F; // 7 bits (13-07)
+    uint32_t numStripClusters = data & 0x7F;        // 7 bits (06-00)
+    
+    return {L1ID, feErrorBits, numPixelClusters, numStripClusters};
 }
 
 /**

@@ -20,7 +20,7 @@ public:
   FormatInspector(const edm::ParameterSet& pset);
   ~FormatInspector() override = default;
   void analyze(const edm::Event&, const edm::EventSetup&) override;
-
+  void endJob() override;
 private:
   edm::EDGetTokenT<FEDRawDataCollection> fedRawDataToken_;
   uint32_t get32bWordAtLine(const unsigned char*& data, size_t index, bool debug);
@@ -30,6 +30,8 @@ private:
   ChannelsMask getChannelMaskingProfile(const unsigned char*& data);
   std::tuple<uint32_t, uint32_t, uint32_t, uint32_t> extractFields(uint32_t data);
 
+  int total_clusters = 0;
+  int cluster_bytes = 0;
   bool verbose_;
   
 };
@@ -39,6 +41,12 @@ FormatInspector::FormatInspector(const edm::ParameterSet& pset)
           pset.getParameter<edm::InputTag>("fedRawDataCollectionTag"))),
       verbose_(pset.getParameter<bool>("Debug"))  // default false if not specified
 {}
+
+void FormatInspector::endJob() {
+    std::cout << "FormatInspector::endJob() Summary" << std::endl;
+    std::cout << " > Total Clusters Seen     : " << total_clusters << std::endl;
+    std::cout << " > Total Cluster Bytes Seen: " << cluster_bytes / 8 << std::endl;
+}
 
 void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es) {
 
@@ -115,10 +123,13 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
             double previous_end = -1;
             for (size_t i = 0; i < 35; i++) {
                 if (!ExtractedChannelsMask.isChannelMasked(i)) {
-                    uint32_t word = get32bWordAtLine(data, 28 + offset_words[i], false);
+                    uint32_t word = get32bWordAtLine(data, 28 + offset_words[i], verbose_);
                     auto [L1ID, feError, pixelClusters, stripClusters] = extractFields(word);
                     const double start = 28 + offset_words[i];
                     const double end = start + std::ceil(stripClusters * 14.0 / 32.0);
+                    total_clusters += stripClusters;
+                    cluster_bytes += stripClusters * 14.0;
+                    if (verbose_) {std::cout << "[" << start << ", " << end << "]" << std::endl;}
                     if (previous_end != -1 && start != previous_end + 1) {
                         throw std::runtime_error("Non-contiguous intervals detected!");
                     }

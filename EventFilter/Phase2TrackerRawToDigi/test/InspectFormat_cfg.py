@@ -19,16 +19,16 @@ process.MessageLogger = cms.Service(
 process.source = cms.Source("EmptySource")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(150000)
 )
 
 process.dthDAQToFEDRawData = cms.EDProducer('DTHDAQToFEDRawDataConverter',
-    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/ff_large_run_sourceid00004_index000.raw'), 
+    inputFile = cms.string('/home/hep/am2023/raw_data_buffer/CMSSW_16_0_8/src/long_overnight_run_sourceid00004_index000.raw'), 
 )
 
 process.formatInspector = cms.EDAnalyzer('FormatInspector',
     fedRawDataCollectionTag = cms.InputTag('dthDAQToFEDRawData'),
-    Debug = cms.bool(True)  # or False to disable
+    Debug = cms.bool(False)  # or False to disable
 )
 
 process.p = cms.Path(

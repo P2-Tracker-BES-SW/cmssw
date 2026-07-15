@@ -17,7 +17,7 @@ public:
 
   void setValue(std::vector<uint64_t>& newValues) {
     values_ = newValues;
-    fillOffsetMap64();
+    fillOffsetMap();
   }
 
   void printValues() const {
@@ -32,17 +32,16 @@ public:
   }
 
   // this is for the 64b version of the offset
-  void fillOffsetMap64() {
+  void fillOffsetMap() {
     // channel 0 offset is always 0 
     offsetMap_[0] = static_cast<uint16_t>(0);  
     for (size_t i = 1; i < CICs_PER_SLINK ; ++i) {
       offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFFFF);
-//       offsetMap_[i] = static_cast<uint16_t>((values_[i-1]) & 0xFF) - 1 ;
     }
   }
 
   // this was for the 32b version of the offset
-  void fillOffsetMap() {
+  void fillOffsetMapOld() {
     for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
       // extract the lower 16 bits by masking with 0xFFFF
       offsetMap_[i * 2] = static_cast<uint16_t>(values_[i] & 0xFFFF);  // this one should become a 32

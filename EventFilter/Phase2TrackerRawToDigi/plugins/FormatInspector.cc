@@ -131,7 +131,7 @@ void FormatInspector::analyze(const edm::Event& event, const edm::EventSetup& es
                     cluster_bytes += stripClusters * 14.0;
                     if (verbose_) {std::cout << "[" << start << ", " << end << "]" << std::endl;}
                     if (previous_end != -1 && start != previous_end + 1) {
-                        throw std::runtime_error("Non-contiguous intervals detected!");
+                        throw std::runtime_error("Non-Contiguous Intervals Detected!");
                     }
                     previous_end = end;
                     channels_num++;

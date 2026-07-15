@@ -43,6 +43,7 @@ namespace Phase2DAQFormatSpecification {
 
   static const int HEADER_N_LINES = 4;  // number of 32b lines of the tracker header
   static const int OFFSET_BITS = 16;    // length of the offset word
+  static const int RESERVED_N_LINES = 2;
 
   static const int CIC_ERROR_MASK = 0x1FF;
   static const int N_CLUSTER_MASK = 0x7F;

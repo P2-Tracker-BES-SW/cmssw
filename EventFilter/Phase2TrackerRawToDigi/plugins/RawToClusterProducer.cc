@@ -174,7 +174,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         }  
         theOffsets.setValue(offsetWords);
 //         theOffsets.printValues();
-        int initial_offset = initByte + (nOffsetsLines + 2 ) * N_BYTES_PER_WORD; // + 2 = N_RESERVED_LINES;
+        int initial_offset = initByte + (nOffsetsLines + RESERVED_N_LINES ) * N_BYTES_PER_WORD; // 
         
         // now read the payload (channel header + clusters)
         // all channel headers should be there, even if 0 clusters are found

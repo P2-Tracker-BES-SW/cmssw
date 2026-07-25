@@ -43,7 +43,7 @@ elif ANALYZE_CRACK:
   
   process.source = cms.Source("PoolSource", 
       fileNames = cms.untracked.vstring(
-          "file:crackClustersAlaa_BES_Reference_Binary_VCTH500_50Hz_Random_L1A.root"
+          "file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/clusters_DAQ_FMT_v1_0_Noise_Test_3_Large_1_Ladder_RDB.root"
       )
   )
   # Update label to match the output from the unpacker process
@@ -86,7 +86,7 @@ else:
     process.trackerGeometry.applyAlignment = False
 
     process.load("CondCore.CondDB.CondDB_cfi")
-    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/CMSSW_16_0_0_pre4/src/CondTools/SiPhase2Tracker/test/my_crack.db'
+    process.CondDB.connect = 'sqlite_file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/crack_cabling_gIDbtFrom0.db'
     process.PoolDBESSource = cms.ESSource("PoolDBESSource",
         process.CondDB,
         toGet = cms.VPSet(cms.PSet(

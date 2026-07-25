@@ -18,8 +18,7 @@ namespace Phase2TrackerSpecifications {
 
   static const int STRIPS_PER_SSA = 120;
   static const int CHANNELS_PER_SSA = 240;
-
-  static const int MODULES_PER_SLINK_CRACK = 12;
+  
   static const int MODULES_PER_SLINK = 18;
   static const int CICs_PER_SLINK = 36;
 

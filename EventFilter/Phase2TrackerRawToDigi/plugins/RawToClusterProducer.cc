@@ -29,6 +29,9 @@
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
 
+#include "EventFilter/Phase2TrackerRawToDigi/interface/DTCHeader.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
+
 using namespace Phase2TrackerSpecifications;
 using namespace Phase2DAQFormatSpecification;
 
@@ -41,6 +44,9 @@ public:
   void beginRun(const edm::Run&, const edm::EventSetup&) override;
 
   uint32_t get32bWordAtByte(std::span<const unsigned char> data, size_t initByte, size_t startByte, bool debug /* = false */) ;
+  uint32_t get32bWordAtLine(std::span<const unsigned char> data, size_t index, bool debug);
+  DTCHeader getDTCHeader(std::span<const unsigned char> data);
+  ChannelsMask getChannelMaskingProfile(std::span<const unsigned char> data);
 
   void readPayload(std::vector<uint32_t>& clusterWords,
                    std::vector<uint32_t>& lines,
@@ -132,34 +138,30 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       if (fedData.size() > 0 ) {
 
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
-        
-//         dumpRawFile(dataPtr, fedData.size(), false);
-//         dumpRawFile(dataPtr, fedData.size(), true);
 
-        // read the header
-        std::vector<uint32_t> headerWords;
-        /// skip the first 128bits, corresponding to the S-link header
-        for (size_t i = 0; i < HEADER_N_LINES * N_BYTES_PER_WORD;
-             i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
-        {
-          // Extract 4 bytes (32 bits) and pack them into a uint32_t word
-          headerWords.push_back(get32bWordAtByte(dataPtr, i, 0, false));
-          
+        DTCHeader ExtractedDTCHeader = getDTCHeader(dataPtr);
+
+        // Check if CMSSW can decode the binary.
+        if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && 
+            Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
+            edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
+        } else {
+          throw cms::Exception("CMSSW Unpacker is Incopatible with the Format Version Found in This Binary. Aborting Processing.");
         }
-        theHeader.setValue(headerWords);
+
+        ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
-        std::vector<uint64_t> offsetWords; 
+        std::vector<uint64_t> offsetWords;
         
         size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD ; 
-        size_t initByte = HEADER_N_LINES * N_BYTES_PER_WORD ; 
-        size_t endByte =
-            (nOffsetsLines - 1) * N_BYTES_PER_WORD + initByte;  // -1 because we only need the starting i of the line
+        size_t initByte = HEADER_N_LINES * N_BYTES_PER_WORD; 
+        size_t endByte = (nOffsetsLines - 1) * N_BYTES_PER_WORD + initByte;
 
         for (size_t i = initByte; i <= endByte; i += N_BYTES_PER_WORD)  { // tmp Read 8 bytes (64 bits) at a time
-	  uint32_t word32b = get32bWordAtByte(dataPtr, i, initByte, false);
-	  uint16_t low  = static_cast<uint16_t>(word32b & ((uint32_t{1} << OFFSET_BITS) - 1)); 
-	  uint16_t high = static_cast<uint16_t>((word32b >> OFFSET_BITS) & ((uint32_t{1} << OFFSET_BITS) - 1));
+          uint32_t word32b = get32bWordAtByte(dataPtr, i, initByte, false);
+          uint16_t low  = static_cast<uint16_t>(word32b & ((uint32_t{1} << OFFSET_BITS) - 1)); 
+          uint16_t high = static_cast<uint16_t>((word32b >> OFFSET_BITS) & ((uint32_t{1} << OFFSET_BITS) - 1));
           offsetWords.push_back(high);
           offsetWords.push_back(low);
         }  
@@ -172,7 +174,14 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         // NOTE: we need to save into the Phase2TrackerCluster1D collection two "channels" at the time
         // in order to get all the clusters from the same lpGBT and fill them once at the end
         std::vector<Phase2TrackerCluster1D> thisChannel1DSeedClusters, thisChannel1DCorrClusters;
+        uint32_t firstEventID = 0;
+        bool firstEventIDSet = false;
+
         for (unsigned int iChannel = 0; iChannel < CICs_PER_SLINK; iChannel++) {
+
+          if (ExtractedChannelsMask.isChannelMasked(iChannel))
+            continue;
+
           // clear the collection if iChannel is even
           if (iChannel % 2 == 0) {
             thisChannel1DSeedClusters.clear();
@@ -183,14 +192,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // first we need to construct the DTCElinkId object ## dtc_id, gbtlink_id, elink_id
           // to get the gbt_id we should reverse what is done in the packer function,
           // where clusters from channel X are split into 2*i and 2*i+1 based on being from CIC0 or CIC1
-          
-          unsigned int gbt_id = iSlink * MODULES_PER_SLINK_CRACK + std::div(iChannel, 2).quot \
-                                + 2*MODULES_PER_SLINK_CRACK; // temp for 6th may files
-          // if tray 1, gbt_id should be 60   
-          // if tray 2, gbt_id should be 48   
-          // if tray 3, gbt_id should be 36   
-          // if tray 4, gbt_id should be 24   
-//           DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
+          unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+
           DTCELinkId thisDTCElinkId(1, gbt_id, 0);
 
           int thisDetId = -1;
@@ -215,7 +218,17 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           size_t idx = initial_offset + channelOffset * N_BYTES_PER_WORD; // (N_BYTES_PER_WORD=4)
           uint32_t headerWord = get32bWordAtByte(dataPtr, idx, initial_offset, false);
 
-          // unsigned long eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
+          // CIC Event ID Check. Within the Same DTC Packet, all CIC Event IDs Should be the Same!
+          uint32_t eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
+          if (!firstEventIDSet) {
+            firstEventID = eventID;
+            firstEventIDSet = true;
+          } else if (eventID != firstEventID) {
+            throw cms::Exception("CIC Event ID Mismatch!") 
+                << "CIC Event ID Mismatch Detected! First Event ID: " << firstEventID 
+                << ", Current Event ID: " << eventID;
+          }
+
           int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
           unsigned int numPixelClusters =
               (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) &
@@ -392,10 +405,62 @@ uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> d
         std::cout << "wordIndex= " << wordIndex << std::endl;
         std::cout << "byteOffset= " << byteOffset << std::endl;
         std::cout << "word= " << std::bitset<32>(word) << std::endl;
+        printf("word=0x%08X \n", (unsigned int)word);
     }
     return word;
 }
 
+/**
+ * @brief Retrives a specific 32b word from the DAQ Payload.
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @param LineID Carefully defined in this google sheet
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ * @return 32bit word. MSB on the far left. LSB on the far right.
+ */
+uint32_t RawToClusterProducer::get32bWordAtLine(std::span<const unsigned char> data, size_t LineID, bool debug = false) {
+    int group = LineID / 4;
+    int offset = LineID % 4;
+    int reversedOffset = 3 - offset;
+    size_t reversedWordIndex = group * 4 + reversedOffset;
+    
+    size_t byteOffset = reversedWordIndex * 4;
+    uint32_t word = (static_cast<uint32_t>(data[byteOffset + 3]) << 24) |
+                    (static_cast<uint32_t>(data[byteOffset + 2]) << 16) |
+                    (static_cast<uint32_t>(data[byteOffset + 1]) << 8)  |
+                    (static_cast<uint32_t>(data[byteOffset + 0]));
+    if (debug) {
+        printf("%08X \n", (unsigned int)word);
+    }            
+    return word;
+}
+
+/**
+ * @brief Returns DTC Header from the DAQ Packet.
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @return DTCHeader Class Object.
+ */
+DTCHeader RawToClusterProducer::getDTCHeader(std::span<const unsigned char> data) {
+    std::array<uint32_t, 4> words;
+    for (int i = 0; i < Phase2DAQFormatSpecification::DTC_HEADER_SIZE; ++i) {
+      words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_HEADER_OFFSET + i);
+    }
+    DTCHeader captureHeader(words);
+    return captureHeader;
+}
+
+/**
+ * @brief Returns the Channel Masking for this Run
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @return ChannelsMask Class Object.
+ */
+ChannelsMask RawToClusterProducer::getChannelMaskingProfile(std::span<const unsigned char> data) {
+    std::array<uint32_t, 2> words;
+    for (int i = 0; i < Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_SIZE; ++i) {
+      words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_OFFSET + i);
+    }
+    ChannelsMask captureMasking(words);
+    return captureMasking;
+}
 
 std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t clusterWord, unsigned int iChannel) {
   uint32_t chipID = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) & CHIP_ID_MAX_VALUE;  // 3 bits

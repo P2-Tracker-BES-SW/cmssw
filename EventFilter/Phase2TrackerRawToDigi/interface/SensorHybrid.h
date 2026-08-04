@@ -273,9 +273,10 @@ public:
 
   void get_payload(std::vector<Phase2DAQFormatSpecification::Word32Bits>& payload) {
     using namespace Phase2DAQFormatSpecification;
+    using namespace Phase2TrackerSpecifications;
 
     // Extracting values
-    uint32_t eventID = eventId_ & L1ID_MAX_VALUE;  // 9 bits for eventId_
+    uint32_t eventID = CIC_CONSTANT_EVENT_ID & L1ID_MAX_VALUE;  // 9 bits for eventId_
     uint32_t channelErrors = 0;                    // 9 bits for errors, set to 0
     uint32_t num_strip_clusters =
         get_number_of_strip_clusters() & ((1 << N_STRIP_CLUSTER_BITS) - 1);  // 7 bits for strip clusters

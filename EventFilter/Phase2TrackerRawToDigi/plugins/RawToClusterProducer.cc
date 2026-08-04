@@ -151,6 +151,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
+        //for (int i = 0; i < 60; i++) get32bWordAtLine(dataPtr, i, true);
+
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
         std::vector<uint64_t> offsetWords;
         
@@ -429,7 +431,7 @@ uint32_t RawToClusterProducer::get32bWordAtLine(std::span<const unsigned char> d
                     (static_cast<uint32_t>(data[byteOffset + 1]) << 8)  |
                     (static_cast<uint32_t>(data[byteOffset + 0]));
     if (debug) {
-        printf("%08X \n", (unsigned int)word);
+      printf("%08X ", (unsigned int)word); std::cout << std::bitset<32>((unsigned int)word) << std::endl;
     }            
     return word;
 }
@@ -486,7 +488,6 @@ std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t 
 
   unsigned int x = STRIPS_PER_CBC * chipID + sclusterAddress;
   unsigned int y = iChannel % 2 == 0 ? 0 : 1;
-
   Phase2TrackerCluster1D thisCluster = Phase2TrackerCluster1D(x, y, width);
   return std::make_pair(thisCluster, isSeedSensor);
 }

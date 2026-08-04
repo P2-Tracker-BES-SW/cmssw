@@ -7,6 +7,8 @@
 // https://github.com/cms-L1TK/cmssw/blob/f093f1b30f436c7323f132d7a0f51753ccf0ae3b/EventFilter/Phase2TrackerRawToDigi/interface/utils.h
 
 namespace Phase2TrackerSpecifications {
+
+  static const int CIC_CONSTANT_EVENT_ID = 0x1;
   static const int MAX_SSA_PER_PS_MODULE = 16;
   static const int MAX_MPA_PER_PS_MODULE = 16;
   static const int MAX_CBC_PER_2S_MODULE = 16;

@@ -61,6 +61,7 @@ private:
   std::vector<float> clusterR_;
   std::vector<float> clusterZ_;
   std::vector<unsigned int> clusterCol_;
+  std::vector<unsigned int> clusterRow_;
   std::vector<uint32_t> detId_;
   std::vector<float> clusterCenter_;
   std::vector<int> clusterSize_;
@@ -106,6 +107,7 @@ void ClusterAnalyzer::beginJob() {
   outTree_->Branch("isPSModuleStrip", &isPSModuleStrip_);
   outTree_->Branch("is2SModule", &is2SModule_);
   outTree_->Branch("clusterCol", &clusterCol_);
+  outTree_->Branch("clusterRow", &clusterRow_);
   outTree_->Branch("clusterR", &clusterR_);
   outTree_->Branch("clusterZ", &clusterZ_);
   outTree_->Branch("clusterCenter", &clusterCenter_);
@@ -141,6 +143,7 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
   isPSModuleStrip_.clear();
   is2SModule_.clear();
   clusterCol_.clear();
+  clusterRow_.clear();
   clusterR_.clear();
   clusterZ_.clear();
   clusterCenter_.clear();
@@ -196,6 +199,7 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
       clusterCenter_.push_back(clusterItr.center());
       clusterSize_.push_back(clusterItr.size());
       clusterCol_.push_back(clusterItr.column());
+      clusterRow_.push_back(clusterItr.firstRow());
 
       MeasurementPoint mpCluster(clusterItr.center(), clusterItr.column() + 0.5);
       Local3DPoint localPosCluster = geomDetUnit->topology().localPosition(mpCluster);

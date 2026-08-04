@@ -45,6 +45,11 @@ private:
     data_ptr[word_index * 4 + 2] = (hex_word >> 8) & 0xFF;   // Next byte (bits 15-8)
     data_ptr[word_index * 4 + 3] = (hex_word >> 0) & 0xFF;   // Least significant byte (bits 7-0)
   }
+
+  uint32_t get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug);
+  void dumpPacket(const FEDRawData& fedData);
+  void InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload);
+
 };
 
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
@@ -77,8 +82,10 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   using namespace Phase2TrackerSpecifications;
   using namespace Phase2DAQFormatSpecification;
 
-  for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
-    for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
+  // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
+  //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
+  for (int dtc_id = MIN_DTC_ID; dtc_id < 2; dtc_id++) {
+    for (int slink_id = 0; slink_id < 1; slink_id++) {
       int index_first = slink_id * MODULES_PER_SLINK;
       int index_last = (slink_id + 1) * MODULES_PER_SLINK;
 
@@ -88,7 +95,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
 
       daq_packet.reserve(4);
-for (int i = 0; i < 4; ++i) {
+      for (int i = 0; i < 4; ++i) {
         daq_packet.push_back(Word32Bits(DTC_DAQ_HEADER));
       }
       std::vector<Word32Bits> payload;
@@ -133,7 +140,9 @@ for (int i = 0; i < 4; ++i) {
           // Figure out Payload
           hybrid_1.get_payload(payload);
           hybrid_2.get_payload(payload);
-        } catch (const cms::Exception& e) {
+          std::cout << "Here @ " << dtc_id << " & " << slink_id << std::endl;
+        } 
+        catch (const cms::Exception& e) {
           // exception here means that the link is not connected to a detector
           uint32_t eventID = eventId_ & L1ID_MAX_VALUE;  // eventId_ (9 bits)
           uint32_t channelErrors = 0;                    // 9 bits for errors, all set to 0
@@ -172,8 +181,8 @@ for (int i = 0; i < 4; ++i) {
         daq_packet.push_back(payload[i]);
       }
 
-      slink_daq_stream.resize(daq_packet.size() * N_BYTES_PER_WORD,
-                              N_BYTES_PER_WORD);  // Resize the buffer to fit all 32-bit words
+      InspectDAQPayload(daq_packet);
+      slink_daq_stream.resize(daq_packet.size() * N_BYTES_PER_WORD, N_BYTES_PER_WORD);
       unsigned char* data_ptr = slink_daq_stream.data();
 
       for (size_t word_index = 0; word_index < daq_packet.size(); ++word_index) {
@@ -184,10 +193,63 @@ for (int i = 0; i < 4; ++i) {
       slink_daq_stream.resize(actual_used_bytes, N_BYTES_PER_WORD);
 
       fedRawDataCollection.get()->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER) = slink_daq_stream;
+      const FEDRawData& fedData = fedRawDataCollection->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER);
+      dumpPacket(fedData);
     }
   }
 
   iEvent.put(std::move(fedRawDataCollection));
+}
+
+/**
+ * @brief Retrives a specific 32b word from the DAQ Payload.
+ * @param data Pointer to the raw data buffer (passed by reference)
+ * @param LineID Carefully defined in this google sheet
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ * @return 32bit word. MSB on the far left. LSB on the far right.
+ */
+uint32_t ClusterToRawProducer::get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug = false) {
+    int group = LineID / 4;
+    int offset = LineID % 4;
+    int reversedOffset = 3 - offset;
+    size_t reversedWordIndex = group * 4 + reversedOffset;
+    
+    size_t byteOffset = reversedWordIndex * 4;
+    uint32_t word = (static_cast<uint32_t>(data[byteOffset + 3]) << 24) |
+                    (static_cast<uint32_t>(data[byteOffset + 2]) << 16) |
+                    (static_cast<uint32_t>(data[byteOffset + 1]) << 8)  |
+                    (static_cast<uint32_t>(data[byteOffset + 0]));
+    if (debug) {
+        printf("%08X \n", (unsigned int)word);
+    }            
+    return word;
+}
+
+/**
+ * @brief Dumps the entire DAQ Packet, in hexdump -C view.
+ * @return void
+ */
+void ClusterToRawProducer::dumpPacket(const FEDRawData& fedData) {
+    const unsigned char* data = fedData.data();
+    size_t dataSize = fedData.size();
+    for (size_t l16byteslineID = 0; l16byteslineID < (dataSize + 15) / 16; l16byteslineID++) {
+        for (size_t byte_within_line = 0; byte_within_line < 16; byte_within_line++) {
+            size_t index = l16byteslineID * 16 + byte_within_line;
+            if (index >= dataSize) break;  // Stop if we've printed all bytes
+            printf("%02X ", (unsigned int)data[index]);
+        }
+        printf("\n");
+    }
+}
+
+/**
+ * @brief Dumps the entire DAQ Packet, in hexdump -C view.
+ * @return void
+ */
+void ClusterToRawProducer::InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload) {
+  for (std::size_t i = 0; i < DAQPayload.size(); i++) {
+    printf("%08lX \n", (unsigned long int)DAQPayload.at(i).to_ulong());
+  }
 }
 
 DEFINE_FWK_MODULE(ClusterToRawProducer);

@@ -1,13 +1,25 @@
-#include "DQMServices/Core/interface/DQMEDHarvester.h"
-#include "DQMServices/Core/interface/DQMStore.h"
+// -*- C++ -*-
+// Package:    Validation/SiTrackerPhase2V
+// Class:      ElinkOccupancyHarvester
+// Description: Harvest the per-elink occupancy DQM
+//
+// author : your name and your email
+// when you wrote this
+
+#include <string>
+#include <vector>
+
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DQM/SiTrackerPhase2/interface/TrackerPhase2HarvestingUtil.h"
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
-#include <algorithm>
-#include <cmath>
+#include "DQMServices/Core/interface/DQMEDHarvester.h"
+#include "DQMServices/Core/interface/DQMStore.h"
+#include "DQM/SiTrackerPhase2/interface/TrackerPhase2HarvestingUtil.h"
+#include "Validation/SiTrackerPhase2V/interface/TrackerPhase2PlotUtil.h"
+
+#include "TProfile2D.h"
 
 class ElinkOccupancyHarvester : public DQMEDHarvester {
 public:
@@ -21,12 +33,20 @@ private:
   const edm::ParameterSet config_;
   const std::string topFolder_;
   const std::string occupancyMapName_;
+  const bool savePlots_;  // Option to create pdf/png
+  const std::string plotDir_;
+  const std::vector<std::string> plotFormats_;
+  const double zMax_;
 };
 
 ElinkOccupancyHarvester::ElinkOccupancyHarvester(const edm::ParameterSet& iConfig)
     : config_(iConfig),
       topFolder_(iConfig.getParameter<std::string>("TopFolder")),
-      occupancyMapName_(iConfig.getParameter<std::string>("OccupancyMapName")) {}
+      occupancyMapName_(iConfig.getParameter<std::string>("OccupancyMapName")),
+      savePlots_(iConfig.getUntrackedParameter<bool>("savePlots", false)),
+      plotDir_(iConfig.getUntrackedParameter<std::string>("plotDir", ".")),
+      plotFormats_(iConfig.getUntrackedParameter<std::vector<std::string>>("plotFormats", {"pdf", "png"})),
+      zMax_(iConfig.getUntrackedParameter<double>("plotZMax", 1.2)) {}
 
 ElinkOccupancyHarvester::~ElinkOccupancyHarvester() {}
 
@@ -38,55 +58,57 @@ void ElinkOccupancyHarvester::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IG
   }
   TProfile2D* prof = occMap->getTProfile2D();
 
-  // Event count. Unlike the SLink map (one fill per SLink per event, so bin(1,1)
-  // entries == nevents), the ELink map is only filled for the ELinks present in a
-  // given event, so bin entries don't track nevents; read it from the counter
-  MonitorElement* nEvtME = igetter.get(topFolder_ + "/nEvents");
-  const double nevents = (nEvtME != nullptr) ? nEvtME->getTH1F()->GetBinContent(1) : 0.;
-
-  // Normalize the raw 1D occupancy to per-event
-  MonitorElement* elinkOcc = igetter.get(topFolder_ + "/eLinkOccupancy");
-  if (elinkOcc != nullptr && nevents > 0) {
-    elinkOcc->getTH1F()->Scale(1.0 / nevents);
-    elinkOcc->getTH1F()->SetOption("HIST");
-    elinkOcc->setAxisTitle("ELink entries / nevents", 2);  // 2 = y-axis
+  MonitorElement* nGroupME = igetter.get(topFolder_ + "/nStreamGroups");
+  const double nGroups = (nGroupME != nullptr) ? nGroupME->getTH1F()->GetBinContent(1) : 0.;
+  if (nGroups <= 0) {
+    edm::LogWarning("ElinkOccupancyHarvester")
+        << "nStreamGroups missing or empty in " << topFolder_ << "; skipping all normalization.";
   }
 
-  // Normalization for per-section / per-subtype full spectrum occupancy
+  // Normalize the raw 1D occupancy to per stream group
+  MonitorElement* elinkOcc = igetter.get(topFolder_ + "/eLinkOccupancy");
+  if (elinkOcc != nullptr && nGroups > 0) {
+    elinkOcc->getTH1F()->Scale(1.0 / nGroups);
+    elinkOcc->getTH1F()->SetOption("HIST");
+    elinkOcc->setAxisTitle("ELink entries / stream group", 2);
+  }
+
+  // Normalization for per-section / per-subtype
   for (auto* me : igetter.getAllContents(topFolder_)) {
-    if (me == nullptr) continue;
-    if (me->getName().rfind("eLinkOccupancyPer", 0) == 0 && nevents > 0) {
-      me->getTH1F()->Scale(1.0 / nevents);
+    if (me == nullptr)
+      continue;
+    if (me->getName().rfind("eLinkOccupancyPer", 0) == 0 && nGroups > 0) {
+      me->getTH1F()->Scale(1.0 / nGroups);
       me->getTH1F()->SetOption("HIST");
-      me->setAxisTitle("ELink entries / nevents", 2);
+      me->setAxisTitle("ELink entries / stream group", 2);
     }
   }
 
-  // Same normalization for 2D counterparts of above
+  // Same normalization for 2D
   MonitorElement* occVsSection = igetter.get(topFolder_ + "/eLinkOccupancyVsSection");
-  if (occVsSection != nullptr && nevents > 0) {
-    occVsSection->getTH2F()->Scale(1.0 / nevents);
+  if (occVsSection != nullptr && nGroups > 0) {
+    occVsSection->getTH2F()->Scale(1.0 / nGroups);
     occVsSection->getTH2F()->SetOption("COLZ");
-    occVsSection->setAxisTitle("ELink entries / nevents", 3);  // 3 = z-axis
+    occVsSection->setAxisTitle("ELink entries / stream group", 3);  // 3 = z-axis
   }
 
   MonitorElement* occVsSubType = igetter.get(topFolder_ + "/eLinkOccupancyVsSubType");
-  if (occVsSubType != nullptr && nevents > 0) {
-    occVsSubType->getTH2F()->Scale(1.0 / nevents);
+  if (occVsSubType != nullptr && nGroups > 0) {
+    occVsSubType->getTH2F()->Scale(1.0 / nGroups);
     occVsSubType->getTH2F()->SetOption("COLZ");
-    occVsSubType->setAxisTitle("ELink entries / nevents", 3);
+    occVsSubType->setAxisTitle("ELink entries / stream group", 3);
   }
 
   ibooker.cd();
   ibooker.setCurrentFolder(topFolder_);
 
-  // Make new histo for event-averaged version of 1D occupancy
+  // Make new hist for event-averaged version of 1D occupancy
   MonitorElement* occAvg =
       phase2tkharvestutil::book1DFromPSet(config_.getParameter<edm::ParameterSet>("occupancyAvg"), ibooker);
   if (occAvg == nullptr)
     return;
 
-  // Fill above with one entry per ELink = that ELink's occupancy averaged over all events
+  // Fill above with one entry per ELink
   for (int ix = 1; ix <= prof->GetNbinsX(); ix++) {
     for (int iy = 1; iy <= prof->GetNbinsY(); iy++) {
       if (prof->GetBinEntries(prof->GetBin(ix, iy)) > 0)
@@ -94,60 +116,31 @@ void ElinkOccupancyHarvester::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IG
     }
   }
 
-  // Occupancy on z, ELink counts per occupancy band on y
-  auto bookCountVs = [&](const std::string& srcName, const std::string& dstName, const std::string& xTitle) {
-    MonitorElement* vsSrcME = igetter.get(topFolder_ + "/" + srcName);
-    if (vsSrcME != nullptr) {
-      TH2* src = vsSrcME->getTH2F();                 // X=section/subtype, Y=occupancy, content=count/nevents
-      const int nXB = src->GetNbinsX();
-      const int nOccB = src->GetNbinsY();
-    
-      // find the tallest column so the new count-axis spans the data
-      double maxCount = 1.0;
-      for (int ix = 1; ix <= nXB; ++ix)
-        for (int iy = 1; iy <= nOccB; ++iy)
-          maxCount = std::max(maxCount, src->GetBinContent(ix, iy));
-    
-      MonitorElement* flipME = ibooker.bookProfile2D(
-          dstName.c_str(),
-          ("ELink Count per Occupancy;" + xTitle + ";ELink entries / nevents;Occupancy").c_str(),
-          nXB, -0.5, nXB - 0.5,
-          100, 0., std::ceil(maxCount) + 1.0,
-          0., 1.2);
-      TProfile2D* dst = flipME->getTProfile2D();
-      dst->SetStats(0);
-      dst->SetOption("COLZ");
-      dst->SetMinimum(0.);
-      dst->SetMaximum(1.2);
-      for (int i = 0; i < nXB; ++i)
-        dst->GetXaxis()->SetBinLabel(i + 1, src->GetXaxis()->GetBinLabel(i + 1));
-    
-      for (int ix = 1; ix <= nXB; ++ix) {
-        for (int iy = 1; iy <= nOccB; ++iy) {
-          const double count = src->GetBinContent(ix, iy);   // # ELinks (per-event) at this occupancy
-          if (count <= 0) continue;
-          const double occ = src->GetYaxis()->GetBinCenter(iy);
-          dst->Fill(ix - 1, count, occ);                     // Y=count, Z=occupancy
-        }
-      }
-    }
-  };
-
-  bookCountVs("eLinkOccupancyVsSection", "eLinkCountVsSection", "Section");
-  bookCountVs("eLinkOccupancyVsSubType", "eLinkCountVsSubType", "SubType");
-
+  if (savePlots_) {
+    TrackerPhase2PlotUtil::PlotConfig plotCfg;
+    plotCfg.plotDir = plotDir_;
+    plotCfg.formats = plotFormats_;
+    plotCfg.occMapNamePrefix = "eLinkOccupancyMap";
+    plotCfg.zMax = zMax_;
+    const int nFiles = TrackerPhase2PlotUtil::saveFolderPlots(igetter, topFolder_, plotCfg);
+    edm::LogInfo("ElinkOccupancyHarvester") << "wrote " << nFiles << " plot files to " << plotDir_;
+  }
 }
 
 void ElinkOccupancyHarvester::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
   desc.add<std::string>("TopFolder", "Phase2IT/RawData");
   desc.add<std::string>("OccupancyMapName", "eLinkOccupancyMap");
+  desc.addUntracked<bool>("savePlots", false);
+  desc.addUntracked<std::string>("plotDir", ".");
+  desc.addUntracked<std::vector<std::string>>("plotFormats", {"png", "pdf"});
+  desc.addUntracked<double>("plotZMax", 1.2);
 
   edm::ParameterSetDescription psd0;
   psd0.add<std::string>("name", "eLinkOccupancyAvg");
   psd0.add<std::string>("title", "Event-averaged ELink occupancy;occupancy;ELinks");
-  psd0.add<int>("NxBins", 24);
-  psd0.add<double>("xmax", 1.2);
+  psd0.add<int>("NxBins", 28);
+  psd0.add<double>("xmax", 1.4);
   psd0.add<double>("xmin", 0.);
   psd0.add<bool>("switch", true);
   desc.add<edm::ParameterSetDescription>("occupancyAvg", psd0);

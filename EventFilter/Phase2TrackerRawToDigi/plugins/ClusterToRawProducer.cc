@@ -108,12 +108,17 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
 
-      // Dummy Tracker Header
-      daq_packet.push_back(Word32Bits(0xC4200AA0));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
       std::vector<Word32Bits> payload;
+
+      std::bitset<8> board_type(0);                 // 8 bits  (bits 31-24)
+      std::bitset<8> board_type_inv(0);             // 8 bits  (bits 31-24)
+      std::bitset<3> version_major(VERSION_MAJOR);  // 5 bits  (bits 23-19)
+      std::bitset<5> version_minor(VERSION_MINOR);  // 3 bits  (bits 18-16)
+      std::bitset<3> mode(0);                       // 3 bits  (bits 15-13)
+      std::bitset<1> ed(0);                         // 1 bit   (bit 12)
+      std::bitset<8> board_id(0);                   // 8 bits  (bits 11-4)
+      std::bitset<4> core_id(0);                    // 4 bits  (bits 3-0)
+      bool board_type_set = false;
 
       unsigned int offset_in_32b_words = 0;
 
@@ -124,6 +129,22 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           auto link_to_det_association = cablingMap.dtcELinkIdToDetId(cms_link_id);
           const DetId& det_id = link_to_det_association->second;
 
+          if (board_type_set == false) {
+            TrackerGeometry::ModuleType moduleType = trackerGeometry.getDetectorType(det_id);
+            if (moduleType == TrackerGeometry::ModuleType::Ph2PSS || moduleType == TrackerGeometry::ModuleType::Ph2PSP) {
+              board_type = 0xC5;
+              board_type_inv = 0x5C;
+            } else if (moduleType == TrackerGeometry::ModuleType::Ph2SS) {
+              board_type = 0xC4;
+              board_type_inv = 0x4C;
+            } else {
+              throw cms::Exception("That's Impossible.");
+            }
+            core_id = module_id / MODULES_PER_SLINK;
+            board_id = dtc_id;
+            board_type_set = true;
+          }
+          
           edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator sensor_1_cluster_collection =
               clusters_handle->find(det_id + 1);
           edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator sensor_2_cluster_collection =
@@ -185,6 +206,20 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         }
       }
 
+      std::bitset<32> first_word (
+          board_type.to_string() +    // 8 bits
+          version_major.to_string() + // 5 bits
+          version_minor.to_string() + // 3 bits
+          mode.to_string() +          // 3 bits
+          ed.to_string() +            // 1 bit
+          board_id.to_string() +      // 8 bits
+          core_id.to_string()         // 4 bits
+      );
+      daq_packet.push_back(Word32Bits(first_word));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
+
       // Add the offset map to the slink_daq_stream
       for (std::size_t i = 0; i < offset_map.size(); i++) {
         daq_packet.push_back(offset_map[i]);
@@ -199,8 +234,14 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         daq_packet.push_back(payload[i]);
       }
 
+      // Pad to nearest 128b boundary.
+      while (daq_packet.size() % 4 != 0) {
+        daq_packet.push_back(Word32Bits(0));
+      }
+
       // Tracker Trailer
-      daq_packet.push_back(0x4C000000);
+      uint32_t last_word = board_type_inv.to_ulong() << 24;  // Put it in bits 31-24
+      daq_packet.push_back(Word32Bits(last_word));
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
@@ -228,11 +269,13 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
 
+      // Print for Debug
       // const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
       // auto slink_header_size = sizeof(SLinkRocketHeader_v3);
       // auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
       // auto extractedPayload = addedFragment.payload(slink_header_size, slink_trailer_size);
-      // //dumpPacket(extractedPayload.data(), extractedPayload.size());
+      // dumpPacket(extractedPayload.data(), extractedPayload.size());
+      // std::cout << std::endl;
     }
   }
   iEvent.put(std::move(rawDataBuffer));

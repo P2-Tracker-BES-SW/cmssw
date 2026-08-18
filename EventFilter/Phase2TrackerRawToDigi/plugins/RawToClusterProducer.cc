@@ -148,7 +148,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         } else {
           std::cout << "[ERROR] DTC ID: " << dtcID << " and SLink ID: " << iSlink << " (Source ID: " << totID << ")" << std::endl;
           dumpPacket(dataPtr.data(), fedData.size());
-          ExtractedDTCHeader.print();
+          ExtractedDTCHeader.printFields();
           throw cms::Exception("CMSSW Unpacker is Incopatible with the Format Version Found in This Binary. Aborting Processing.");
         }
 

@@ -83,11 +83,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   iEvent.getByToken(clusterCollectionToken_, clusters_handle);
 
-  // Create RawDataBuffer to store the output
-  auto rawDataBuffer = std::make_unique<RawDataBuffer>(Phase2TrackerSpecifications::MAX_DTC_ID * Phase2TrackerSpecifications::SLINKS_PER_DTC);
-
   using namespace Phase2TrackerSpecifications;
   using namespace Phase2DAQFormatSpecification;
+
+  // Create RawDataBuffer to store the output
+  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC);
 
   // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
   //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {

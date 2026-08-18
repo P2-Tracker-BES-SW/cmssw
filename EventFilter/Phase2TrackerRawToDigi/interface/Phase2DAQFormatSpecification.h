@@ -19,6 +19,7 @@ namespace Phase2DAQFormatSpecification {
   static const int DTC_DAQ_HEADER = 0xFFFFFFFF;
   static const int N_BITS_PER_WORD = 32;
   static const int N_BYTES_PER_WORD = 4;
+  static const int N_BYTES_PER_DTH_BINARY_WORD = 16;
 
   // Channel Header Information (Payload)
   static const int L1ID_MAX_VALUE = 0x1FF;

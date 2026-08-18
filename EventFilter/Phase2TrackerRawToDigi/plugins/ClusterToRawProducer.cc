@@ -40,10 +40,14 @@ private:
   const edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeometryToken_;
 
   void insertHexWordAt(unsigned char* data_ptr, size_t word_index, uint32_t hex_word) {
-    data_ptr[word_index * 4 + 0] = (hex_word >> 24) & 0xFF;  // Most significant byte (bits 31-24)
-    data_ptr[word_index * 4 + 1] = (hex_word >> 16) & 0xFF;  // Next byte (bits 23-16)
-    data_ptr[word_index * 4 + 2] = (hex_word >> 8) & 0xFF;   // Next byte (bits 15-8)
-    data_ptr[word_index * 4 + 3] = (hex_word >> 0) & 0xFF;   // Least significant byte (bits 7-0)
+    // Reverse order within each 128-bit (4-word) block
+    size_t block_start = (word_index / 4) * 4;
+    size_t offset_within_block = word_index % 4;
+    size_t remapped_index = block_start + (3 - offset_within_block);
+    data_ptr[remapped_index * 4 + 0] = (hex_word >> 0) & 0xFF; // Most significant byte (bits 31-24)
+    data_ptr[remapped_index * 4 + 1] = (hex_word >> 8) & 0xFF; // Next byte (bits 23-16)
+    data_ptr[remapped_index * 4 + 2] = (hex_word >> 16) & 0xFF;  // Next byte (bits 15-8)
+    data_ptr[remapped_index * 4 + 3] = (hex_word >> 24) & 0xFF;  // Least significant byte (bits 7-0)
   }
 
   uint32_t get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug);
@@ -95,9 +99,10 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
 
       daq_packet.reserve(4);
-      for (int i = 0; i < 4; ++i) {
-        daq_packet.push_back(Word32Bits(DTC_DAQ_HEADER));
-      }
+      daq_packet.push_back(Word32Bits(0xC4200AA0));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
       std::vector<Word32Bits> payload;
 
       unsigned int offset_in_32b_words = 0;
@@ -127,14 +132,14 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // sensor_2 is always isLower == 0 for 2S.
 
           // Figure Out Offsets
-          uint16_t hybrid_1_offset = offset_in_32b_words;
           offset_in_32b_words += hybrid_1.get_payload_size();
+          uint16_t hybrid_1_offset = offset_in_32b_words;
 
-          uint16_t hybrid_2_offset = offset_in_32b_words;
           offset_in_32b_words += hybrid_2.get_payload_size();
+          uint16_t hybrid_2_offset = offset_in_32b_words;
 
           // 24 is PSS, 23 is PSP, 26 is SS-SS
-          uint32_t combined_offsets = (static_cast<uint32_t>(hybrid_2_offset) << 16) | hybrid_1_offset;
+          uint32_t combined_offsets = (static_cast<uint32_t>(hybrid_1_offset) << 16) | hybrid_2_offset;
           offset_map[module_id_within_slink] = Word32Bits(combined_offsets);
 
           // Figure out Payload
@@ -176,21 +181,30 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         daq_packet.push_back(offset_map[i]);
       }
 
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+
       // Add the payload to the slink_daq_stream
       for (std::size_t i = 0; i < payload.size(); i++) {
         daq_packet.push_back(payload[i]);
       }
 
+      daq_packet.push_back(0x4C000000);
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+
       InspectDAQPayload(daq_packet);
-      slink_daq_stream.resize(daq_packet.size() * N_BYTES_PER_WORD, N_BYTES_PER_WORD);
+
+      size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
+      size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
+      slink_daq_stream.resize(size_in_bytes + padding, N_BYTES_PER_DTH_BINARY_WORD);
       unsigned char* data_ptr = slink_daq_stream.data();
+      std::cout << slink_daq_stream.size() << std::endl;
 
       for (size_t word_index = 0; word_index < daq_packet.size(); ++word_index) {
         insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
       }
-
-      size_t actual_used_bytes = daq_packet.size() * N_BYTES_PER_WORD;  // Total size used
-      slink_daq_stream.resize(actual_used_bytes, N_BYTES_PER_WORD);
 
       fedRawDataCollection.get()->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER) = slink_daq_stream;
       const FEDRawData& fedData = fedRawDataCollection->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER);

@@ -27,6 +27,9 @@
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
 #include <fstream>
 
+#include "DataFormats/FEDRawData/interface/RawDataBuffer.h"
+#include "DataFormats/FEDRawData/interface/FEDRawData.h"  // Keep for FEDHeader/FEDTrailer if needed
+
 class ClusterToRawProducer : public edm::one::EDProducer<> {
 public:
   explicit ClusterToRawProducer(const edm::ParameterSet&);
@@ -51,7 +54,7 @@ private:
   }
 
   uint32_t get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug);
-  void dumpPacket(const FEDRawData& fedData);
+  void dumpPacket(const unsigned char* data, size_t dataSize);
   void InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload);
 
 };
@@ -61,7 +64,7 @@ ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
           consumes<Phase2TrackerCluster1DCollectionNew>(iConfig.getParameter<edm::InputTag>("Phase2Clusters"))),
       cablingMapToken_(esConsumes()),
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()) {
-  produces<FEDRawDataCollection>();
+  produces<RawDataBuffer>();;
 }
 
 ClusterToRawProducer::~ClusterToRawProducer() {}
@@ -81,7 +84,8 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   iEvent.getByToken(clusterCollectionToken_, clusters_handle);
 
   // Create FEDRawDataCollection to store the output
-  auto fedRawDataCollection = std::make_unique<FEDRawDataCollection>();
+  // Create RawDataBuffer to store the output
+  auto rawDataBuffer = std::make_unique<RawDataBuffer>(216 * 4);
 
   using namespace Phase2TrackerSpecifications;
   using namespace Phase2DAQFormatSpecification;
@@ -93,7 +97,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       int index_first = slink_id * MODULES_PER_SLINK;
       int index_last = (slink_id + 1) * MODULES_PER_SLINK;
 
-      FEDRawData slink_daq_stream;
+      //FEDRawData slink_daq_stream;
 
       std::vector<Word32Bits> daq_packet;
       std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
@@ -198,6 +202,8 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
       size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
       size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
+      // Create a raw buffer for each stream
+      std::vector<unsigned char> slink_daq_stream;
       slink_daq_stream.resize(size_in_bytes + padding, N_BYTES_PER_DTH_BINARY_WORD);
       unsigned char* data_ptr = slink_daq_stream.data();
       std::cout << slink_daq_stream.size() << std::endl;
@@ -206,13 +212,15 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
       }
 
-      fedRawDataCollection.get()->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER) = slink_daq_stream;
-      const FEDRawData& fedData = fedRawDataCollection->FEDData(slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER);
-      dumpPacket(fedData);
+      // Calculate source ID (similar to FED ID calculation)
+      uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
+      rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
+      // Note: For dumping, you'll need to adapt dumpPacket to work with vector<unsigned char>
+      // or create a temporary FEDRawData object
+      dumpPacket(slink_daq_stream.data(), slink_daq_stream.size());
     }
   }
-
-  iEvent.put(std::move(fedRawDataCollection));
+  iEvent.put(std::move(rawDataBuffer));
 }
 
 /**
@@ -241,11 +249,11 @@ uint32_t ClusterToRawProducer::get32bWordAtLine(const unsigned char*& data, size
 
 /**
  * @brief Dumps the entire DAQ Packet, in hexdump -C view.
+ * @param data Pointer to the raw data buffer
+ * @param dataSize Size of the data buffer in bytes
  * @return void
  */
-void ClusterToRawProducer::dumpPacket(const FEDRawData& fedData) {
-    const unsigned char* data = fedData.data();
-    size_t dataSize = fedData.size();
+void ClusterToRawProducer::dumpPacket(const unsigned char* data, size_t dataSize) {
     for (size_t l16byteslineID = 0; l16byteslineID < (dataSize + 15) / 16; l16byteslineID++) {
         for (size_t byte_within_line = 0; byte_within_line < 16; byte_within_line++) {
             size_t index = l16byteslineID * 16 + byte_within_line;

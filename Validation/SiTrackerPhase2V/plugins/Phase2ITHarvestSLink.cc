@@ -1,8 +1,10 @@
 // -*- C++ -*-
 // Package:    Validation/SiTrackerPhase2V
 // Class:      SlinkOccupancyHarvester
-// Description: Harvest the per-SLink occupancy DQM
+// Description: Harvest the per-slink occupancy DQM
 //
+// Author: Lacey Dishman, ldishman@cern.ch
+// Written: July 2026
 
 #include <string>
 #include <vector>

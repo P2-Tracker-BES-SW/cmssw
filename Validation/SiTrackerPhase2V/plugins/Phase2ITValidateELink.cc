@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// Package:    Validation/SiTrackerPhase2V
+// Class:      Phase2ITValidateELink
+// Description: Validate the per-elink occupancy DQM
+//
+// Author: Lacey Dishman, ldishman@cern.ch
+// Written: July 2026
+
 #include <algorithm>
 #include <cstdint>
 #include <set>

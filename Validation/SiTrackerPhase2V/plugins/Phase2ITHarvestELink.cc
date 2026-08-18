@@ -3,8 +3,8 @@
 // Class:      ElinkOccupancyHarvester
 // Description: Harvest the per-elink occupancy DQM
 //
-// author : your name and your email
-// when you wrote this
+// Author: Lacey Dishman, ldishman@cern.ch
+// Written: July 2026
 
 #include <string>
 #include <vector>

@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// Package:    Validation/SiTrackerPhase2V
+// Class:      Phase2ITValidateSLink
+// Description: Validate the per-slink occupancy DQM
+//
+// Author: Lacey Dishman, ldishman@cern.ch
+// Written: July 2026
+
 #include "CondFormats/DataRecord/interface/TrackerDetToDTCELinkCablingMapRcd.h"
 #include <algorithm>
 #include <string>

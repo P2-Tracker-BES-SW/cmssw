@@ -71,9 +71,11 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 # if hasattr(algo, "TanLorentzAnglePerTesla_Endcap"):
 #         algo.TanLorentzAnglePerTesla_Endcap = cms.double(0.0)
 
-
+from EventFilter.Phase2TrackerRawToDigi.CRACKMapping_cfi import crackMapping
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedDataBuffer = cms.InputTag("rawDataCollector")   
+    fedDataBuffer = cms.InputTag("rawDataCollector"),
+    analyzeCRACK = cms.bool(True),
+    crackMapping = crackMapping
 )
 
 # process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',

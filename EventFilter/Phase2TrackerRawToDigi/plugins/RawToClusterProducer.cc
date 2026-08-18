@@ -31,6 +31,7 @@
 
 #include "EventFilter/Phase2TrackerRawToDigi/interface/DTCHeader.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/CRACKMapping.h"
 
 using namespace Phase2TrackerSpecifications;
 using namespace Phase2DAQFormatSpecification;
@@ -80,15 +81,30 @@ private:
   const TrackerGeometry* trackerGeometry_ = nullptr;
   const TrackerTopology* trackerTopology_ = nullptr;
   std::map<int, std::pair<int, int>> stackMap_;
+  bool analyzeCRACK_;
+  std::unique_ptr<crack::CRACKMapping> crackMapping_;
 };
 
 RawToClusterProducer::RawToClusterProducer(const edm::ParameterSet& iConfig)
     : rawDataBufferToken_(consumes<RawDataBuffer>(iConfig.getParameter<edm::InputTag>("fedDataBuffer"))),
-      cablingMapToken_(
-          esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
+      cablingMapToken_(esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>()),
-      trackerTopologyToken_(esConsumes<TrackerTopology, TrackerTopologyRcd, edm::Transition::BeginRun>()) {
-  produces<Phase2TrackerCluster1DCollectionNew>();
+      trackerTopologyToken_(esConsumes<TrackerTopology, TrackerTopologyRcd, edm::Transition::BeginRun>()),
+      analyzeCRACK_(iConfig.getParameter<bool>("analyzeCRACK")) {
+      
+    produces<Phase2TrackerCluster1DCollectionNew>();
+    
+    if (analyzeCRACK_) {
+        crackMapping_ = std::make_unique<crack::CRACKMapping>();
+        if (iConfig.exists("crackMapping")) {
+            auto mappingVPSet = iConfig.getParameter<std::vector<edm::ParameterSet>>("crackMapping");
+            crackMapping_->loadFromVPSet(mappingVPSet);
+        } else {
+            throw cms::Exception("ConfigurationError") 
+                << "analyzeCRACK is true but crackMapping VPSet not found!";
+        }
+        edm::LogInfo("RawToClusterProducer") << "CRACK mapping loaded successfully";
+    }
 }
 
 RawToClusterProducer::~RawToClusterProducer() {}
@@ -140,6 +156,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
 
         DTCHeader ExtractedDTCHeader = getDTCHeader(dataPtr);
+        int coreID = 0;
 
         // Check if CMSSW can decode the binary.
         if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && 
@@ -151,6 +168,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           ExtractedDTCHeader.printFields();
           throw cms::Exception("CMSSW Unpacker is Incopatible with the Format Version Found in This Binary. Aborting Processing.");
         }
+        coreID = ExtractedDTCHeader.getDAQpathCoreID();
 
         ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
@@ -177,6 +195,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         for (unsigned int iChannel = 0; iChannel < CICs_PER_SLINK; iChannel++) {
 
+          // If this channel is masked, skip it and handle the next.
           if (ExtractedChannelsMask.isChannelMasked(iChannel))
             continue;
 
@@ -186,11 +205,10 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             thisChannel1DCorrClusters.clear();
           }
 
-          // retrieve the module type:
-          // first we need to construct the DTCElinkId object ## dtc_id, gbtlink_id, elink_id
-          // to get the gbt_id we should reverse what is done in the packer function,
-          // where clusters from channel X are split into 2*i and 2*i+1 based on being from CIC0 or CIC1
           unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          if (analyzeCRACK_) {
+            gbt_id = crackMapping_->getGbtID(dtcID, coreID, std::div(iChannel, 2).quot);
+          }
 
           DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
 
@@ -216,7 +234,15 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           size_t idx = initial_offset + channelOffset * N_BYTES_PER_WORD; // (N_BYTES_PER_WORD=4)
           uint32_t headerWord = get32bWordAtByte(dataPtr, idx, initial_offset, false);
 
-          // CIC Event ID Check. Within the Same DTC Packet, all CIC Event IDs Should be the Same!
+          /**
+           * HANDLING/CATCHING ERRORS ON DATA READ FROM BINARY
+           * @brief: Two checks are currently being perfored:
+           * 1) CIC Event ID should be the same in the entire packet (Fatal)
+           * 2) The user is warned in case a fragment contains at least 1 error in FEs & CIC (Warning)
+           * TODO: -
+           */
+
+          // Check (1)
           uint32_t eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
           if (!firstEventIDSet) {
             firstEventID = eventID;
@@ -228,26 +254,25 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           }
 
           int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
-          unsigned int numPixelClusters =
-              (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) &
-              N_CLUSTER_MASK;                                           // 7-bit field
-          unsigned int numStripClusters = (headerWord)&N_CLUSTER_MASK;  // 7-bit field
-
-          LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " <<std::bitset<32>(headerWord) 
+          unsigned int numPixelClusters = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) & N_CLUSTER_MASK;
+          unsigned int numStripClusters = (headerWord) & N_CLUSTER_MASK;
+          LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " << std::bitset<32>(headerWord) 
                                            << " (" << channelErrors << " channelErrors, "
                                            << numPixelClusters << " pixel clusters, "
                                            << numStripClusters << " strip clusters)\n";
 
+          // Check (2)
           if (channelErrors > 0) {
             LogTrace("RawToClusterProducer") 
                 << "WARNING: Channel " << iChannel << " has errors " ;
-            // TBD: maybe improve handling here?
             continue;
           } else if (is2SModule && numPixelClusters > 0) {
             edm::LogError("RawToClusterProducer") << "ERROR: Header for channel " << iChannel << " expects non-zero ("
                                                   << numPixelClusters << ") pixel clusters on a 2S module\n" <<
                                                   std::bitset<32>(headerWord);
-          }                                         
+          }
+
+          /************************************************************************************/
 
           // define the number of lines of the payload
           unsigned int nLines =

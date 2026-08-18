@@ -128,10 +128,9 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   TrackerHeader theHeader;
   ChannelsOffset theOffsets;
 
-  // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
-  //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
-  for (int dtcID = MIN_DTC_ID; dtcID < 2; dtcID++) {
-    for (int iSlink = 0; iSlink < 1; iSlink++) {
+  for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; dtcID++) {
+    // read the 4 slinks
+    for (unsigned int iSlink = 0; iSlink < SLINKS_PER_DTC; iSlink++) {
 
       unsigned totID = iSlink + SLINKS_PER_DTC * (dtcID - 1) + CMSSW_TRACKER_ID;
       auto const& fedData = rawDataBuffer.fragmentData(totID);
@@ -193,7 +192,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // where clusters from channel X are split into 2*i and 2*i+1 based on being from CIC0 or CIC1
           unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
 
-          DTCELinkId thisDTCElinkId(1, gbt_id, 0);
+          DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
 
           int thisDetId = -1;
           bool is2SModule = false;

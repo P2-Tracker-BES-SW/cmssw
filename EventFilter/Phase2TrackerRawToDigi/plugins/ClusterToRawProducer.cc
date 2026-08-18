@@ -88,12 +88,10 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   using namespace Phase2DAQFormatSpecification;
 
   // Create RawDataBuffer to store the output
-  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1000);
+  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1500);
 
-  // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
-  //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
-  for (int dtc_id = MIN_DTC_ID; dtc_id < 2; dtc_id++) {
-    for (int slink_id = 0; slink_id < 1; slink_id++) {
+  for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
+    for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
       int index_first = slink_id * MODULES_PER_SLINK;
       int index_last = (slink_id + 1) * MODULES_PER_SLINK;
 
@@ -229,11 +227,12 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       // Calculate source ID (similar to FED ID calculation)
       uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
-      const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
-      auto slink_header_size = sizeof(SLinkRocketHeader_v3);
-      auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
-      auto extractedPayload = addedFragment.payload(slink_header_size, slink_trailer_size);
-      dumpPacket(extractedPayload.data(), extractedPayload.size());
+
+      // const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
+      // auto slink_header_size = sizeof(SLinkRocketHeader_v3);
+      // auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
+      // auto extractedPayload = addedFragment.payload(slink_header_size, slink_trailer_size);
+      // //dumpPacket(extractedPayload.data(), extractedPayload.size());
     }
   }
   iEvent.put(std::move(rawDataBuffer));

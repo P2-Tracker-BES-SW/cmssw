@@ -155,8 +155,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
-        for (int i = 0; i < 60; i++) get32bWordAtLine(dataPtr, i, true);
-
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
         std::vector<uint64_t> offsetWords;
         
@@ -174,11 +172,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         theOffsets.setValue(offsetWords);
         int initial_offset = initByte + (nOffsetsLines + RESERVED_N_LINES ) * N_BYTES_PER_WORD; // 
         
-        // now read the payload (channel header + clusters)
-        // all channel headers should be there, even if 0 clusters are found
-        // the loop is not on the actual channel number, as in the ClusterToRaw conversion each channel is split by CIC0_CIC1
-        // NOTE: we need to save into the Phase2TrackerCluster1D collection two "channels" at the time
-        // in order to get all the clusters from the same lpGBT and fill them once at the end
         std::vector<Phase2TrackerCluster1D> thisChannel1DSeedClusters, thisChannel1DCorrClusters;
         uint32_t firstEventID = 0;
         bool firstEventIDSet = false;
@@ -262,7 +255,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
               (numStripClusters + numPixelClusters > 0)
                   ? int((numStripClusters * SS_CLUSTER_BITS + numPixelClusters * PX_CLUSTER_BITS) / N_BITS_PER_WORD) + 1
                   : 0;
-
           if (numStripClusters + numPixelClusters > 0) {
             LogTrace("RawToClusterProducer")
                 << "\tchannel " << iChannel << "\theader: " << std::bitset<N_BITS_PER_WORD>(headerWord)

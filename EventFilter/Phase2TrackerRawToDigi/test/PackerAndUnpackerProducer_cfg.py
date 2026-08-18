@@ -44,8 +44,8 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
 
 process.source = cms.Source("PoolSource",
-#    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
-     fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
+    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
+     #fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
 )
 
 ## in case of local file
@@ -101,8 +101,8 @@ process.Timing = cms.Service("Timing",
     useJobReport = cms.untracked.bool(True)  # This will also log timings in the job report.
 )
 
-process.dtc = cms.Path(process.Packer)
+#process.dtc = cms.Path(process.Packer)
 #process.dtc = cms.Path(process.Packer * process.Analyzer * process.Unpacker)
-#process.dtc = cms.Path(process.Packer * process.Unpacker)
+process.dtc = cms.Path(process.Packer * process.Unpacker)
 process.output = cms.EndPath(process.out)
 

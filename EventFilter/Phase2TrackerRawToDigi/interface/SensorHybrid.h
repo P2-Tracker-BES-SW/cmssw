@@ -85,7 +85,6 @@ private:
 
     if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS) {
       // For PS, sensor_2 is always strip and sensor_1 is always pixel
-
       for (auto& cluster : sensor_2_clusters_) {
         // cluster info
 
@@ -286,8 +285,8 @@ public:
     // Combine fields into the 32-bit header
     uint32_t header_ = (eventID << (N_BITS_PER_WORD - L1ID_BITS)) |
                        (channelErrors << (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) |
-                       (num_strip_clusters << (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) |
-                       (num_pixel_clusters);
+                       (num_pixel_clusters << (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) |
+                       (num_strip_clusters);
 
     // Convert to Word32Bits and add to payload
     Word32Bits header(header_);

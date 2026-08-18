@@ -103,10 +103,14 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
 
       daq_packet.reserve(4 + 4);
+
+      // Dummy SLink Header
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
+
+      // Dummy Tracker Header
       daq_packet.push_back(Word32Bits(0xC4200AA0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
@@ -156,7 +160,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         } 
         catch (const cms::Exception& e) {
           // exception here means that the link is not connected to a detector
-          uint32_t eventID = eventId_ & L1ID_MAX_VALUE;  // eventId_ (9 bits)
+          uint32_t eventID = CIC_CONSTANT_EVENT_ID & L1ID_MAX_VALUE;  // eventId_ (9 bits)
           uint32_t channelErrors = 0;                    // 9 bits for errors, all set to 0
           uint32_t numClusters = 0;                      // no clusters here.
 

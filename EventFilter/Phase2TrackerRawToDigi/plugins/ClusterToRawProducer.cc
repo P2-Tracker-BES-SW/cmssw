@@ -28,7 +28,8 @@
 #include <fstream>
 
 #include "DataFormats/FEDRawData/interface/RawDataBuffer.h"
-#include "DataFormats/FEDRawData/interface/FEDRawData.h"  // Keep for FEDHeader/FEDTrailer if needed
+#include "DataFormats/FEDRawData/interface/FEDRawData.h" 
+#include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
 
 class ClusterToRawProducer : public edm::one::EDProducer<> {
 public:
@@ -87,7 +88,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   using namespace Phase2DAQFormatSpecification;
 
   // Create RawDataBuffer to store the output
-  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC);
+  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1000);
 
   // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
   //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
@@ -101,7 +102,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<Word32Bits> daq_packet;
       std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
 
-      daq_packet.reserve(4);
+      daq_packet.reserve(4 + 4);
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
+      daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0xC4200AA0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
@@ -148,7 +153,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // Figure out Payload
           hybrid_1.get_payload(payload);
           hybrid_2.get_payload(payload);
-          std::cout << "Here @ " << dtc_id << " & " << slink_id << std::endl;
         } 
         catch (const cms::Exception& e) {
           // exception here means that the link is not connected to a detector
@@ -184,6 +188,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         daq_packet.push_back(offset_map[i]);
       }
 
+      // Tracker Mask
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
 
@@ -192,12 +197,19 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         daq_packet.push_back(payload[i]);
       }
 
+      // Tracker Trailer
       daq_packet.push_back(0x4C000000);
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
 
-      InspectDAQPayload(daq_packet);
+      // Dummy SLink Trailer
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+      daq_packet.push_back(0x0);
+
+      // InspectDAQPayload(daq_packet);
 
       size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
       size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
@@ -205,7 +217,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<unsigned char> slink_daq_stream;
       slink_daq_stream.resize(size_in_bytes + padding, N_BYTES_PER_DTH_BINARY_WORD);
       unsigned char* data_ptr = slink_daq_stream.data();
-      std::cout << slink_daq_stream.size() << std::endl;
 
       for (size_t word_index = 0; word_index < daq_packet.size(); ++word_index) {
         insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
@@ -214,9 +225,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       // Calculate source ID (similar to FED ID calculation)
       uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
-      // Note: For dumping, you'll need to adapt dumpPacket to work with vector<unsigned char>
-      // or create a temporary FEDRawData object
-      dumpPacket(slink_daq_stream.data(), slink_daq_stream.size());
+      const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
+      auto slink_header_size = sizeof(SLinkRocketHeader_v3);
+      auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
+      auto extractedPayload = addedFragment.payload(slink_header_size, slink_trailer_size);
+      dumpPacket(extractedPayload.data(), extractedPayload.size());
     }
   }
   iEvent.put(std::move(rawDataBuffer));

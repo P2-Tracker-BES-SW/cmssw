@@ -47,7 +47,7 @@ public:
   uint32_t get32bWordAtLine(std::span<const unsigned char> data, size_t index, bool debug);
   DTCHeader getDTCHeader(std::span<const unsigned char> data);
   ChannelsMask getChannelMaskingProfile(std::span<const unsigned char> data);
-
+  void dumpPacket(const unsigned char* data, size_t dataSize);
   void readPayload(std::vector<uint32_t>& clusterWords,
                    std::vector<uint32_t>& lines,
                    int numClusters,
@@ -128,13 +128,14 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   TrackerHeader theHeader;
   ChannelsOffset theOffsets;
 
-  // Read one entire DTC (#dtcID)
-  for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; dtcID++) {
-    // read the 4 slinks
-    for (unsigned int iSlink = 0; iSlink < SLINKS_PER_DTC; iSlink++) {
-      // as defined in the DAQProducer code
+  // for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
+  //   for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
+  for (int dtcID = MIN_DTC_ID; dtcID < 2; dtcID++) {
+    for (int iSlink = 0; iSlink < 1; iSlink++) {
+
       unsigned totID = iSlink + SLINKS_PER_DTC * (dtcID - 1) + CMSSW_TRACKER_ID;
       auto const& fedData = rawDataBuffer.fragmentData(totID);
+      
       if (fedData.size() > 0 ) {
 
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
@@ -146,12 +147,15 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
             edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
         } else {
+          std::cout << "[ERROR] DTC ID: " << dtcID << " and SLink ID: " << iSlink << " (Source ID: " << totID << ")" << std::endl;
+          dumpPacket(dataPtr.data(), fedData.size());
+          ExtractedDTCHeader.print();
           throw cms::Exception("CMSSW Unpacker is Incopatible with the Format Version Found in This Binary. Aborting Processing.");
         }
 
         ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
-        //for (int i = 0; i < 60; i++) get32bWordAtLine(dataPtr, i, true);
+        for (int i = 0; i < 60; i++) get32bWordAtLine(dataPtr, i, true);
 
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
         std::vector<uint64_t> offsetWords;
@@ -462,6 +466,17 @@ ChannelsMask RawToClusterProducer::getChannelMaskingProfile(std::span<const unsi
     }
     ChannelsMask captureMasking(words);
     return captureMasking;
+}
+
+void RawToClusterProducer::dumpPacket(const unsigned char* data, size_t dataSize) {
+    for (size_t l16byteslineID = 0; l16byteslineID < (dataSize + 15) / 16; l16byteslineID++) {
+        for (size_t byte_within_line = 0; byte_within_line < 16; byte_within_line++) {
+            size_t index = l16byteslineID * 16 + byte_within_line;
+            if (index >= dataSize) break;  // Stop if we've printed all bytes
+            printf("%02X ", (unsigned int)data[index]);
+        }
+        printf("\n");
+    }
 }
 
 std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t clusterWord, unsigned int iChannel) {

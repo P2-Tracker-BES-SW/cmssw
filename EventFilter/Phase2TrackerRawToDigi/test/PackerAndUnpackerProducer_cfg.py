@@ -79,7 +79,7 @@ process.Analyzer = cms.EDAnalyzer("RawAnalyzer",
     fedRawDataCollection = cms.InputTag("Packer")
 )
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedRawDataCollection = cms.InputTag("Packer")
+    fedDataBuffer = cms.InputTag("Packer")
 )
 
 process.out = cms.OutputModule("PoolOutputModule",
@@ -103,6 +103,6 @@ process.Timing = cms.Service("Timing",
 
 process.dtc = cms.Path(process.Packer)
 #process.dtc = cms.Path(process.Packer * process.Analyzer * process.Unpacker)
-#process.dtc = cms.Path(process.siPhase2Clusters * process.Packer * process.Unpacker)
+#process.dtc = cms.Path(process.Packer * process.Unpacker)
 process.output = cms.EndPath(process.out)
 

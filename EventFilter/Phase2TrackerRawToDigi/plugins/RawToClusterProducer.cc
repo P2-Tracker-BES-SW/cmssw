@@ -237,18 +237,25 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           /**
            * HANDLING/CATCHING ERRORS ON DATA READ FROM BINARY
            * @brief: Two checks are currently being perfored:
-           * 1) CIC Event ID should be the same in the entire packet (Fatal)
-           * 2) The user is warned in case a fragment contains at least 1 error in FEs & CIC (Warning)
-           * TODO: -
+           * 1) Throw warnings for CIC hard buffer overflows (CIC Event ID = 511). More information in the CIC2.1 Manual:
+           * https://edms.cern.ch/ui/#!master/navigator/document?P:100517181:101166963:subDocs, page 30.
+           * 2) CIC Event ID should be the same in the entire packet.
+           * 3) The user is warned in case a fragment contains at least 1 error in FEs & CIC (Warning).
            */
 
-          // Check (1)
+          /* Check (1) */
           uint32_t eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
+          
+          if (eventID == CIC_HARD_BUFFER_OVERFLOW) {
+            LogTrace("RawToClusterProducer") << "WARNING: Found CIC Hard Overflow @ Event " << iEvent.id().event() << std::endl;
+          }
+          
+          /* Check (2) */
           if (!firstEventIDSet) {
             firstEventID = eventID;
             firstEventIDSet = true;
           } else if (eventID != firstEventID) {
-            throw cms::Exception("CIC Event ID Mismatch!") 
+            throw cms::Exception("CIC Event ID Mismatch! This is a serious issue.") 
                 << "CIC Event ID Mismatch Detected! First Event ID: " << firstEventID 
                 << ", Current Event ID: " << eventID;
           }
@@ -261,7 +268,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
                                            << numPixelClusters << " pixel clusters, "
                                            << numStripClusters << " strip clusters)\n";
 
-          // Check (2)
+          /* Check (3) */
           if (channelErrors > 0) {
             LogTrace("RawToClusterProducer") 
                 << "WARNING: Channel " << iChannel << " has errors " ;

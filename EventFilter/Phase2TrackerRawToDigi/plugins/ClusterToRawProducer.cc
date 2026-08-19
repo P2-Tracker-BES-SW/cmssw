@@ -90,26 +90,35 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   // Create RawDataBuffer to store the output
   auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1500);
 
+  /** Iterate Over All DTCs for OT Phase 2 Tracker **/
   for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
+
+    /** Iterate Over SLinks (FEDs) that Belong to This DTC **/
     for (int slink_id = 0; slink_id < MAX_SLINK_ID + 1; slink_id++) {
+
       int index_first = slink_id * MODULES_PER_SLINK;
       int index_last = (slink_id + 1) * MODULES_PER_SLINK;
 
-      //FEDRawData slink_daq_stream;
-
+      /*
+       * Preparation of the full fragment for this event. It contains:
+       * (1) SLink Header
+       * (2) OT Tracker Header
+       * (3) Offset Map
+       * (4) OT Tracker Payload
+       * (5) OT Tracker Trailer
+       * (6) SLink Trailer
+       */
       std::vector<Word32Bits> daq_packet;
-      std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
 
       daq_packet.reserve(4 + 4);
 
-      // Dummy SLink Header
+      /** Configure Dummy SLink Header **/
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));
 
-      std::vector<Word32Bits> payload;
-
+      /** Configure OT Tracker Header **/
       std::bitset<8> board_type(0);                 // 8 bits  (bits 31-24)
       std::bitset<8> board_type_inv(0);             // 8 bits  (bits 31-24)
       std::bitset<3> version_major(VERSION_MAJOR);  // 5 bits  (bits 23-19)
@@ -120,8 +129,17 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::bitset<4> core_id(0);                    // 4 bits  (bits 3-0)
       bool board_type_set = false;
 
+      /** Firmware Accurate Offset Counter **/
       unsigned int offset_in_32b_words = 0;
 
+      /** Firmware Accurate OT Tracker Stream Components
+       * (1) Offset Map
+       * (2) OT Payload Section
+       */
+      std::vector<Word32Bits> offset_map(CICs_PER_SLINK / 2, Word32Bits(0));
+      std::vector<Word32Bits> payload;
+
+      /** Iterate Over Modules for this Specific FED **/
       for (int module_id = index_first; module_id < index_last; module_id++) {
         const unsigned int module_id_within_slink = module_id - index_first;
         DTCELinkId cms_link_id = DTCELinkId(dtc_id, module_id, 0);

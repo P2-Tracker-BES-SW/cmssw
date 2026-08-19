@@ -9,6 +9,7 @@
 namespace Phase2TrackerSpecifications {
 
   static const int CIC_CONSTANT_EVENT_ID = 0x1;
+  static const int CIC_HARD_BUFFER_OVERFLOW = 511;
   static const int MAX_SSA_PER_PS_MODULE = 16;
   static const int MAX_MPA_PER_PS_MODULE = 16;
   static const int MAX_CBC_PER_2S_MODULE = 16;

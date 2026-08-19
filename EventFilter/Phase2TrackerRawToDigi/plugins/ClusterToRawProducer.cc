@@ -98,6 +98,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
       int index_first = slink_id * MODULES_PER_SLINK;
       int index_last = (slink_id + 1) * MODULES_PER_SLINK;
+      uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
 
       /*
        * Preparation of the full fragment for this event. It contains:
@@ -110,13 +111,28 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        */
       std::vector<Word32Bits> daq_packet;
 
-      daq_packet.reserve(4 + 4);
+      daq_packet.reserve(4 + 4 + CICs_PER_SLINK / 2 + 2);
 
       /** Configure Dummy SLink Header **/
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
+
+      // S-Link header first
+      // following vars are tmp set as in 
+      // https://github.com/cms-sw/cmssw/blob/2f70a0116630c1586a2a26ffb4b7d256bb8f4b36/DataFormats/FEDRawData/test/TestWriteRawDataBuffer.cc#L36
+      uint16_t l1a_types = 1;
+      uint8_t l1a_phys = 0xAA;
+      uint8_t emu_status = 2;
+      SLinkRocketHeader_v3 header(sourceId, l1a_types, l1a_phys, emu_status, static_cast<uint64_t>(eventId_));
+
+      const unsigned char* header_bytes = reinterpret_cast<const unsigned char*>(&header);      
+      size_t header_size = sizeof(SLinkRocketHeader_v3);
+      // Add each word (assuming header is multiple of 4 bytes)
+      for (size_t i = 0; i < header_size; i += 4) {
+        uint32_t word = 0;
+        for (size_t j = 0; j < 4 && (i + j) < header_size; j++) {
+          word |= (header_bytes[i + j] << (j * 8));
+        }
+        daq_packet.push_back(Word32Bits(word));
+      }
 
       /** Configure OT Tracker Header **/
       std::bitset<C_NUM_BITS_BOARD_TYPE> board_type(0);                   // 8 bits  (bits 31-24)
@@ -239,6 +255,8 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
 
+      daq_packet.reserve(daq_packet.size() + payload.size());
+
       // Add the payload to the slink_daq_stream
       for (std::size_t i = 0; i < payload.size(); i++) {
         daq_packet.push_back(payload[i]);
@@ -256,13 +274,25 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       daq_packet.push_back(0x0);
       daq_packet.push_back(0x0);
 
-      // Dummy SLink Trailer
-      daq_packet.push_back(0x0);
-      daq_packet.push_back(0x0);
-      daq_packet.push_back(0x0);
-      daq_packet.push_back(0x0);
+      /** Configure SLink Trailer **/
+      uint16_t slt_status = 0;
+      uint16_t crc = 0;
+      uint32_t orbit_id = 0x3989;
+      uint16_t bx_id = 2200;
+      uint32_t fragment_size_words = (daq_packet.size() + 4); // +4 for trailer words
+      SLinkRocketTrailer_v3 trailer(slt_status, crc, orbit_id, bx_id, fragment_size_words, 0);
 
-      // InspectDAQPayload(daq_packet);
+      auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
+      const unsigned char* trailer_bytes = reinterpret_cast<const unsigned char*>(&trailer);
+
+      // Add each word (assuming trailer is multiple of 4 bytes)
+      for (size_t i = 0; i < slink_trailer_size; i += 4) {
+          uint32_t word = 0;
+          for (size_t j = 0; j < 4 && (i + j) < slink_trailer_size; j++) {
+              word |= (trailer_bytes[i + j] << (j * 8));
+          }
+          daq_packet.push_back(Word32Bits(word));
+      }
 
       size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
       size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
@@ -272,18 +302,25 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       unsigned char* data_ptr = slink_daq_stream.data();
 
       for (size_t word_index = 0; word_index < daq_packet.size(); ++word_index) {
-        insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
+          // Handle both SLink Header (first 4 words) and SLink Trailer (last 4 words)
+          if (word_index < 4 || word_index >= daq_packet.size() - 4) {
+              uint32_t word = daq_packet[word_index].to_ulong();
+              data_ptr[word_index * 4 + 0] = (word >> 0) & 0xFF;
+              data_ptr[word_index * 4 + 1] = (word >> 8) & 0xFF;
+              data_ptr[word_index * 4 + 2] = (word >> 16) & 0xFF;
+              data_ptr[word_index * 4 + 3] = (word >> 24) & 0xFF;
+          } else {
+              insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
+          }
       }
 
-      // Calculate source ID (similar to FED ID calculation)
-      uint32_t sourceId = slink_id + SLINKS_PER_DTC * (dtc_id - 1) + TRACKER_HEADER;
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
 
       // Print for Debug
       // const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
-      // auto slink_header_size = sizeof(SLinkRocketHeader_v3);
-      // auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
-      // auto extractedPayload = addedFragment.payload(slink_header_size, slink_trailer_size);
+      // //auto slink_header_size = sizeof(SLinkRocketHeader_v3);
+      // //auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
+      // auto extractedPayload = addedFragment.payload(0, 0);
       // dumpPacket(extractedPayload.data(), extractedPayload.size());
       // std::cout << std::endl;
     }

@@ -119,14 +119,14 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       daq_packet.push_back(Word32Bits(0x0));
 
       /** Configure OT Tracker Header **/
-      std::bitset<8> board_type(0);                 // 8 bits  (bits 31-24)
-      std::bitset<8> board_type_inv(0);             // 8 bits  (bits 31-24)
-      std::bitset<3> version_major(VERSION_MAJOR);  // 5 bits  (bits 23-19)
-      std::bitset<5> version_minor(VERSION_MINOR);  // 3 bits  (bits 18-16)
-      std::bitset<3> mode(0);                       // 3 bits  (bits 15-13)
-      std::bitset<1> ed(0);                         // 1 bit   (bit 12)
-      std::bitset<8> board_id(0);                   // 8 bits  (bits 11-4)
-      std::bitset<4> core_id(0);                    // 4 bits  (bits 3-0)
+      std::bitset<C_NUM_BITS_BOARD_TYPE> board_type(0);                   // 8 bits  (bits 31-24)
+      std::bitset<C_NUM_BITS_BOARD_TYPE_INV> board_type_inv(0);           // 8 bits  (bits 31-24)
+      std::bitset<C_NUM_BITS_VERSION_MAJOR> version_major(VERSION_MAJOR); // 5 bits  (bits 23-19)
+      std::bitset<C_NUM_BITS_VERSION_MINOR> version_minor(VERSION_MINOR); // 3 bits  (bits 18-16)
+      std::bitset<C_NUM_BITS_MODE> mode(0);                               // 3 bits  (bits 15-13)
+      std::bitset<C_NUM_BITS_ED> ed(0);                                   // 1 bit   (bit 12)
+      std::bitset<C_NUM_BITS_BOARD_ID> board_id(0);                       // 8 bits  (bits 11-4)
+      std::bitset<C_NUM_BITS_CORE_ID> core_id(0);                         // 4 bits  (bits 3-0)
       bool board_type_set = false;
 
       /** Firmware Accurate Offset Counter **/
@@ -224,15 +224,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         }
       }
 
-      std::bitset<32> first_word (
-          board_type.to_string() +    // 8 bits
-          version_major.to_string() + // 5 bits
-          version_minor.to_string() + // 3 bits
-          mode.to_string() +          // 3 bits
-          ed.to_string() +            // 1 bit
-          board_id.to_string() +      // 8 bits
-          core_id.to_string()         // 4 bits
-      );
+      Word32Bits first_word(board_type.to_string() + version_major.to_string() + version_minor.to_string() + mode.to_string() + ed.to_string() + board_id.to_string() + core_id.to_string());
       daq_packet.push_back(Word32Bits(first_word));
       daq_packet.push_back(Word32Bits(0x0));
       daq_packet.push_back(Word32Bits(0x0));

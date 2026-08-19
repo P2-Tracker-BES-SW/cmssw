@@ -3,6 +3,15 @@
 
 namespace Phase2DAQFormatSpecification {
 
+  static const int C_NUM_BITS_BOARD_TYPE = 8;
+  static const int C_NUM_BITS_BOARD_TYPE_INV = 8;
+  static const int C_NUM_BITS_VERSION_MAJOR = 3;
+  static const int C_NUM_BITS_VERSION_MINOR = 5;
+  static const int C_NUM_BITS_MODE = 3;
+  static const int C_NUM_BITS_ED = 1;
+  static const int C_NUM_BITS_BOARD_ID = 8;
+  static const int C_NUM_BITS_CORE_ID = 4;
+
   static const int DTC_HEADER_OFFSET = 0; // location where DTC HEADER Starts
   static const int DTC_HEADER_SIZE = 4;   // in 32bit words
 

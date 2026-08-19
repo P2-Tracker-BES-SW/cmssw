@@ -57,7 +57,17 @@ private:
   uint32_t get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug);
   void dumpPacket(const unsigned char* data, size_t dataSize);
   void InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload);
-
+  void addSLinkHeader(const SLinkRocketHeader_v3& header, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
+  void addSLinkTrailer(const SLinkRocketTrailer_v3& trailer, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
+  void addTrackerTrailer(const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_TYPE_INV>& board_type_inv, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
+  void addTrackerHeader(const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_TYPE>& board_type,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_VERSION_MAJOR>& version_major,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_VERSION_MINOR>& version_minor,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_MODE>& mode,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_ED>& ed,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_ID>& board_id,
+                        const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_CORE_ID>& core_id,
+                        std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
 };
 
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
@@ -113,28 +123,20 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
       daq_packet.reserve(4 + 4 + CICs_PER_SLINK / 2 + 2);
 
-      /** Configure Dummy SLink Header **/
-
-      // S-Link header first
-      // following vars are tmp set as in 
-      // https://github.com/cms-sw/cmssw/blob/2f70a0116630c1586a2a26ffb4b7d256bb8f4b36/DataFormats/FEDRawData/test/TestWriteRawDataBuffer.cc#L36
+      /**
+       * Configure SLink Rocket Header (Version 3)
+       * Following the pattern from TestWriteRawDataBuffer.cc:
+       * @see https://github.com/cms-sw/cmssw/blob/2f70a0116630c1586a2a26ffb4b7d256bb8f4b36/DataFormats/FEDRawData/test/TestWriteRawDataBuffer.cc#L36
+       */
       uint16_t l1a_types = 1;
       uint8_t l1a_phys = 0xAA;
       uint8_t emu_status = 2;
       SLinkRocketHeader_v3 header(sourceId, l1a_types, l1a_phys, emu_status, static_cast<uint64_t>(eventId_));
+      addSLinkHeader(header, daq_packet);
 
-      const unsigned char* header_bytes = reinterpret_cast<const unsigned char*>(&header);      
-      size_t header_size = sizeof(SLinkRocketHeader_v3);
-      // Add each word (assuming header is multiple of 4 bytes)
-      for (size_t i = 0; i < header_size; i += 4) {
-        uint32_t word = 0;
-        for (size_t j = 0; j < 4 && (i + j) < header_size; j++) {
-          word |= (header_bytes[i + j] << (j * 8));
-        }
-        daq_packet.push_back(Word32Bits(word));
-      }
-
-      /** Configure OT Tracker Header **/
+      /** Configure OT Tracker Header
+       * @see: https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213 for definition.
+       **/
       std::bitset<C_NUM_BITS_BOARD_TYPE> board_type(0);                   // 8 bits  (bits 31-24)
       std::bitset<C_NUM_BITS_BOARD_TYPE_INV> board_type_inv(0);           // 8 bits  (bits 31-24)
       std::bitset<C_NUM_BITS_VERSION_MAJOR> version_major(VERSION_MAJOR); // 5 bits  (bits 23-19)
@@ -240,11 +242,10 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         }
       }
 
-      Word32Bits first_word(board_type.to_string() + version_major.to_string() + version_minor.to_string() + mode.to_string() + ed.to_string() + board_id.to_string() + core_id.to_string());
-      daq_packet.push_back(Word32Bits(first_word));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
-      daq_packet.push_back(Word32Bits(0x0));
+      /** 
+       * Configure and Add SLink Header
+       */
+      addTrackerHeader(board_type, version_major, version_minor, mode, ed, board_id, core_id, daq_packet);
 
       // Add the offset map to the slink_daq_stream
       for (std::size_t i = 0; i < offset_map.size(); i++) {
@@ -267,36 +268,29 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         daq_packet.push_back(Word32Bits(0));
       }
 
-      // Tracker Trailer
-      uint32_t last_word = board_type_inv.to_ulong() << 24;  // Put it in bits 31-24
-      daq_packet.push_back(Word32Bits(last_word));
-      daq_packet.push_back(0x0);
-      daq_packet.push_back(0x0);
-      daq_packet.push_back(0x0);
+      /** 
+       * Configure and Add SLink Trailer
+       */
+      addTrackerTrailer(board_type_inv, daq_packet);
 
-      /** Configure SLink Trailer **/
-      uint16_t slt_status = 0;
-      uint16_t crc = 0;
-      uint32_t orbit_id = 0x3989;
-      uint16_t bx_id = 2200;
-      uint32_t fragment_size_words = (daq_packet.size() + 4); // +4 for trailer words
+      /** 
+       * Configure and Add SLink Trailer
+       * Following the pattern from TestWriteRawDataBuffer.cc:
+       * @see: https://github.com/cms-sw/cmssw/blob/2f70a0116630c1586a2a26ffb4b7d256bb8f4b36/DataFormats/FEDRawData/test/TestWriteRawDataBuffer.cc#L36
+       */
+      uint16_t slt_status = 0;           // SLink trailer status (0 = OK)
+      uint16_t crc = 0;                  // CRC (not computed, set to 0)
+      uint32_t orbit_id = 0x3989;        // Orbit ID (test value from reference)
+      uint16_t bx_id = 2200;             // Bunch crossing ID (test value from reference)
+      uint32_t fragment_size_words = daq_packet.size() + 4;  // Total fragment size in 32-bit words (including trailer)
       SLinkRocketTrailer_v3 trailer(slt_status, crc, orbit_id, bx_id, fragment_size_words, 0);
+      addSLinkTrailer(trailer, daq_packet);
 
-      auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
-      const unsigned char* trailer_bytes = reinterpret_cast<const unsigned char*>(&trailer);
-
-      // Add each word (assuming trailer is multiple of 4 bytes)
-      for (size_t i = 0; i < slink_trailer_size; i += 4) {
-          uint32_t word = 0;
-          for (size_t j = 0; j < 4 && (i + j) < slink_trailer_size; j++) {
-              word |= (trailer_bytes[i + j] << (j * 8));
-          }
-          daq_packet.push_back(Word32Bits(word));
-      }
-
+      /** 
+       * Add Padding And Covert Bytes to Match Captured Binaries 
+       **/
       size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
       size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
-      // Create a raw buffer for each stream
       std::vector<unsigned char> slink_daq_stream;
       slink_daq_stream.resize(size_in_bytes + padding, N_BYTES_PER_DTH_BINARY_WORD);
       unsigned char* data_ptr = slink_daq_stream.data();
@@ -314,6 +308,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           }
       }
 
+      /** Add Padding And Covert Bytes to Match Reality **/
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
 
       // Print for Debug
@@ -377,6 +372,94 @@ void ClusterToRawProducer::InspectDAQPayload(const std::vector<Phase2DAQFormatSp
   for (std::size_t i = 0; i < DAQPayload.size(); i++) {
     printf("%08lX \n", (unsigned long int)DAQPayload.at(i).to_ulong());
   }
+}
+
+/**
+ * @brief Adds an SLinkRocketHeader_v3 to a DAQ packet vector
+ * @param header The SLink header to add
+ * @param daqPacket The vector to append the header words to
+ */
+void ClusterToRawProducer::addSLinkHeader(const SLinkRocketHeader_v3& header, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket) {
+
+  const unsigned char* header_bytes = reinterpret_cast<const unsigned char*>(&header);
+  size_t header_size = sizeof(SLinkRocketHeader_v3);
+  
+  // Add each word (assuming header is multiple of 4 bytes)
+  for (size_t i = 0; i < header_size; i += 4) {
+      uint32_t word = 0;
+      for (size_t j = 0; j < 4 && (i + j) < header_size; j++) {
+          word |= (header_bytes[i + j] << (j * 8));
+      }
+      daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(word));
+  }
+}
+
+/**
+ * @brief Adds an SLinkRocketTrailer_v3 to a DAQ packet vector
+ * @param trailer The SLink trailer to add
+ * @param daqPacket The vector to append the trailer words to
+ */
+void ClusterToRawProducer::addSLinkTrailer(const SLinkRocketTrailer_v3& trailer, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket) {
+    const unsigned char* trailer_bytes = reinterpret_cast<const unsigned char*>(&trailer);
+    size_t trailer_size = sizeof(SLinkRocketTrailer_v3);
+    
+    // Add each word (assuming trailer is multiple of 4 bytes)
+    for (size_t i = 0; i < trailer_size; i += 4) {
+        uint32_t word = 0;
+        for (size_t j = 0; j < 4 && (i + j) < trailer_size; j++) {
+            word |= (trailer_bytes[i + j] << (j * 8));
+        }
+        daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(word));
+    }
+}
+
+/**
+ * @brief Adds the OT Tracker Trailer to the DAQ packet
+ * @param board_type_inv The inverted board type (placed in bits 31-24)
+ * @param daqPacket The vector to append the trailer words to
+ */
+void ClusterToRawProducer::addTrackerTrailer(const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_TYPE_INV>& board_type_inv, 
+                                              std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket) {
+    uint32_t last_word = board_type_inv.to_ulong() << 24;  // Put it in bits 31-24
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(last_word));
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+}
+
+/**
+ * @brief Adds the OT Tracker Header to the DAQ packet
+ * @param board_type 8-bit board type (bits 31-24)
+ * @param version_major 5-bit major version (bits 23-19)
+ * @param version_minor 3-bit minor version (bits 18-16)
+ * @param mode 3-bit mode (bits 15-13)
+ * @param ed 1-bit ED (bit 12)
+ * @param board_id 8-bit board ID (bits 11-4)
+ * @param core_id 4-bit core ID (bits 3-0)
+ * @param daqPacket The vector to append the header words to
+ * @see: https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213 for definition.
+ */
+void ClusterToRawProducer::addTrackerHeader(const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_TYPE>& board_type,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_VERSION_MAJOR>& version_major,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_VERSION_MINOR>& version_minor,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_MODE>& mode,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_ED>& ed,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_ID>& board_id,
+                                            const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_CORE_ID>& core_id,
+                                            std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket) {
+    // Build the first word from all the bit fields
+    Phase2DAQFormatSpecification::Word32Bits first_word(board_type.to_string() + 
+                          version_major.to_string() + 
+                          version_minor.to_string() + 
+                          mode.to_string() + 
+                          ed.to_string() + 
+                          board_id.to_string() + 
+                          core_id.to_string());
+    
+    daqPacket.push_back(first_word);
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+    daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
 }
 
 DEFINE_FWK_MODULE(ClusterToRawProducer);

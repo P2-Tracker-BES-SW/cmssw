@@ -74,9 +74,12 @@ private:
                            std::vector<unsigned char>& binaryBuffer);
   int getRandomBXID() { return dist_(gen_); }
 
-  std::random_device rd_;                  
-  std::mt19937 gen_;                       
-  std::uniform_int_distribution<int> dist_;
+  std::random_device rd_;                    
+  std::mt19937 gen_;                         
+  std::exponential_distribution<double> dist_;
+
+  uint32_t tmpBunchCrossing_ = 0;
+  uint32_t tmpOrbit_ = 0;
 };
 
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
@@ -86,13 +89,17 @@ ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()),
       rd_(),                                           
       gen_(rd_()),                                     
-      dist_(0, 3563) {                                 
+      dist_(Phase2TrackerSpecifications::HL_LHC_L1A_INTER_ARRIVAL_LAMBDA) {
       produces<RawDataBuffer>();
 }
 
 ClusterToRawProducer::~ClusterToRawProducer() {}
 
 void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+
+  using namespace Phase2TrackerSpecifications;
+  using namespace Phase2DAQFormatSpecification;
+  
   // Retrieve TrackerGeometry from EventSetup
   const TrackerGeometry& trackerGeometry = iSetup.getData(trackerGeometryToken_);
 
@@ -103,14 +110,16 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   unsigned int eventId_ = iEvent.id().event();
 
   /* Emulate BX in [0, 3563] for This Event, will appear in All SLink Fragment Trailers. */
-  const uint32_t globalBunchCrossing_ = dist_(gen_);
+  uint32_t globalBunchCrossing_ = tmpBunchCrossing_ + dist_(gen_);
+  if (globalBunchCrossing_ > BX_ID_MAX) {
+    globalBunchCrossing_ = globalBunchCrossing_ - (BX_ID_MAX + 1);
+    tmpOrbit_ += 1;
+  }
+  tmpBunchCrossing_ = globalBunchCrossing_;
 
   // Get input clusters
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   iEvent.getByToken(clusterCollectionToken_, clusters_handle);
-
-  using namespace Phase2TrackerSpecifications;
-  using namespace Phase2DAQFormatSpecification;
 
   // Create RawDataBuffer to store the output
   auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1500);
@@ -186,11 +195,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           if (board_type_set == false) {
             TrackerGeometry::ModuleType moduleType = trackerGeometry.getDetectorType(det_id);
             if (moduleType == TrackerGeometry::ModuleType::Ph2PSS || moduleType == TrackerGeometry::ModuleType::Ph2PSP) {
-              board_type = 0xC5;
-              board_type_inv = 0x5C;
+              board_type = DTC_HEADER_OT_PS;
+              board_type_inv = DTC_HEADER_OT_PS_INV;
             } else if (moduleType == TrackerGeometry::ModuleType::Ph2SS) {
-              board_type = 0xC4;
-              board_type_inv = 0x4C;
+              board_type = DTC_HEADER_OT_2S;
+              board_type_inv = DTC_HEADER_OT_2S_INV;
             } else {
               throw cms::Exception("That's Impossible.");
             }
@@ -298,7 +307,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        */
       uint16_t slt_status = 0;               // SLink trailer status (0 = OK)
       uint16_t crc = 0;                      // CRC (not computed, set to 0)
-      uint32_t orbit_id = 0x3989;            // Orbit ID (test value from reference)
+      uint32_t orbit_id = tmpOrbit_;         // Orbit ID (test value from reference)
       uint16_t bx_id = globalBunchCrossing_; // Bunch crossing ID (test value from reference)
       uint32_t fragment_size_words = daq_packet.size() + 4;  // Total fragment size in 32-bit words (including trailer)
       SLinkRocketTrailer_v3 trailer(slt_status, crc, orbit_id, bx_id, fragment_size_words, 0);

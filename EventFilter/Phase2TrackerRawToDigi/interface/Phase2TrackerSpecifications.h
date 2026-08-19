@@ -10,6 +10,10 @@ namespace Phase2TrackerSpecifications {
 
   static const int CIC_CONSTANT_EVENT_ID = 0x1;
   static const int CIC_HARD_BUFFER_OVERFLOW = 511;
+  static const int BX_ID_MAX = 3563;
+  static const double HL_LHC_L1A_RATE = 750.00;
+  static const double HL_LHC_CLOCK_FREQUENCY = 40.078 * 1e3;
+  static const double HL_LHC_L1A_INTER_ARRIVAL_LAMBDA = HL_LHC_L1A_RATE / HL_LHC_CLOCK_FREQUENCY;
   static const int MAX_SSA_PER_PS_MODULE = 16;
   static const int MAX_MPA_PER_PS_MODULE = 16;
   static const int MAX_CBC_PER_2S_MODULE = 16;

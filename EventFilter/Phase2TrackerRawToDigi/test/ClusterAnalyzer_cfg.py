@@ -13,13 +13,13 @@ process = cms.Process("Analysis")
 # If it is False, then the original clusters will be analyzed.
 ANALYZE_PACKUNPACK = False
 # If this is True, the clusters from the unpacked CRack data will be analyzed.
-ANALYZE_CRACK = True
+ANALYZE_CRACK = False
 
 # Enable summary at the end of the job
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 # Limit the number of events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 # Define the EDAnalyzer with the correct product label
 process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',

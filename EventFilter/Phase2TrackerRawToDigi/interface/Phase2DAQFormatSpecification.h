@@ -12,6 +12,11 @@ namespace Phase2DAQFormatSpecification {
   static const int C_NUM_BITS_BOARD_ID = 8;
   static const int C_NUM_BITS_CORE_ID = 4;
 
+  static const int DTC_HEADER_OT_PS = 0xC5;
+  static const int DTC_HEADER_OT_PS_INV = 0x5C;
+  static const int DTC_HEADER_OT_2S = 0xC4;
+  static const int DTC_HEADER_OT_2S_INV = 0x4C;
+
   static const int DTC_HEADER_OFFSET = 0; // location where DTC HEADER Starts
   static const int DTC_HEADER_SIZE = 4;   // in 32bit words
 

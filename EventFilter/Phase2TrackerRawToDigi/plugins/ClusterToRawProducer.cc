@@ -31,6 +31,8 @@
 #include "DataFormats/FEDRawData/interface/FEDRawData.h" 
 #include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
 
+#include <random>
+
 class ClusterToRawProducer : public edm::one::EDProducer<> {
 public:
   explicit ClusterToRawProducer(const edm::ParameterSet&);
@@ -68,14 +70,24 @@ private:
                         const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_ID>& board_id,
                         const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_CORE_ID>& core_id,
                         std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
+  void allocateBytesToBinary(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket, 
+                           std::vector<unsigned char>& binaryBuffer);
+  int getRandomBXID() { return dist_(gen_); }
+
+  std::random_device rd_;                  
+  std::mt19937 gen_;                       
+  std::uniform_int_distribution<int> dist_;
 };
 
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
     : clusterCollectionToken_(
-          consumes<Phase2TrackerCluster1DCollectionNew>(iConfig.getParameter<edm::InputTag>("Phase2Clusters"))),
+      consumes<Phase2TrackerCluster1DCollectionNew>(iConfig.getParameter<edm::InputTag>("Phase2Clusters"))),
       cablingMapToken_(esConsumes()),
-      trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()) {
-  produces<RawDataBuffer>();;
+      trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()),
+      rd_(),                                           
+      gen_(rd_()),                                     
+      dist_(0, 3563) {                                 
+      produces<RawDataBuffer>();
 }
 
 ClusterToRawProducer::~ClusterToRawProducer() {}
@@ -87,8 +99,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   // Retrieve the CablingMap
   const auto& cablingMap = iSetup.getData(cablingMapToken_);
 
-  // get EventID and RunID
+  /* Emulate Global Event ID for This Event, will appear in All SLink Fragment Header. */
   unsigned int eventId_ = iEvent.id().event();
+
+  /* Emulate BX in [0, 3563] for This Event, will appear in All SLink Fragment Trailers. */
+  const uint32_t globalBunchCrossing_ = dist_(gen_);
 
   // Get input clusters
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
@@ -120,7 +135,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        * (6) SLink Trailer
        */
       std::vector<Word32Bits> daq_packet;
-
       daq_packet.reserve(4 + 4 + CICs_PER_SLINK / 2 + 2);
 
       /**
@@ -131,7 +145,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       uint16_t l1a_types = 1;
       uint8_t l1a_phys = 0xAA;
       uint8_t emu_status = 2;
-      SLinkRocketHeader_v3 header(sourceId, l1a_types, l1a_phys, emu_status, static_cast<uint64_t>(eventId_));
+      SLinkRocketHeader_v3 header (sourceId, 
+                                   l1a_types, 
+                                   l1a_phys, 
+                                   emu_status, 
+                                   static_cast<uint64_t>(eventId_));
       addSLinkHeader(header, daq_packet);
 
       /** Configure OT Tracker Header
@@ -278,35 +296,17 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        * Following the pattern from TestWriteRawDataBuffer.cc:
        * @see: https://github.com/cms-sw/cmssw/blob/2f70a0116630c1586a2a26ffb4b7d256bb8f4b36/DataFormats/FEDRawData/test/TestWriteRawDataBuffer.cc#L36
        */
-      uint16_t slt_status = 0;           // SLink trailer status (0 = OK)
-      uint16_t crc = 0;                  // CRC (not computed, set to 0)
-      uint32_t orbit_id = 0x3989;        // Orbit ID (test value from reference)
-      uint16_t bx_id = 2200;             // Bunch crossing ID (test value from reference)
+      uint16_t slt_status = 0;               // SLink trailer status (0 = OK)
+      uint16_t crc = 0;                      // CRC (not computed, set to 0)
+      uint32_t orbit_id = 0x3989;            // Orbit ID (test value from reference)
+      uint16_t bx_id = globalBunchCrossing_; // Bunch crossing ID (test value from reference)
       uint32_t fragment_size_words = daq_packet.size() + 4;  // Total fragment size in 32-bit words (including trailer)
       SLinkRocketTrailer_v3 trailer(slt_status, crc, orbit_id, bx_id, fragment_size_words, 0);
       addSLinkTrailer(trailer, daq_packet);
 
-      /** 
-       * Add Padding And Covert Bytes to Match Captured Binaries 
-       **/
-      size_t size_in_bytes = daq_packet.size() * N_BYTES_PER_WORD;
-      size_t padding = (N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % N_BYTES_PER_DTH_BINARY_WORD)) % N_BYTES_PER_DTH_BINARY_WORD;
+      /** Convert DAQ Packet to Raw Bytes, As They Appear in Real Binaries **/
       std::vector<unsigned char> slink_daq_stream;
-      slink_daq_stream.resize(size_in_bytes + padding, N_BYTES_PER_DTH_BINARY_WORD);
-      unsigned char* data_ptr = slink_daq_stream.data();
-
-      for (size_t word_index = 0; word_index < daq_packet.size(); ++word_index) {
-          // Handle both SLink Header (first 4 words) and SLink Trailer (last 4 words)
-          if (word_index < 4 || word_index >= daq_packet.size() - 4) {
-              uint32_t word = daq_packet[word_index].to_ulong();
-              data_ptr[word_index * 4 + 0] = (word >> 0) & 0xFF;
-              data_ptr[word_index * 4 + 1] = (word >> 8) & 0xFF;
-              data_ptr[word_index * 4 + 2] = (word >> 16) & 0xFF;
-              data_ptr[word_index * 4 + 3] = (word >> 24) & 0xFF;
-          } else {
-              insertHexWordAt(data_ptr, word_index, (daq_packet[word_index].to_ulong()));
-          }
-      }
+      allocateBytesToBinary(daq_packet, slink_daq_stream);
 
       /** Add Padding And Covert Bytes to Match Reality **/
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
@@ -460,6 +460,43 @@ void ClusterToRawProducer::addTrackerHeader(const std::bitset<Phase2DAQFormatSpe
     daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
     daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
     daqPacket.push_back(Phase2DAQFormatSpecification::Word32Bits(0x0));
+}
+
+/**
+ * @brief Converts a DAQ packet vector to raw binary bytes with proper byte ordering
+ * @param daqPacket The input DAQ packet vector of 32-bit words
+ * @param binaryBuffer The output binary buffer to fill with bytes
+ * This function:
+ * 1. Resizes the binary buffer to hold all bytes from daqPacket
+ * 2. Handles SLink Header (first 4 words) and Trailer (last 4 words) specially
+ * 3. Applies 128-bit block reversal to the middle payload words
+ * 4. Adds padding to match the captured binary format
+ */
+void ClusterToRawProducer::allocateBytesToBinary(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket, 
+                                                   std::vector<unsigned char>& binaryBuffer) {
+    // Calculate size and padding
+    size_t size_in_bytes = daqPacket.size() * Phase2DAQFormatSpecification::N_BYTES_PER_WORD;
+    size_t padding = (Phase2DAQFormatSpecification::N_BYTES_PER_DTH_BINARY_WORD - (size_in_bytes % Phase2DAQFormatSpecification::N_BYTES_PER_DTH_BINARY_WORD)) % Phase2DAQFormatSpecification::N_BYTES_PER_DTH_BINARY_WORD;
+    
+    // Resize and initialize binary buffer
+    binaryBuffer.resize(size_in_bytes + padding, Phase2DAQFormatSpecification::N_BYTES_PER_DTH_BINARY_WORD);
+    unsigned char* data_ptr = binaryBuffer.data();
+    
+    // Write each 32-bit word to the raw buffer
+    for (size_t word_index = 0; word_index < daqPacket.size(); ++word_index) {
+        // Handle both SLink Header (first 4 words) and SLink Trailer (last 4 words)
+        if (word_index < 4 || word_index >= daqPacket.size() - 4) {
+            // SLink Header/Trailer: write in little-endian order
+            uint32_t word = daqPacket[word_index].to_ulong();
+            data_ptr[word_index * 4 + 0] = (word >> 0) & 0xFF;
+            data_ptr[word_index * 4 + 1] = (word >> 8) & 0xFF;
+            data_ptr[word_index * 4 + 2] = (word >> 16) & 0xFF;
+            data_ptr[word_index * 4 + 3] = (word >> 24) & 0xFF;
+        } else {
+            // Payload: apply 128-bit block reversal
+            insertHexWordAt(data_ptr, word_index, daqPacket[word_index].to_ulong());
+        }
+    }
 }
 
 DEFINE_FWK_MODULE(ClusterToRawProducer);

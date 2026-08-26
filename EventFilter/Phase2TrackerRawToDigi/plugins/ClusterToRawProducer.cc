@@ -143,7 +143,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        * (6) SLink Trailer
        */
       std::vector<Word32Bits> daq_packet;
-      daq_packet.reserve(4 + 4 + CICs_PER_SLINK / 2 + 2);
+      daq_packet.reserve(SLINK_HEADER_SIZE + TRACKER_HEADER_SIZE + MODULES_PER_SLINK + DTC_MASK_PROFILE_SIZE);
 
       /**
        * Configure SLink Rocket Header (Version 3)

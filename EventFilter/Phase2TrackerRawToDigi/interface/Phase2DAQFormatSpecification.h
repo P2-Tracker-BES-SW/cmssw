@@ -1,6 +1,8 @@
 #ifndef Phase2DAQFormatSpecification_H
 #define Phase2DAQFormatSpecification_H
 
+#include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
+
 namespace Phase2DAQFormatSpecification {
 
   static const int C_NUM_BITS_BOARD_TYPE = 8;
@@ -25,6 +27,10 @@ namespace Phase2DAQFormatSpecification {
 
   static const int DTC_TRAILER_OFFSET = 26;
   static const int DTC_TRAILER_SIZE = 4;
+  static const int SLINK_HEADER_SIZE = sizeof(SLinkRocketHeader_v3) * 8 / 32;
+  static const int SLINK_TRAILER_SIZE = sizeof(SLinkRocketTrailer_v3) * 8 / 32;
+  static const int TRACKER_HEADER_SIZE = 4; // in 32bit words
+  static const int DTC_MASK_PROFILE_SIZE = 2; // in 32bit words
 
   // This CMSSW Version should be compatible against the versioining variables below.
   static const int VERSION_MAJOR = 0x1;

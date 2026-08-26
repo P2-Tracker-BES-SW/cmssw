@@ -94,13 +94,16 @@ process.source = cms.Source("DAQSource",
     verifyChecksum = cms.untracked.bool(True if options.daqSourceMode != "DTH" else False),
     useL1EventID = cms.untracked.bool(False),
     eventChunkBlock = cms.untracked.uint32(2),
-    eventChunkSize = cms.untracked.uint32(64),
-    maxChunkSize = cms.untracked.uint32(256),
+    eventChunkSize = cms.untracked.uint32(3),
+    maxChunkSize = cms.untracked.uint32(10),
     numBuffers = cms.untracked.uint32(3),
     maxBufferedFiles = cms.untracked.uint32(2),
     fileListMode = cms.untracked.bool(True),
     fileNames = cms.untracked.vstring(
-        ram_dir_path + "run" + str(options.runNumber) + "_ls0001_index000000.raw"
+        ram_dir_path + "run" + str(options.runNumber) + "_ls0001_index000000.raw",
+        ram_dir_path + "run" + str(options.runNumber) + "_ls0001_index000001.raw",
+        ram_dir_path + "run" + str(options.runNumber) + "_ls0002_index000000.raw",
+        ram_dir_path + "run" + str(options.runNumber) + "_ls0002_index000001.raw"
     )
 
 )
@@ -159,8 +162,8 @@ process.streamC = cms.OutputModule("GlobalEvFOutputModule",
 )
 
 process.outRootFile = cms.OutputModule("PoolOutputModule",
-    #SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring( 'p1', 'p2' )),
-    fileName = cms.untracked.string('file:DTH_Decoded_CRACK_Physics_Run_July_2026.root'),
+    SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring( 'p1', 'p2' )),
+    fileName = cms.untracked.string('file:dth_output.root'),
     outputCommands = cms.untracked.vstring(
         'keep *'
     )

@@ -28,8 +28,6 @@
 #include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsOffset.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
-
-#include "EventFilter/Phase2TrackerRawToDigi/interface/DTCHeader.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/CRACKMapping.h"
 
@@ -46,7 +44,7 @@ public:
 
   uint32_t get32bWordAtByte(std::span<const unsigned char> data, size_t initByte, size_t startByte, bool debug /* = false */) ;
   uint32_t get32bWordAtLine(std::span<const unsigned char> data, size_t index, bool debug);
-  DTCHeader getDTCHeader(std::span<const unsigned char> data);
+  TrackerHeader getTrackerHeader(std::span<const unsigned char> data);
   ChannelsMask getChannelMaskingProfile(std::span<const unsigned char> data);
   void dumpPacket(const unsigned char* data, size_t dataSize);
   void readPayload(std::vector<uint32_t>& clusterWords,
@@ -141,7 +139,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   auto slink_header_size = sizeof(SLinkRocketHeader_v3);
   auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
 
-  TrackerHeader theHeader;
   ChannelsOffset theOffsets;
 
   for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; dtcID++) {
@@ -155,7 +152,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
 
-        DTCHeader ExtractedDTCHeader = getDTCHeader(dataPtr);
+        TrackerHeader ExtractedDTCHeader = getTrackerHeader(dataPtr);
         int coreID = 0;
 
         // Check if CMSSW can decode the binary.
@@ -464,16 +461,16 @@ uint32_t RawToClusterProducer::get32bWordAtLine(std::span<const unsigned char> d
 }
 
 /**
- * @brief Returns DTC Header from the DAQ Packet.
+ * @brief Returns Tracker Header from the DAQ Packet.
  * @param data Pointer to the raw data buffer (passed by reference)
- * @return DTCHeader Class Object.
+ * @return TrackerHeader Class Object.
  */
-DTCHeader RawToClusterProducer::getDTCHeader(std::span<const unsigned char> data) {
+TrackerHeader RawToClusterProducer::getTrackerHeader(std::span<const unsigned char> data) {
     std::array<uint32_t, 4> words;
     for (int i = 0; i < Phase2DAQFormatSpecification::DTC_HEADER_SIZE; ++i) {
       words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_HEADER_OFFSET + i);
     }
-    DTCHeader captureHeader(words);
+    TrackerHeader captureHeader(words);
     return captureHeader;
 }
 

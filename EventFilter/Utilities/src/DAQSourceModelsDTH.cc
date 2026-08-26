@@ -350,10 +350,10 @@ bool DataModeDTH::nextEventView(RawInputFile*) {
     } else if (last_eID != nextEventID_)
       throw cms::Exception("DAQSource::DAQSourceModelsDTH") << "Inconsistent event number between fragments";
 
-    // if (trailer->flags())
-    //   throw cms::Exception("DAQSource::DAQSourceModelsDTH")
-    //       << "Detected error condition in DTH trailer of event " << trailer->eventID()
-    //       << " flags: " << std::bitset<16>(trailer->flags());
+    if (trailer->flags())
+      throw cms::Exception("DAQSource::DAQSourceModelsDTH")
+          << "Detected error condition in DTH trailer of event " << trailer->eventID()
+          << " flags: " << std::bitset<16>(trailer->flags());
 
     LogDebug("DataModeDTH") << "DTH fragment trailer in block " << i << " eventID: " << trailer->eventID()
                             << " payloadSizeBytes: " << trailer->payloadSizeBytes() << " crc: " << trailer->crc()

@@ -28,7 +28,6 @@
 #include <fstream>
 
 #include "DataFormats/FEDRawData/interface/RawDataBuffer.h"
-#include "DataFormats/FEDRawData/interface/FEDRawData.h" 
 #include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
 
 #include <random>

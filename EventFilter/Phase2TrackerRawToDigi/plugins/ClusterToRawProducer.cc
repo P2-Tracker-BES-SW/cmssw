@@ -118,8 +118,13 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   iEvent.getByToken(clusterCollectionToken_, clusters_handle);
 
-  // Create RawDataBuffer to store the output
-  auto rawDataBuffer = std::make_unique<RawDataBuffer>(MAX_DTC_ID * SLINKS_PER_DTC * 1500);
+  struct SlinkFragment {
+    uint64_t source_id;
+    std::vector<unsigned char> data;
+  };
+  std::vector<SlinkFragment> allSlinkFragments;
+  allSlinkFragments.reserve((MAX_DTC_ID - MIN_DTC_ID + 1) * (MAX_SLINK_ID + 1));
+  size_t totalSize = 0;
 
   /** Iterate Over All DTCs for OT Phase 2 Tracker **/
   for (int dtc_id = MIN_DTC_ID; dtc_id < MAX_DTC_ID + 1; dtc_id++) {
@@ -314,18 +319,20 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<unsigned char> slink_daq_stream;
       allocateBytesToBinary(daq_packet, slink_daq_stream);
 
-      /** Add Padding And Convert Bytes to Match Reality **/
-      rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
-
-      // Print for Debug
-      // const auto& addedFragment = rawDataBuffer->fragmentData(sourceId);
-      // //auto slink_header_size = sizeof(SLinkRocketHeader_v3);
-      // //auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
-      // auto extractedPayload = addedFragment.payload(0, 0);
-      // dumpPacket(extractedPayload.data(), extractedPayload.size());
-      // std::cout << std::endl;
+      /** Update Total Size and Store Fragment **/
+      const size_t fragment_bytes = slink_daq_stream.size() * N_BYTES_PER_WORD;
+      totalSize += fragment_bytes;  
+      allSlinkFragments.push_back({sourceId, std::move(slink_daq_stream)});
     }
   }
+
+  // Create RawDataBuffer to store the output
+  auto rawDataBuffer = std::make_unique<RawDataBuffer>(totalSize);
+
+  for (auto& fragment : allSlinkFragments) {
+    rawDataBuffer->addSource(fragment.source_id, fragment.data.data(), fragment.data.size());
+  }
+
   iEvent.put(std::move(rawDataBuffer));
 }
 

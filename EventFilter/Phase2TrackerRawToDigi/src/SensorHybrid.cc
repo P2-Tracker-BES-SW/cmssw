@@ -254,19 +254,3 @@ void SensorHybrid::get_payload(std::vector<Phase2DAQFormatSpecification::Word32B
 
   get_channel_cluster_payload(payload);
 }
-
-// Stub implementations - you'll need to implement these
-unsigned int SensorHybrid::get_offset_within_payload() const {
-  // TODO: Implement
-  return 0;
-}
-
-unsigned int SensorHybrid::get_module_slink_id() const {
-  // TODO: Implement
-  return 0;
-}
-
-unsigned int SensorHybrid::get_module_slink_mod_id() const {
-  // TODO: Implement
-  return 0;
-}

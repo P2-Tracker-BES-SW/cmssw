@@ -40,10 +40,7 @@ public:
                const unsigned int eventId);
 
   unsigned int get_payload_size();
-  unsigned int get_offset_within_payload() const;
   const bool get_cic_id() const { return cic_id_; }
-  unsigned int get_module_slink_id() const;
-  unsigned int get_module_slink_mod_id() const;
   std::vector<Phase2TrackerCluster1D*> get_sensor_1_clusters() const { return sensor_1_clusters_; }
   std::vector<Phase2TrackerCluster1D*> get_sensor_2_clusters() const { return sensor_2_clusters_; }
   TrackerGeometry::ModuleType get_sensor_type_1() const { return sensor_type_1; }

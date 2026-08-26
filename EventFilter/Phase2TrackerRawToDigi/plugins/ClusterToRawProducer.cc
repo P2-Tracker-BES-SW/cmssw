@@ -55,9 +55,7 @@ private:
     data_ptr[remapped_index * 4 + 3] = (hex_word >> 24) & 0xFF;  // Least significant byte (bits 7-0)
   }
 
-  uint32_t get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug);
   void dumpPacket(const unsigned char* data, size_t dataSize);
-  void InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload);
   void addSLinkHeader(const SLinkRocketHeader_v3& header, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
   void addSLinkTrailer(const SLinkRocketTrailer_v3& trailer, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
   void addTrackerTrailer(const std::bitset<Phase2DAQFormatSpecification::C_NUM_BITS_BOARD_TYPE_INV>& board_type_inv, std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
@@ -269,7 +267,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       }
 
       /** 
-       * Configure and Add SLink Header
+       * Configure and Add Tracker Header
        */
       addTrackerHeader(board_type, version_major, version_minor, mode, ed, board_id, core_id, daq_packet);
 
@@ -295,7 +293,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       }
 
       /** 
-       * Configure and Add SLink Trailer
+       * Configure and Add Tracker Trailer
        */
       addTrackerTrailer(board_type_inv, daq_packet);
 
@@ -316,7 +314,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<unsigned char> slink_daq_stream;
       allocateBytesToBinary(daq_packet, slink_daq_stream);
 
-      /** Add Padding And Covert Bytes to Match Reality **/
+      /** Add Padding And Convert Bytes to Match Reality **/
       rawDataBuffer->addSource(sourceId, slink_daq_stream.data(), slink_daq_stream.size());
 
       // Print for Debug
@@ -332,53 +330,19 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 }
 
 /**
- * @brief Retrives a specific 32b word from the DAQ Payload.
- * @param data Pointer to the raw data buffer (passed by reference)
- * @param LineID Carefully defined in this google sheet
- * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
- * @return 32bit word. MSB on the far left. LSB on the far right.
- */
-uint32_t ClusterToRawProducer::get32bWordAtLine(const unsigned char*& data, size_t LineID, bool debug = false) {
-    int group = LineID / 4;
-    int offset = LineID % 4;
-    int reversedOffset = 3 - offset;
-    size_t reversedWordIndex = group * 4 + reversedOffset;
-    
-    size_t byteOffset = reversedWordIndex * 4;
-    uint32_t word = (static_cast<uint32_t>(data[byteOffset + 3]) << 24) |
-                    (static_cast<uint32_t>(data[byteOffset + 2]) << 16) |
-                    (static_cast<uint32_t>(data[byteOffset + 1]) << 8)  |
-                    (static_cast<uint32_t>(data[byteOffset + 0]));
-    if (debug) {
-        printf("%08X \n", (unsigned int)word);
-    }            
-    return word;
-}
-
-/**
  * @brief Dumps the entire DAQ Packet, in hexdump -C view.
  * @param data Pointer to the raw data buffer
  * @param dataSize Size of the data buffer in bytes
  * @return void
  */
 void ClusterToRawProducer::dumpPacket(const unsigned char* data, size_t dataSize) {
-    for (size_t l16byteslineID = 0; l16byteslineID < (dataSize + 15) / 16; l16byteslineID++) {
-        for (size_t byte_within_line = 0; byte_within_line < 16; byte_within_line++) {
-            size_t index = l16byteslineID * 16 + byte_within_line;
-            if (index >= dataSize) break;  // Stop if we've printed all bytes
-            printf("%02X ", (unsigned int)data[index]);
-        }
-        printf("\n");
+  for (size_t l16byteslineID = 0; l16byteslineID < (dataSize + 15) / 16; l16byteslineID++) {
+    for (size_t byte_within_line = 0; byte_within_line < 16; byte_within_line++) {
+      size_t index = l16byteslineID * 16 + byte_within_line;
+      if (index >= dataSize) break;  // Stop if we've printed all bytes
+      printf("%02X ", (unsigned int)data[index]);
     }
-}
-
-/**
- * @brief Dumps the entire DAQ Packet, in hexdump -C view.
- * @return void
- */
-void ClusterToRawProducer::InspectDAQPayload(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& DAQPayload) {
-  for (std::size_t i = 0; i < DAQPayload.size(); i++) {
-    printf("%08lX \n", (unsigned long int)DAQPayload.at(i).to_ulong());
+    printf("\n");
   }
 }
 

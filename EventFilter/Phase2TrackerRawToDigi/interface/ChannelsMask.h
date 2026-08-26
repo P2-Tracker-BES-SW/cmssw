@@ -1,6 +1,8 @@
 #ifndef EventFilter_Phase2TrackerRawToDigi_ChannelsMask_H
 #define EventFilter_Phase2TrackerRawToDigi_ChannelsMask_H
 
+#include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
+
 #include <cstdint>
 #include <array>
 #include <cstdio>
@@ -50,33 +52,27 @@ public:
     }
 
     /**
-     * @brief Check if a specific channel is enabled in mask 0
-     * @param channel Channel number (0-17)
-     * @return true if channel is enabled, false otherwise
+     * @brief Check if a specific channel is masked in the global mask register
+     * @param channel Channel number (0-35)
+     * @return true if channel is masked, false otherwise
      */
-    bool isChannelEnabled0(int channel) const {
-        if (channel < 0 || channel > 17) return false;
-        return (getChannelMask0() >> channel) & 0x1;
+    bool isChannelMasked(int channel) const {
+        if (channel < 0 || channel > Phase2TrackerSpecifications::CICs_PER_SLINK - 1) {
+            throw cms::Exception("InvalidChannel") << "Channel number must be between 0 and " << Phase2TrackerSpecifications::CICs_PER_SLINK - 1 << ".";
+        }
+        return (globalMask_ >> channel) & 0x1ULL;
     }
 
     /**
-     * @brief Check if a specific channel is enabled in mask 1
-     * @param channel Channel number (0-17)
-     * @return true if channel is enabled, false otherwise
-     */
-    bool isChannelEnabled1(int channel) const {
-        if (channel < 0 || channel > 17) return false;
-        return (getChannelMask1() >> channel) & 0x1;
-    }
-
-    /**
-     * @brief Check if a specific channel is enabled in the global mask
+     * @brief Check if a specific channel is enabled in the global mask register
      * @param channel Channel number (0-35)
      * @return true if channel is enabled, false otherwise
      */
-    bool isChannelMasked(int channel) const {
-        if (channel < 0 || channel > 35) return false;
-        return (globalMask_ >> channel) & 0x1ULL;
+    bool isChannelEnabled(int channel) const {
+        if (channel < 0 || channel > Phase2TrackerSpecifications::CICs_PER_SLINK - 1) {
+            throw cms::Exception("InvalidChannel") << "Channel number must be between 0 and " << Phase2TrackerSpecifications::CICs_PER_SLINK - 1 << ".";
+        }
+        return !isChannelMasked(channel);
     }
 
     /**

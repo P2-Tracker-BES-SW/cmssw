@@ -43,7 +43,6 @@ public:
   void beginRun(const edm::Run&, const edm::EventSetup&) override;
 
   uint32_t get32bWordAtByte(std::span<const unsigned char> data, size_t initByte, size_t startByte, bool debug /* = false */) ;
-  uint32_t get32bWordAtLine(std::span<const unsigned char> data, size_t index, bool debug);
   TrackerHeader getTrackerHeader(std::span<const unsigned char> data);
   ChannelsMask getChannelMaskingProfile(std::span<const unsigned char> data);
   void dumpPacket(const unsigned char* data, size_t dataSize);
@@ -409,8 +408,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> data,
                                                 size_t bytePos,
                                                 size_t startByte,
-                                                bool debug /* = false */)
-{
+                                                bool debug /* = false */) {
     // word index relative to the beginning of the offset area
     size_t wordIndex = (bytePos - startByte) / N_BYTES_PER_WORD;
 
@@ -437,38 +435,17 @@ uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> d
 }
 
 /**
- * @brief Retrives a specific 32b word from the DAQ Payload.
- * @param data Pointer to the raw data buffer (passed by reference)
- * @param LineID Carefully defined in this google sheet
- * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
- * @return 32bit word. MSB on the far left. LSB on the far right.
- */
-uint32_t RawToClusterProducer::get32bWordAtLine(std::span<const unsigned char> data, size_t LineID, bool debug = false) {
-    int group = LineID / 4;
-    int offset = LineID % 4;
-    int reversedOffset = 3 - offset;
-    size_t reversedWordIndex = group * 4 + reversedOffset;
-    
-    size_t byteOffset = reversedWordIndex * 4;
-    uint32_t word = (static_cast<uint32_t>(data[byteOffset + 3]) << 24) |
-                    (static_cast<uint32_t>(data[byteOffset + 2]) << 16) |
-                    (static_cast<uint32_t>(data[byteOffset + 1]) << 8)  |
-                    (static_cast<uint32_t>(data[byteOffset + 0]));
-    if (debug) {
-      printf("%08X ", (unsigned int)word); std::cout << std::bitset<32>((unsigned int)word) << std::endl;
-    }            
-    return word;
-}
-
-/**
  * @brief Returns Tracker Header from the DAQ Packet.
  * @param data Pointer to the raw data buffer (passed by reference)
  * @return TrackerHeader Class Object.
  */
 TrackerHeader RawToClusterProducer::getTrackerHeader(std::span<const unsigned char> data) {
     std::array<uint32_t, 4> words;
+    size_t startByte = Phase2DAQFormatSpecification::DTC_HEADER_OFFSET * Phase2DAQFormatSpecification::N_BYTES_PER_WORD;
     for (int i = 0; i < Phase2DAQFormatSpecification::DTC_HEADER_SIZE; ++i) {
-      words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_HEADER_OFFSET + i);
+        words[i] = get32bWordAtByte(data, 
+                                    startByte + (i * Phase2DAQFormatSpecification::N_BYTES_PER_WORD), 
+                                    startByte, false);
     }
     TrackerHeader captureHeader(words);
     return captureHeader;
@@ -482,7 +459,9 @@ TrackerHeader RawToClusterProducer::getTrackerHeader(std::span<const unsigned ch
 ChannelsMask RawToClusterProducer::getChannelMaskingProfile(std::span<const unsigned char> data) {
     std::array<uint32_t, 2> words;
     for (int i = 0; i < Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_SIZE; ++i) {
-      words[i] = get32bWordAtLine(data, Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_OFFSET + i);
+      words[i] = get32bWordAtByte(data, 
+                                  Phase2DAQFormatSpecification::DTC_CHANNEL_MASK_OFFSET * Phase2DAQFormatSpecification::N_BYTES_PER_WORD + (i * Phase2DAQFormatSpecification::N_BYTES_PER_WORD), 
+                                  0, false);
     }
     ChannelsMask captureMasking(words);
     return captureMasking;

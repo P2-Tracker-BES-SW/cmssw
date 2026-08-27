@@ -7,13 +7,25 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 import FWCore.Utilities.FileUtils as FileUtils
 import os
 
+# -- alpaka --
+# flag for using the conversion
+Legacy_Format = True
+
 process = cms.Process("PACKANDUNPACK")
+
+# -- alpaka --
+process.options.numberOfThreads = 8  
+process.options.numberOfStreams = 8
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 #process.load('FWCore.MessageService.MessageLogger_cfi')
+# -- alpaka --
+process.load('Configuration.StandardSequences.Accelerators_cff')
+process.load('HeterogeneousCore.AlpakaCore.ProcessAcceleratorAlpaka_cfi')
 
+'''
 process.MessageLogger = cms.Service("MessageLogger",
     destinations = cms.untracked.vstring('logUnpacker','cout'),
     categories = cms.untracked.vstring('RawToClusterProducer'),
@@ -30,7 +42,7 @@ process.MessageLogger = cms.Service("MessageLogger",
         RawToClusterProducer = cms.untracked.PSet(limit = cms.untracked.int32(-1))
     ),
 )
-
+'''
 process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
 process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
 
@@ -41,12 +53,12 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
 
 process.source = cms.Source("PoolSource",
-#    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
-     fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
-)
+    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
+     #fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
+     )
 
 ## in case of local file
 # process.load("CondCore.CondDB.CondDB_cfi")
@@ -81,6 +93,16 @@ process.Analyzer = cms.EDAnalyzer("RawAnalyzer",
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
     fedDataBuffer = cms.InputTag("Packer")
 )
+# -- alpaka --
+process.alpakaUnpacker = cms.EDProducer("Phase2RawToClusterProducer@alpaka",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_serial_sync::Phase2RawToClusterProducer",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_cuda_async::Phase2RawToClusterProducer",
+#process.alpakaUnpacker = cms.EDProducer("alpaka_rocm_async::Phase2RawToClusterProducer",
+    fedRawDataCollection = cms.InputTag("Packer"),
+)
+process.ClusterConverter = cms.EDProducer("ClusterPropSoAToLegacyED",
+    clusterSoASource = cms.InputTag("alpakaUnpacker")  
+)
 
 process.out = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
@@ -91,6 +113,8 @@ process.out = cms.OutputModule("PoolOutputModule",
       'keep *_remadeSiPhase2Clusters_*_*',
       'keep *_Packer_*_*',
       'keep *_Unpacker_*_*',
+      'keep *_alpakaUnpacker_*_*',
+      'keep *_ClusterConverter_*_*',
       'keep *_mix_Tracker_*',
       ),
     fileName = cms.untracked.string('raw2clusters.root')
@@ -101,8 +125,25 @@ process.Timing = cms.Service("Timing",
     useJobReport = cms.untracked.bool(True)  # This will also log timings in the job report.
 )
 
-process.dtc = cms.Path(process.Packer * process.Unpacker)
+#process.dtc = cms.Path(process.Packer * process.Unpacker)
 #process.dtc = cms.Path(process.Packer * process.Analyzer * process.Unpacker)
 #process.dtc = cms.Path(process.siPhase2Clusters * process.Packer * process.Unpacker)
+# -- alpaka --
+if Legacy_Format:
+    # run with legacy conversion step
+    process.dtc = cms.Path(
+        process.Packer *
+        process.Unpacker *
+        process.alpakaUnpacker *
+        process.ClusterConverter
+    )
+else:
+    # run without legacy conversion,
+    process.dtc = cms.Path(
+        process.Packer *
+        process.Unpacker *
+        process.alpakaUnpacker
+    )
+
 process.output = cms.EndPath(process.out)
 

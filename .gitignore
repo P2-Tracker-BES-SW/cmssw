@@ -5,6 +5,9 @@ __init__.py
 #*#
 *~
 *.pb
+*.root
+*.db
+*.csv
 
 # ignore partially applied patches and their backup
 *.rej
@@ -15,9 +18,15 @@ __init__.py
 /*
 !/*/
 
+# ignore folders with inputs
+1ev/
+2ev/
+slinkraw/
+
 # ignore some IDE related files
 *.xcodeproj
 .vscode
 
 #ignore mac specific file
 .DS_Store
+EventFilter/Phase2PixelRawToDigi/test/log

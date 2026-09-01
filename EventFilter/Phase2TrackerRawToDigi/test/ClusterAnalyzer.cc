@@ -3,7 +3,7 @@
 
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/DetId/interface/DetIdCollection.h"
-#include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
+#include "DataFormats/FEDRawData/interface/RawDataBuffer.h"
 #include "DataFormats/Phase2TrackerCluster/interface/Phase2TrackerCluster1D.h"
 #include "DataFormats/Phase2TrackerDigi/interface/Phase2TrackerDigi.h"
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"

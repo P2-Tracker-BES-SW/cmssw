@@ -25,7 +25,7 @@
 #include "CondFormats/DataRecord/interface/TrackerDetToDTCELinkCablingMapRcd.h"
 #include "DataFormats/Common/interface/DetSetVectorNew.h"
 #include "DataFormats/Common/interface/Handle.h"
-#include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
+#include "DataFormats/FEDRawData/interface/RawDataBuffer.h"
 #include "DataFormats/Phase2TrackerCluster/interface/Phase2TrackerCluster1D.h"
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
@@ -72,7 +72,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     void produce(device::Event&, device::EventSetup const&) override;
 
     // Tokens for acquiring the RAW data
-    const edm::EDGetTokenT<FEDRawDataCollection> fedRawDataToken_;
+    const edm::EDGetTokenT<RawDataBuffer> fedRawDataToken_;
     const edm::ESGetToken<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd> cablingMapToken_;
     const edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeometryToken_;
     const edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopologyToken_;
@@ -107,7 +107,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 
   Phase2RawToClusterProducer::Phase2RawToClusterProducer(const edm::ParameterSet& iConfig)
       : stream::EDProducer<>(iConfig)
-      , fedRawDataToken_(consumes<FEDRawDataCollection>(iConfig.getParameter<edm::InputTag>("fedRawDataCollection")))
+      , fedRawDataToken_(consumes<RawDataBuffer>(iConfig.getParameter<edm::InputTag>("fedRawDataCollection")))
       , cablingMapToken_(esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>())
       , trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>())
       , trackerTopologyToken_(esConsumes<TrackerTopology, TrackerTopologyRcd, edm::Transition::BeginRun>())
@@ -223,7 +223,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
       for (unsigned iSlink = 0; iSlink < SLINKS_PER_DTC; ++iSlink) {
         const unsigned totID = iSlink + SLINKS_PER_DTC * (dtcID - 1) + CMSSW_TRACKER_ID;
         totIDs[slinkIdx] = totID;
-        const FEDRawData& fedData = rawColl.FEDData(totID);
+        auto const fedData = rawColl.fragmentData(totID);
         size[slinkIdx] = fedData.size(); // payload size in bytes
         ++slinkIdx;
       }
@@ -238,11 +238,11 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     unsigned char* start = linearData.data();
     for (size_t idx = 0; idx < numSlinks; ++idx) {
       if (size[idx] == 0) continue; // skip empty FED buffers
-      const FEDRawData& data = rawColl.FEDData(totIDs[idx]);
+      auto const frag = rawColl.fragmentData(totIDs[idx]);
       if (offset[idx] + size[idx] > totalBytes) {
         throw std::runtime_error("BUFFER OVERFLOW DETECTED IN RAW DATA COPYING");
       }
-      std::memcpy(start + offset[idx], data.data(), size[idx]);
+      std::memcpy(start + offset[idx], frag.data().data(), size[idx]);
     }
 
     // 2) Device buffers and copies
@@ -259,7 +259,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     alpaka::memcpy(queue, offset_DevBuffer, offset_HostView);
 
     // 3) Output SoA and counter
-    auto devClusterProp = Phase2RawToCluster::ClusterPropDeviceCollection(MaxTotalClusters, queue);
+    auto devClusterProp = Phase2RawToCluster::ClusterPropDeviceCollection(queue, MaxTotalClusters);
     devClusterProp.zeroInitialise(queue); // to track number of clusters filled
     auto globalCounter = cms::alpakatools::make_device_buffer<uint32_t[]>(queue, 1u);
     alpaka::memset(queue, globalCounter, 0u);

@@ -10,8 +10,9 @@ cmsrel CMSSW_16_0_0
 cd CMSSW_16_0_0/src
 cmsenv
 git cms-checkout-topic -u P2-Tracker-BES-SW:unpackers_16_0_0
-# Need this as depends on changed TrackerDetToDTCELinkCablingMap.h class
+# Need these as depend on changed TrackerDetToDTCELinkCablingMap.h class
 git cms-addpkg CondFormats/DataRecord
+git cms-addpkg CondCore/SiPhase2TrackerPlugins
 scram b -j
 cd EventFilter/Phase2TrackerRawToDigi/test/
 # Run cluster --> RAW --> cluster sequence for Outer Tracker.
@@ -33,16 +34,16 @@ git cms-rebase-topic -u myFork:myBranch
 === Converting data RAW binary files to a CMSSW dataset
 
 The DAQ system writes a binary file containing the RAW data. You can examine these with the linux command (which prints the 16b in each 128b raw data word in reverse order):
+
 ```
 hexdump -C
 ```
 
-
 The binary file must be converted to a CMSSW dataset containing a RawDataBuffer EDProduct. The code to do this is common to all CMS sub-detectors. It is run with:
+
 ```
 cmsRun  EventFilter/Utilities/test/unittest_FU_daqsource.py daqSourceMode=DTH buBaseDir=myDTHdataDir/ramdisk/ numFwkStreams=1
 ```
-
 
 More details can be found in EventFilter/Utilities/doc/README-DTH.md ,
 and also in Ian Tomalin's slides from https://indico.cern.ch/event/1531779/ .
@@ -75,3 +76,5 @@ Additionally, this cfg.py file includes a flag `Legacy_Format`, which if you set
 
 --- Note: 
 If the alpaka based code is run on a machine with no GPU, it still runs but only using the serial backend of alpaka which only involves CPUs.   
+
+

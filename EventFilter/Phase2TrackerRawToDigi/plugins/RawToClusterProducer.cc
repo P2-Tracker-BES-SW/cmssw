@@ -59,7 +59,6 @@ public:
   Phase2TrackerCluster1D unpackStripOnPS(uint32_t, unsigned int);
   Phase2TrackerCluster1D unpackPixelOnPS(uint32_t, unsigned int);
   
-  void dumpRawFile(const unsigned char*, size_t, bool);
 
 private:
   void produce(edm::Event&, const edm::EventSetup&) override;
@@ -120,9 +119,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
 
   TrackerHeader theHeader;
-  // check this sara
+  // check with Andrew if the TrackerTrailer is implemented in the packer / real data
   TrackerTrailer theTrailer;
-  // end check this sara
   ChannelsOffset theOffsets;
 
   // Read one entire DTC (#dtcID)
@@ -135,9 +133,6 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       
       if (fedData.size() > 0) {
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
-
-//         dumpRawFile(dataPtr, fedData.size(), false);
-//         dumpRawFile(dataPtr, fedData.size(), true);
 
         // read the header
         std::vector<uint32_t> headerWords;
@@ -559,53 +554,6 @@ void RawToClusterProducer::readPayload(std::vector<uint32_t>& clusterWords,
       nFullClusters = 0;
     }
   }
-}
-
-void RawToClusterProducer::dumpRawFile(const unsigned char* dataPtr, size_t data_size, bool hexa) {
-
-
-  if (hexa) {
-
-    for (size_t i = 0; i < data_size; i += 2)
-    {
-        if (i % 16 == 0)
-        {
-            std::cout << std::hex
-                      << std::setw(7)
-                      << std::setfill('0')
-                      << std::nouppercase
-                      << i
-                      << " ";
-        }
-    
-        // Combine two bytes into a 16-bit value (original byte order: high byte first)
-        uint16_t word = static_cast<uint16_t>(static_cast<uint8_t>(dataPtr[i])) << 8;
-        if (i + 1 < data_size)
-            word |= static_cast<uint8_t>(dataPtr[i + 1]);
-    
-        std::cout << std::hex
-                  << std::setw(4)
-                  << std::setfill('0')
-                  << std::nouppercase
-                  << word;
-    
-        if ((i + 2) % 16 == 0 || i + 2 >= data_size)
-            std::cout << "\n";
-        else
-            std::cout <<  std::dec << " ";
-    }
-    std::cout << std::dec << std::endl;  
-  } else {
-    std::cout << "    " ;
-    for (size_t i = 0; i < data_size; ++i)
-    {
-      std::bitset<8> bits(dataPtr[i]);
-      std::cout << "    " << bits << " ";
-      if ((i + 1) % 8 == 0)
-        std::cout << "\n" << i+1 << "    " ;
-    }
-    std::cout << std::endl;
-  }    
 }
 
 

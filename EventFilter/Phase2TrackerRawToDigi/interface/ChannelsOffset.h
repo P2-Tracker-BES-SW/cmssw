@@ -40,16 +40,6 @@ public:
     }
   }
 
-  // this was for the 32b version of the offset
-  void fillOffsetMapOld() {
-    for (size_t i = 0; i < CICs_PER_SLINK / 2; ++i) {
-      // extract the lower 16 bits by masking with 0xFFFF
-      offsetMap_[i * 2] = static_cast<uint16_t>(values_[i] & 0xFFFF);  // this one should become a 32
-      // extract the upper 16 bits by shifting right by 16
-      offsetMap_[i * 2 + 1] = static_cast<uint16_t>(values_[i] >> 16);
-    }
-  }
-
   uint16_t getOffsetForChannel(unsigned int iChannel) {
     if (iChannel >= CICs_PER_SLINK) {
       throw cms::Exception("ChannelsOffset") << " iChannel " << iChannel << " too high";

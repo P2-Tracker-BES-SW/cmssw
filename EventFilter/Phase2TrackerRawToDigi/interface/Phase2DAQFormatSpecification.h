@@ -42,7 +42,7 @@ namespace Phase2DAQFormatSpecification {
   static const int CMSSW_TRACKER_ID = 0;
 
   static const int HEADER_N_LINES = 4;  // number of 32b lines of the tracker header
-  static const int TRAILER_N_LINES = 4; // number of 32b lines of the tracker trailer // maybe not needed, check
+  static const int TRAILER_N_LINES = 4; // number of 32b lines of the tracker trailer // maybe not needed
   static const int OFFSET_BITS = 16;    // length of the offset word
   static const int RESERVED_N_LINES = 2;
 

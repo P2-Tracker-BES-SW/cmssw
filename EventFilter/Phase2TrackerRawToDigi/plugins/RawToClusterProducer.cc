@@ -40,8 +40,7 @@ public:
   ~RawToClusterProducer() override;
   void beginRun(const edm::Run&, const edm::EventSetup&) override;
 
-  int getLineIndex(int channelIdx, unsigned int iline);
-  uint32_t readLine(std::span<const unsigned char> dataPtr, int lineIdx);
+  uint32_t get32bWordAtByte(std::span<const unsigned char> data, size_t initByte, size_t startByte, bool debug /* = false */) ;
 
   void readPayload(std::vector<uint32_t>& clusterWords,
                    std::vector<uint32_t>& lines,
@@ -59,6 +58,8 @@ public:
   std::pair<Phase2TrackerCluster1D, bool> unpack2S(uint32_t, unsigned int);
   Phase2TrackerCluster1D unpackStripOnPS(uint32_t, unsigned int);
   Phase2TrackerCluster1D unpackPixelOnPS(uint32_t, unsigned int);
+  
+  void dumpRawFile(const unsigned char*, size_t, bool);
 
 private:
   void produce(edm::Event&, const edm::EventSetup&) override;
@@ -119,10 +120,12 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   auto slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
 
   TrackerHeader theHeader;
+  // check this sara
   TrackerTrailer theTrailer;
+  // end check this sara
   ChannelsOffset theOffsets;
 
-  // Read one entire DTC (#dtcID), as per the producer logic
+  // Read one entire DTC (#dtcID)
   for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; dtcID++) {
     // read the 4 slinks
     for (unsigned int iSlink = 0; iSlink < SLINKS_PER_DTC; iSlink++) {
@@ -133,26 +136,36 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       if (fedData.size() > 0) {
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
 
+//         dumpRawFile(dataPtr, fedData.size(), false);
+//         dumpRawFile(dataPtr, fedData.size(), true);
+
         // read the header
         std::vector<uint32_t> headerWords;
         for (size_t i = 0; i < HEADER_N_LINES * N_BYTES_PER_WORD;
              i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
         {
           // Extract 4 bytes (32 bits) and pack them into a uint32_t word
-          headerWords.push_back(readLine(dataPtr, i));
+          headerWords.push_back(get32bWordAtByte(dataPtr, i, 0, false));
         }
         theHeader.setValue(headerWords);
 
         // read the offsets: each 32 bit word contains two offset words of 16 bit each
-        std::vector<uint32_t> offsetWords;
-        size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD;
-        size_t initByte = HEADER_N_LINES * N_BYTES_PER_WORD;
+        std::vector<uint32_t> offsetWords; 
+        
+        size_t nOffsetsLines = OFFSET_BITS * CICs_PER_SLINK / N_BITS_PER_WORD ; 
+        size_t initByte = HEADER_N_LINES * N_BYTES_PER_WORD ; 
         size_t endByte =
             (nOffsetsLines - 1) * N_BYTES_PER_WORD + initByte;  // -1 because we only need the starting i of the line
 
-        for (size_t i = initByte; i <= endByte; i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
-          offsetWords.push_back(readLine(dataPtr, i));
+        for (size_t i = initByte; i <= endByte; i += N_BYTES_PER_WORD)  { // tmp Read 8 bytes (64 bits) at a time
+	  uint32_t word32b = get32bWordAtByte(dataPtr, i, initByte, false);
+	  uint16_t low  = static_cast<uint16_t>(word32b & ((uint32_t{1} << OFFSET_BITS) - 1)); 
+	  uint16_t high = static_cast<uint16_t>((word32b >> OFFSET_BITS) & ((uint32_t{1} << OFFSET_BITS) - 1));
+          offsetWords.push_back(high);
+          offsetWords.push_back(low);
+        }  
         theOffsets.setValue(offsetWords);
+        int initial_offset = initByte + (nOffsetsLines + RESERVED_N_LINES ) * N_BYTES_PER_WORD; // 
         
         // now read the payload (channel header + clusters)
         // all channel headers should be there, even if 0 clusters are found
@@ -171,7 +184,13 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // first we need to construct the DTCElinkId object ## dtc_id, gbtlink_id, elink_id
           // to get the gbt_id we should reverse what is done in the packer function,
           // where clusters from channel X are split into 2*i and 2*i+1 based on being from CIC0 or CIC1
-          unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          // OT
+//           unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          // for c-rack, will be fixed by A.'s PR
+          int MODULES_PER_SLINK_CRACK = 12;
+          unsigned int gbt_id = iSlink * MODULES_PER_SLINK_CRACK + std::div(iChannel, 2).quot \
+                                + 2*MODULES_PER_SLINK_CRACK; // temp for 6th may files
+
           DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
 
           int thisDetId = -1;
@@ -196,22 +215,34 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           if (theHeader.is2S() != is2SModule)
             edm::LogError("RawToClusterProducer") << "ERROR: Header for channel " << iChannel << " expects a different type of module";
 
-          // find the channel offset
-          int initial_offset = initByte + (nOffsetsLines + RESERVED_N_LINES) * N_BYTES_PER_WORD;
-          int idx = initial_offset + theOffsets.getOffsetForChannel(iChannel) * N_BYTES_PER_WORD;
+          // retrieve the channel offset
+          int channelOffset = theOffsets.getOffsetForChannel(iChannel);
 
-          // get the channel header and unpack it
-          uint32_t headerWord = readLine(dataPtr, idx);
+          size_t idx = initial_offset + channelOffset * N_BYTES_PER_WORD; // (N_BYTES_PER_WORD=4)
+          uint32_t headerWord = get32bWordAtByte(dataPtr, idx, initial_offset, false);
+
           // unsigned long eventID = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS)) & L1ID_MAX_VALUE; // 9-bit field
-          // int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
-          unsigned int numStripClusters =
+          int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
+          unsigned int numPixelClusters =
               (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) &
               N_CLUSTER_MASK;                                           // 7-bit field
-          unsigned int numPixelClusters = (headerWord)&N_CLUSTER_MASK;  // 7-bit field
+          unsigned int numStripClusters = (headerWord)&N_CLUSTER_MASK;  // 7-bit field
 
-          if (is2SModule && numPixelClusters > 0)
+          LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " <<std::bitset<32>(headerWord) 
+                                           << " (" << channelErrors << " channelErrors, "
+                                           << numPixelClusters << " pixel clusters, "
+                                           << numStripClusters << " strip clusters)\n";
+
+          if (channelErrors > 0) {
+            LogTrace("RawToClusterProducer") 
+                << "WARNING: Channel " << iChannel << " has errors " ;
+            // TBD: maybe improve handling here?
+            continue;
+          } else if (is2SModule && numPixelClusters > 0) {
             edm::LogError("RawToClusterProducer") << "ERROR: Header for channel " << iChannel << " expects non-zero ("
-                                                  << numPixelClusters << ") pixel clusters on a 2S module";
+                                                  << numPixelClusters << ") pixel clusters on a 2S module\n" <<
+                                                  std::bitset<32>(headerWord);
+          }                                         
 
           // define the number of lines of the payload
           unsigned int nLines =
@@ -229,8 +260,13 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           // first retrieve all lines filled with clusters
           std::vector<uint32_t> lines;
           for (unsigned int iline = 0; iline < nLines; iline++) {
-            lines.push_back(readLine(dataPtr, getLineIndex(idx, iline)));
+            // header is at channelOffset, so payload starts at channelOffset + 1
+            int cluster_payload_idx = channelOffset + 1 + iline;
+            size_t bytePos = initial_offset + cluster_payload_idx * N_BYTES_PER_WORD;
+            uint32_t word = get32bWordAtByte(dataPtr, bytePos, initial_offset, false);
+            lines.push_back(word);
           }
+          
           if (lines.size() != nLines) {
             edm::LogError("RawtoClusterProducer")
                 << "ERROR: Numbers of stored lines does not match with size of lines to be read!";
@@ -331,18 +367,19 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         }  // end loop on channels for this dtc
         
         // read the tracker trailer
-        std::vector<uint32_t> trailerWords;
-          
-        size_t tracker_trailer_index = dataPtr.size() - TRAILER_N_LINES * N_BYTES_PER_WORD;
-        for (size_t i = tracker_trailer_index; i < tracker_trailer_index + TRAILER_N_LINES * N_BYTES_PER_WORD;
-             i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
-        {
-          // Extract 4 bytes (32 bits) and pack them into a uint32_t word
-          trailerWords.push_back(readLine(dataPtr, i));
-        }
-        theTrailer.setValue(trailerWords);
-        if (theTrailer.is2S() != theHeader.is2S())
-          edm::LogError("RawToClusterProducer") << "ERROR: Header and trailer expect different types of modules";
+        // do we have it in c-rack?
+//         std::vector<uint32_t> trailerWords;
+//           
+//         size_t tracker_trailer_index = dataPtr.size() - TRAILER_N_LINES * N_BYTES_PER_WORD;
+//         for (size_t i = tracker_trailer_index; i < tracker_trailer_index + TRAILER_N_LINES * N_BYTES_PER_WORD;
+//              i += N_BYTES_PER_WORD)  // Read 4 bytes (32 bits) at a time
+//         {
+//           // Extract 4 bytes (32 bits) and pack them into a uint32_t word
+//           trailerWords.push_back(readLine(dataPtr, i));
+//         }
+//         theTrailer.setValue(trailerWords);
+//         if (theTrailer.is2S() != theHeader.is2S())
+//           edm::LogError("RawToClusterProducer") << "ERROR: Header and trailer expect different types of modules";
 
       }  // end fed data size > 0
     }  // end loop on 4 slink of this dtc
@@ -352,18 +389,36 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   iEvent.put(std::move(outputClusterCollection));
 }
 
-int RawToClusterProducer::getLineIndex(int channelIdx, unsigned int iline) {
-  return channelIdx + N_BYTES_PER_WORD + iline * N_BYTES_PER_WORD;
+
+uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> data,
+                                                size_t bytePos,
+                                                size_t startByte,
+                                                bool debug /* = false */)
+{
+    // word index relative to the beginning of the offset area
+    size_t wordIndex = (bytePos - startByte) / N_BYTES_PER_WORD;
+
+    // reverse inside groups of 4 words
+    size_t group = wordIndex / 4;
+    size_t offset = wordIndex % 4;
+    size_t reversedWordIndex = group * 4 + (3 - offset);
+
+    // back to absolute byte position
+    size_t byteOffset = startByte + reversedWordIndex * N_BYTES_PER_WORD;
+
+    uint32_t word = (static_cast<uint32_t>(data[byteOffset + 3]) << 24) |
+                    (static_cast<uint32_t>(data[byteOffset + 2]) << 16) |
+                    (static_cast<uint32_t>(data[byteOffset + 1]) << 8) |
+                    (static_cast<uint32_t>(data[byteOffset]));
+
+    if (debug) {
+        std::cout << "wordIndex= " << wordIndex << std::endl;
+        std::cout << "byteOffset= " << byteOffset << std::endl;
+        std::cout << "word= " << std::bitset<32>(word) << std::endl;
+    }
+    return word;
 }
 
-uint32_t RawToClusterProducer::readLine(std::span<const unsigned char> dataPtr, int lineIdx) {
-  uint32_t line = (static_cast<uint32_t>(dataPtr[lineIdx]) << 24) |
-                  (static_cast<uint32_t>(dataPtr[lineIdx + 1]) << 16) |
-                  (static_cast<uint32_t>(dataPtr[lineIdx + 2]) << 8) | 
-                  (static_cast<uint32_t>(dataPtr[lineIdx + 3]));
-
-  return line;
-}
 
 std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t clusterWord, unsigned int iChannel) {
   uint32_t chipID = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) & CHIP_ID_MAX_VALUE;  // 3 bits
@@ -379,8 +434,8 @@ std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t 
   // also, for original widths > 8: again, due to truncation, they get an incorrect width of
   // cluster.getWidth() & WIDTH_MAX_VALUE. should be probably fixed in the packer
   // (e.g. if width > 8, pack with width = 0)
-  if (width == 0)
-    width = 8;
+//   if (width == 0)
+//     width = 8;
   LogTrace("RawToClusterProducer") << "\t[unpacking] chipID : " << (chipID) << "\t " << std::bitset<3>(chipID);
   LogTrace("RawToClusterProducer") << "\t[unpacking] address : " << (sclusterAddress) << "\t "
                                    << std::bitset<8>(sclusterAddress);
@@ -505,6 +560,54 @@ void RawToClusterProducer::readPayload(std::vector<uint32_t>& clusterWords,
     }
   }
 }
+
+void RawToClusterProducer::dumpRawFile(const unsigned char* dataPtr, size_t data_size, bool hexa) {
+
+
+  if (hexa) {
+
+    for (size_t i = 0; i < data_size; i += 2)
+    {
+        if (i % 16 == 0)
+        {
+            std::cout << std::hex
+                      << std::setw(7)
+                      << std::setfill('0')
+                      << std::nouppercase
+                      << i
+                      << " ";
+        }
+    
+        // Combine two bytes into a 16-bit value (original byte order: high byte first)
+        uint16_t word = static_cast<uint16_t>(static_cast<uint8_t>(dataPtr[i])) << 8;
+        if (i + 1 < data_size)
+            word |= static_cast<uint8_t>(dataPtr[i + 1]);
+    
+        std::cout << std::hex
+                  << std::setw(4)
+                  << std::setfill('0')
+                  << std::nouppercase
+                  << word;
+    
+        if ((i + 2) % 16 == 0 || i + 2 >= data_size)
+            std::cout << "\n";
+        else
+            std::cout <<  std::dec << " ";
+    }
+    std::cout << std::dec << std::endl;  
+  } else {
+    std::cout << "    " ;
+    for (size_t i = 0; i < data_size; ++i)
+    {
+      std::bitset<8> bits(dataPtr[i]);
+      std::cout << "    " << bits << " ";
+      if ((i + 1) % 8 == 0)
+        std::cout << "\n" << i+1 << "    " ;
+    }
+    std::cout << std::endl;
+  }    
+}
+
 
 int RawToClusterProducer::createMask(int nBits) { return (1 << nBits) - 1; }
 

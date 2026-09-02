@@ -45,13 +45,14 @@ private:
     data_ptr[word_index * 4 + 3] = (hex_word >> 0) & 0xFF;   // Least significant byte (bits 7-0)
   }
 };
-   
+
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
     : clusterCollectionToken_(
           consumes<Phase2TrackerCluster1DCollectionNew>(iConfig.getParameter<edm::InputTag>("Phase2Clusters"))),
       cablingMapToken_(esConsumes()),
       trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()) {
   produces<RawDataBuffer>();
+
 }
 
 ClusterToRawProducer::~ClusterToRawProducer() {}

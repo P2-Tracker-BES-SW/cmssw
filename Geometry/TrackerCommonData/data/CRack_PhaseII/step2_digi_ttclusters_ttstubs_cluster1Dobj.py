@@ -156,6 +156,17 @@ if hasattr(algo, "TanLorentzAnglePerTesla_Endcap"):
         algo.TanLorentzAnglePerTesla_Endcap = cms.double(0.0)
 
 
+###############################
+## to read local cabling map you need to use the following configuration lines: 
+process.load("CondCore.CondDB.CondDB_cfi")
+# Location of your local, privately created DB (see next section for instructions to make it)
+process.CondDB.connect = 'sqlite_file:OTandITDTCCablingMap.db'
+process.PoolDBESSource = cms.ESSource("PoolDBESSource",process.CondDB,toGet = cms.VPSet(cms.PSet(record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),tag = cms.string("DTCCablingMapProducerUserRun"))))
+process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDBESSource","")
+
+#############################33
+
+
 process.digitisation_step = cms.Path( cms.SequencePlaceholder("randomEngineStateProducer")*process.mix)
 process.clusterization_step = cms.Path(process.siPhase2Clusters)
 process.L1TrackTrigger_step = cms.Path(process.L1TrackTrigger)

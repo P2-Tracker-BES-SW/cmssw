@@ -134,7 +134,7 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
   evt_n_ = event.id().event();
 
   std::stringstream output;
-  std::cout << "size of clusters: " << clusters_handle.product()->size() << std::endl;
+  output << "size of clusters: " << clusters_handle.product()->size() << std::endl;
 
   int count_clusters = 0;
 

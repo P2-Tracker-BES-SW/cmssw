@@ -8,4 +8,5 @@
 <flags ALPAKA_BACKENDS="cuda rocm"/>
 <export>
   <lib name="1"/>
+  <use name="eigen"/> 
 </export>

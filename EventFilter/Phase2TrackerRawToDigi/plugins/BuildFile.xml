@@ -4,13 +4,20 @@
   <use name="CondFormats/DataRecord"/>
   <!-- Added for ClusterConverterSoAToLegacy dependencies -->
   <use name="alpaka"/>
+  <use name="eigen"/>
   <use name="HeterogeneousCore/AlpakaInterface"/>
+  <use name="DataFormats/FEDRawData"/>
+  <use name="CondFormats/SiPhase2TrackerObjects"/>
+  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="DataFormats/TrackerCommon"/>
+  <use name="DataFormats/Phase2TrackerDigi"/>
   <flags EDM_PLUGIN="1"/>
 </library>
 
 <!-- alpaka -->
 <library file="alpaka/*.cc" name="Phase2RawToClusterProducer">
   <use name="alpaka"/>
+  <use name="eigen"/>
   <use name="root"/>
   <use name="CondFormats/DataRecord"/>
   <use name="CondFormats/SiPhase2TrackerObjects"/>

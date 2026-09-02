@@ -6,4 +6,9 @@
 
   <use name="root"/>
   <use name="CommonTools/UtilAlgos"/>
+  <use name="DataFormats/FEDRawData"/>
+  <use name="CondFormats/SiPhase2TrackerObjects"/>
+  <use name="Geometry/TrackerGeometryBuilder"/>
+  <use name="DataFormats/TrackerCommon"/>
+  <use name="DataFormats/Phase2TrackerDigi"/>
 </library>

@@ -75,6 +75,7 @@ private:
   bool is2SModule_;
 
   int dtcID_;
+  unsigned long evt_n_;
 };
 
 ClusterAnalyzer::ClusterAnalyzer(const edm::ParameterSet& pset)
@@ -98,6 +99,7 @@ ClusterAnalyzer::~ClusterAnalyzer() {
 void ClusterAnalyzer::beginJob() {
   outTree_ = fs_->make<TTree>("ClusterTree", "ClusterTree");
 
+  outTree_->Branch("evt_n", &evt_n_, "evt_n/I");
   outTree_->Branch("detId", &detId_, "detId/i");
   outTree_->Branch("dtcID", &dtcID_, "dtcID/i");
   outTree_->Branch("isPSModulePixel", &isPSModulePixel_, "isPSModulePixel/O");
@@ -129,10 +131,13 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   event.getByToken(token_, clusters_handle);
 
+  evt_n_ = event.id().event();
+
   std::stringstream output;
   output << "size of clusters: " << clusters_handle.product()->size() << std::endl;
 
   int count_clusters = 0;
+
   for (const auto& DSVItr : *clusters_handle) {
     uint32_t rawid(DSVItr.detId());
     DetId detId(rawid);

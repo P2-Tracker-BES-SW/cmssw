@@ -16,6 +16,7 @@
 #include "FWCore/Framework/interface/Run.h"
 #include "DataFormats/FEDRawData/interface/FEDRawData.h"
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
+#include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -43,83 +44,6 @@ uint64_t readLittleEndian(const char* data, size_t size) {
     value |= (static_cast<uint64_t>(static_cast<unsigned char>(data[i])) << (8 * i));
   }
   return value;
-}
-
-// SLinkRocket event fragment header/trailer are 128-bit = 16 bytes each.
-namespace {
-  constexpr size_t kSLinkRocketWordSizeBytes = 16;
-  constexpr size_t kSLinkRocketHeaderSizeBytes = 16;
-  constexpr size_t kSLinkRocketTrailerSizeBytes = 16;
-
-  // In the byte stream used here, the SLinkRocket 128-bit header appears
-  // little-endian with Source ID in bytes [0:3] and BOE=0x55 at byte [15].
-  //
-  // Header logical layout:
-  //   bits 127:120 : BOE = 0x55
-  //   ...
-  //   bits 31:0    : Source ID
-  //
-  // Therefore in the little-endian byte stream:
-  //   payload[0..3]  = Source ID
-  //   payload[15]    = BOE marker
-  constexpr size_t kSLinkRocketSourceIdOffset = 0;
-  constexpr size_t kSLinkRocketBOEOffset = 15;
-  constexpr size_t kSLinkRocketEOEOffsetFromEnd = 1;
-
-  constexpr unsigned char kSLinkRocketBOEMarker = 0x55;
-  constexpr unsigned char kSLinkRocketEOEMarker = 0xaa;
-
-  uint32_t readSLinkRocketSourceId(const std::vector<char>& payloadBytes) {
-    if (payloadBytes.size() < kSLinkRocketHeaderSizeBytes) {
-      throw cms::Exception("InvalidSLinkRocketFragment")
-          << "Fragment payload is too small to contain a SLinkRocket header. "
-          << "payloadBytes.size() = " << payloadBytes.size()
-          << ", required at least " << kSLinkRocketHeaderSizeBytes;
-    }
-
-    const auto boe = static_cast<unsigned char>(payloadBytes[kSLinkRocketBOEOffset]);
-    if (boe != kSLinkRocketBOEMarker) {
-      std::ostringstream msg;
-      msg << "Invalid SLinkRocket BOE marker. Expected 0x"
-          << std::hex << std::setw(2) << std::setfill('0')
-          << static_cast<unsigned int>(kSLinkRocketBOEMarker)
-          << ", got 0x"
-          << std::hex << std::setw(2) << std::setfill('0')
-          << static_cast<unsigned int>(boe)
-          << ". This usually means the fragment payload does not start at the "
-          << "SLinkRocket header, or the byte layout assumption is wrong.";
-      throw cms::Exception("InvalidSLinkRocketHeader") << msg.str();
-    }
-
-    return static_cast<uint32_t>(
-        readLittleEndian(payloadBytes.data() + kSLinkRocketSourceIdOffset, sizeof(uint32_t)));
-  }
-
-  void verifySLinkRocketTrailerMarker(const std::vector<char>& payloadBytes) {
-    if (payloadBytes.size() < kSLinkRocketHeaderSizeBytes + kSLinkRocketTrailerSizeBytes) {
-      throw cms::Exception("InvalidSLinkRocketFragment")
-          << "Fragment payload is too small to contain both a SLinkRocket header and trailer. "
-          << "payloadBytes.size() = " << payloadBytes.size()
-          << ", required at least "
-          << (kSLinkRocketHeaderSizeBytes + kSLinkRocketTrailerSizeBytes);
-    }
-
-    const auto eoe =
-        static_cast<unsigned char>(payloadBytes[payloadBytes.size() - kSLinkRocketEOEOffsetFromEnd]);
-
-    if (eoe != kSLinkRocketEOEMarker) {
-      std::ostringstream msg;
-      msg << "Invalid SLinkRocket EOE marker. Expected 0x"
-          << std::hex << std::setw(2) << std::setfill('0')
-          << static_cast<unsigned int>(kSLinkRocketEOEMarker)
-          << ", got 0x"
-          << std::hex << std::setw(2) << std::setfill('0')
-          << static_cast<unsigned int>(eoe)
-          << ". This usually means the fragment payload does not include the "
-          << "full SLinkRocket trailer, or the byte layout assumption is wrong.";
-      throw cms::Exception("InvalidSLinkRocketTrailer") << msg.str();
-    }
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -449,8 +373,27 @@ void DTHDAQToFEDRawDataConverter::parseAllOrbitsAndFragments(const std::vector<c
           buffer.begin() + payloadStart + payloadSizeBytes);
 
       // Verify this is a SLinkRocket fragment and extract the correct FED source ID.
-      verifySLinkRocketTrailerMarker(frag.payloadBytes);
-      frag.fedSourceId = readSLinkRocketSourceId(frag.payloadBytes);
+      const size_t minimumSLinkRocketFragmentSize = sizeof(SLinkRocketHeader_v3) + sizeof(SLinkRocketTrailer_v3);
+      if (frag.payloadBytes.size() < minimumSLinkRocketFragmentSize) {
+        throw cms::Exception("InvalidSLinkRocketFragment")
+            << "Fragment payload is too small to contain both a SLinkRocket header and trailer. "
+            << "payloadBytes.size() = " << frag.payloadBytes.size()
+            << ", required at least " << minimumSLinkRocketFragmentSize;
+      }
+
+      auto slinkHeader = makeSLinkRocketHeaderView(frag.payloadBytes.data());
+      if (!slinkHeader->verifyMarker()) {
+        throw cms::Exception("InvalidSLinkRocketHeader") << "Invalid SLinkRocket BOE marker.";
+      }
+
+      const char* slinkTrailerData =
+          frag.payloadBytes.data() + frag.payloadBytes.size() - sizeof(SLinkRocketTrailer_v3);
+      auto slinkTrailer = makeSLinkRocketTrailerView(slinkTrailerData, slinkHeader->version());
+      if (!slinkTrailer->verifyMarker()) {
+        throw cms::Exception("InvalidSLinkRocketTrailer") << "Invalid SLinkRocket EOE marker.";
+      }
+
+      frag.fedSourceId = slinkHeader->sourceID();
 
       edm::LogInfo("DTHDAQToFEDRawDataConverter")
           << "Parsed fragment: "

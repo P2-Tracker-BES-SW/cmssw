@@ -58,23 +58,24 @@ private:
   TTree* outTree_;
   ofstream logfile_;
 
-  float clusterR_;
-  float clusterZ_;
-  unsigned int clusterCol_;
-  uint32_t detId_;
-  float clusterCenter_;
-  int clusterSize_;
-  float clusterLocalX_;
-  float clusterLocalY_;
-  float clusterGlobalX_;
-  float clusterGlobalY_;
-  float clusterGlobalZ_;
+  std::vector<float> clusterR_;
+  std::vector<float> clusterZ_;
+  std::vector<unsigned int> clusterCol_;
+  std::vector<unsigned int> clusterRow_;
+  std::vector<uint32_t> detId_;
+  std::vector<float> clusterCenter_;
+  std::vector<int> clusterSize_;
+  std::vector<float> clusterLocalX_;
+  std::vector<float> clusterLocalY_;
+  std::vector<float> clusterGlobalX_;
+  std::vector<float> clusterGlobalY_;
+  std::vector<float> clusterGlobalZ_;
 
-  bool isPSModulePixel_;
-  bool isPSModuleStrip_;
-  bool is2SModule_;
+  std::vector<bool> isPSModulePixel_;
+  std::vector<bool> isPSModuleStrip_;
+  std::vector<bool> is2SModule_;
 
-  int dtcID_;
+  std::vector<int> dtcID_;
   unsigned long evt_n_;
 };
 
@@ -100,22 +101,24 @@ void ClusterAnalyzer::beginJob() {
   outTree_ = fs_->make<TTree>("ClusterTree", "ClusterTree");
 
   outTree_->Branch("evt_n", &evt_n_, "evt_n/I");
-  outTree_->Branch("detId", &detId_, "detId/i");
-  outTree_->Branch("dtcID", &dtcID_, "dtcID/i");
-  outTree_->Branch("isPSModulePixel", &isPSModulePixel_, "isPSModulePixel/O");
-  outTree_->Branch("isPSModuleStrip", &isPSModuleStrip_, "isPSModuleStrip/O");
-  outTree_->Branch("is2SModule", &is2SModule_, "is2SModule/O");
-  outTree_->Branch("clusterCol", &clusterCol_, "clusterCol/I");
-  outTree_->Branch("clusterR", &clusterR_, "clusterR/F");
-  outTree_->Branch("clusterZ", &clusterZ_, "clusterZ/F");
-  outTree_->Branch("clusterCenter", &clusterCenter_, "clusterCenter/F");
-  outTree_->Branch("clusterSize", &clusterSize_, "clusterSize/I");
-  outTree_->Branch("clusterLocalX", &clusterLocalX_, "clusterLocalX/F");
-  outTree_->Branch("clusterLocalY", &clusterLocalY_, "clusterLocalY/F");
-  outTree_->Branch("clusterGlobalX", &clusterGlobalX_, "clusterGlobalX/F");
-  outTree_->Branch("clusterGlobalY", &clusterGlobalY_, "clusterGlobalY/F");
-  outTree_->Branch("clusterGlobalZ", &clusterGlobalZ_, "clusterGlobalZ/F");
+  outTree_->Branch("detId", &detId_);
+  outTree_->Branch("dtcID", &dtcID_);
+  outTree_->Branch("isPSModulePixel", &isPSModulePixel_);
+  outTree_->Branch("isPSModuleStrip", &isPSModuleStrip_);
+  outTree_->Branch("is2SModule", &is2SModule_);
+  outTree_->Branch("clusterCol", &clusterCol_);
+  outTree_->Branch("clusterRow", &clusterRow_);
+  outTree_->Branch("clusterR", &clusterR_);
+  outTree_->Branch("clusterZ", &clusterZ_);
+  outTree_->Branch("clusterCenter", &clusterCenter_);
+  outTree_->Branch("clusterSize", &clusterSize_);
+  outTree_->Branch("clusterLocalX", &clusterLocalX_);
+  outTree_->Branch("clusterLocalY", &clusterLocalY_);
+  outTree_->Branch("clusterGlobalX", &clusterGlobalX_);
+  outTree_->Branch("clusterGlobalY", &clusterGlobalY_);
+  outTree_->Branch("clusterGlobalZ", &clusterGlobalZ_);
 }
+
 void ClusterAnalyzer::endJob() {
   //     outTree_->GetDirectory()->cd();
   outTree_->Write();
@@ -133,8 +136,24 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
 
   evt_n_ = event.id().event();
 
-  std::stringstream output;
-//   output << "size of clusters: " << clusters_handle.product()->size() << std::endl;
+  // Clear all vectors for this event
+  detId_.clear();
+  dtcID_.clear();
+  isPSModulePixel_.clear();
+  isPSModuleStrip_.clear();
+  is2SModule_.clear();
+  clusterCol_.clear();
+  clusterRow_.clear();
+  clusterR_.clear();
+  clusterZ_.clear();
+  clusterCenter_.clear();
+  clusterSize_.clear();
+  clusterLocalX_.clear();
+  clusterLocalY_.clear();
+  clusterGlobalX_.clear();
+  clusterGlobalY_.clear();
+  clusterGlobalZ_.clear();
+
   std::cout << "size of clusters: " << clusters_handle.product()->size() << std::endl;
 
   int count_clusters = 0;
@@ -146,63 +165,63 @@ void ClusterAnalyzer::analyze(const edm::Event& event, const edm::EventSetup& es
     if (!geomDetUnit)
       continue;
 
-    detId_ = detId.rawId();
-    isPSModulePixel_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSP;
-    isPSModuleStrip_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSS;
-    is2SModule_ = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2SS;
+    uint32_t current_detId = detId.rawId();
+    bool current_isPSModulePixel = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSP;
+    bool current_isPSModuleStrip = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2PSS;
+    bool current_is2SModule = tGeom_->getDetectorType(detId) == TrackerGeometry::ModuleType::Ph2SS;
 
-    //     output << "detId: " << detId.rawId() << "  " ;
-    //     output << (isPSModulePixel_ ? "isPSModulePixel_" : (isPSModuleStrip_ ? "isPSModuleStrip_" : "is2SModule_"));
-    //     output << std::endl;
-
-    if (cablingMap_->knowsDetId(detId_ - 1)) {
-      auto equal_range = cablingMap_->detIdToDTCELinkId(detId_ - 1);
+    // Get dtcID for this module
+    int current_dtcID = -1;
+    if (cablingMap_->knowsDetId(current_detId - 1)) {
+      auto equal_range = cablingMap_->detIdToDTCELinkId(current_detId - 1);
       for (auto it = equal_range.first; it != equal_range.second; ++it) {
-        dtcID_ = it->second.dtc_id();
+        current_dtcID = it->second.dtc_id();
+        break; // Take the first one
       }
-    } else if (cablingMap_->knowsDetId(detId_ - 2)) {
-      auto equal_range = cablingMap_->detIdToDTCELinkId(detId_ - 2);
+    } else if (cablingMap_->knowsDetId(current_detId - 2)) {
+      auto equal_range = cablingMap_->detIdToDTCELinkId(current_detId - 2);
       for (auto it = equal_range.first; it != equal_range.second; ++it) {
-        dtcID_ = it->second.dtc_id();
+        current_dtcID = it->second.dtc_id();
+        break;
       }
     }
-    
 
+    // Loop over clusters in this module
     for (const auto& clusterItr : DSVItr) {
-      clusterCenter_ = clusterItr.center();
-      clusterSize_ = clusterItr.size();
-      clusterCol_ = clusterItr.column();
+      // Store module-level info (repeated for each cluster in this module)
+      detId_.push_back(current_detId);
+      dtcID_.push_back(current_dtcID);
+      isPSModulePixel_.push_back(current_isPSModulePixel);
+      isPSModuleStrip_.push_back(current_isPSModuleStrip);
+      is2SModule_.push_back(current_is2SModule);
+      
+      // Store cluster-specific info
+      clusterCenter_.push_back(clusterItr.center());
+      clusterSize_.push_back(clusterItr.size());
+      clusterCol_.push_back(clusterItr.column());
+      clusterRow_.push_back(clusterItr.firstRow());
 
       MeasurementPoint mpCluster(clusterItr.center(), clusterItr.column() + 0.5);
       Local3DPoint localPosCluster = geomDetUnit->topology().localPosition(mpCluster);
       Global3DPoint globalPosCluster = geomDetUnit->surface().toGlobal(localPosCluster);
 
-      clusterLocalX_ = localPosCluster.x();
-      clusterLocalY_ = localPosCluster.y();
+      clusterLocalX_.push_back(localPosCluster.x());
+      clusterLocalY_.push_back(localPosCluster.y());
 
-      clusterGlobalX_ = globalPosCluster.x();
-      clusterGlobalY_ = globalPosCluster.y();
-      clusterGlobalZ_ = globalPosCluster.z();
+      clusterGlobalX_.push_back(globalPosCluster.x());
+      clusterGlobalY_.push_back(globalPosCluster.y());
+      clusterGlobalZ_.push_back(globalPosCluster.z());
 
-      clusterR_ = globalPosCluster.perp();
-      clusterZ_ = globalPosCluster.z();
+      clusterR_.push_back(globalPosCluster.perp());
+      clusterZ_.push_back(globalPosCluster.z());
 
-      if (clusterSize_ <= 8 && dtcID_ == 30)
+      if (clusterItr.size() <= 8 && current_dtcID == 30)
         count_clusters++;
-
-      //       output << "\t cluster size / firstStrip / firstRow / col: " <<
-      //                    clusterSize_ << " / " <<
-      //                    clusterItr.firstStrip() << " / " <<
-      //                    clusterItr.firstRow() << " / " <<
-      //                    clusterCol_ << std::endl;
-      //       output << "\t cluster r position: " << globalPosCluster.perp() << std::endl;
-      //       output << "\t cluster global z position: " << globalPosCluster.z() << std::endl;
-
-      outTree_->Fill();  // Fill the tree with current cluster data
     }
   }
-  // Output to terminal and log file
-  //   logfile_ << output.str();
+  
+  // Fill the tree with one entry per event (containing all clusters as vectors)
+  outTree_->Fill();
 }
 
 #include "FWCore/PluginManager/interface/ModuleDef.h"

@@ -45,7 +45,7 @@ process.trackerGeometry.applyAlignment = False
 ## to read local cabling map you need to use the following configuration lines: 
 process.load("CondCore.CondDB.CondDB_cfi")
 # process.CondDB.connect = 'sqlite_file:/afs/cern.ch/work/f/fiorendi/private/l1tt/unpacker/crack/again/CMSSW_16_0_0_pre4/src/Geometry/TrackerCommonData/data/CRack_PhaseII/crackCablingMap.db'
-process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/crack_cabling_gIDbtFrom0.dbb'
+process.CondDB.connect = 'sqlite_file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/crack_cabling_gIDbtFrom0.db'
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     process.CondDB,
     toGet = cms.VPSet(cms.PSet(
@@ -57,7 +57,7 @@ process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDB
 
 process.source = cms.Source("PoolSource",
      fileNames = cms.untracked.vstring(
-       "file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/dth_output_DAQ_FMT_v1_0_Noise_Test_3_Large_1_Ladder.root"
+       "file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/DTH_Decoded_CRACK_Physics_Run_July_2026.root"
      ),
 )
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
@@ -71,9 +71,11 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 # if hasattr(algo, "TanLorentzAnglePerTesla_Endcap"):
 #         algo.TanLorentzAnglePerTesla_Endcap = cms.double(0.0)
 
-
+from EventFilter.Phase2TrackerRawToDigi.CRACKMapping_cfi import crackMapping
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedDataBuffer = cms.InputTag("rawDataCollector")   
+    fedDataBuffer = cms.InputTag("rawDataCollector"),
+    analyzeCRACK = cms.bool(True),
+    crackMapping = crackMapping
 )
 
 # process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',
@@ -97,7 +99,7 @@ process.out = cms.OutputModule("PoolOutputModule",
       'keep *_Unpacker_*_*',
       'keep *_mix_Tracker_*',
       ),
-    fileName = cms.untracked.string('clusters_DAQ_FMT_v1_0_Noise_Test_3_Large_1_Ladder_RDB.root')
+    fileName = cms.untracked.string('Unpacker_CRACK_Physics_Run_July_2026.root')
 )
 
 process.Timing = cms.Service("Timing",

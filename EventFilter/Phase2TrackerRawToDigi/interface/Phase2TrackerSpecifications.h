@@ -7,6 +7,13 @@
 // https://github.com/cms-L1TK/cmssw/blob/f093f1b30f436c7323f132d7a0f51753ccf0ae3b/EventFilter/Phase2TrackerRawToDigi/interface/utils.h
 
 namespace Phase2TrackerSpecifications {
+
+  static const int CIC_CONSTANT_EVENT_ID = 0x1;
+  static const int CIC_HARD_BUFFER_OVERFLOW = 511;
+  static const int BX_ID_MAX = 3563;
+  static const double HL_LHC_L1A_RATE = 750.00;
+  static const double HL_LHC_CLOCK_FREQUENCY = 40.078 * 1e3;
+  static const double HL_LHC_L1A_INTER_ARRIVAL_LAMBDA = HL_LHC_L1A_RATE / HL_LHC_CLOCK_FREQUENCY;
   static const int MAX_SSA_PER_PS_MODULE = 16;
   static const int MAX_MPA_PER_PS_MODULE = 16;
   static const int MAX_CBC_PER_2S_MODULE = 16;
@@ -18,8 +25,7 @@ namespace Phase2TrackerSpecifications {
 
   static const int STRIPS_PER_SSA = 120;
   static const int CHANNELS_PER_SSA = 240;
-
-  static const int MODULES_PER_SLINK_CRACK = 12;
+  
   static const int MODULES_PER_SLINK = 18;
   static const int CICs_PER_SLINK = 36;
 

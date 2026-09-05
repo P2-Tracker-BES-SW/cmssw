@@ -3,6 +3,17 @@
 
 #include "DataFormats/FEDRawData/interface/SLinkRocketHeaders.h"
 
+/**
+ * @namespace Phase2DAQFormatSpecification
+ * @brief Defines bit-level format specifications and constants for Phase-2 Outer Tracker DAQ.
+ * 
+ * The specifications in this namespace are used by the DAQ data formatting and 
+ * unpacking modules to correctly interpret the raw data coming from the backend electronics
+ * of the Phase-2 Outer Tracker system.
+ *
+ * @see DataFormats/FEDRawData/interface/SLinkRocketHeaders.h for S-Link protocol details.
+ */
+
 namespace Phase2DAQFormatSpecification {
 
   static const int C_NUM_BITS_BOARD_TYPE = 8;

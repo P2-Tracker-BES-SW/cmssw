@@ -1,5 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
+# This file contains the mapping between offsets for a single core (in a single DTC) to GBT IDs for the CRACK geometry.
+# Do not change unless you are an expert.
+
 crackMapping = cms.VPSet(
 
     # CRACK Tray #1

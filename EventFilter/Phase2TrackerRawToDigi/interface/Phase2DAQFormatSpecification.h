@@ -33,8 +33,8 @@ namespace Phase2DAQFormatSpecification {
   static const int DTC_MASK_PROFILE_SIZE = 2; // in 32bit words
 
   // This CMSSW Version should be compatible against the versioining variables below.
-  static const int VERSION_MAJOR = 0x1;
-  static const int VERSION_MINOR = 0x0;
+  static const int VERSION_MAJOR_V1_0 = 0x1;
+  static const int VERSION_MINOR_V1_0 = 0x0;
   
   static const int DTC_DAQ_HEADER = 0xFFFFFFFF;
   static const int N_BITS_PER_WORD = 32;

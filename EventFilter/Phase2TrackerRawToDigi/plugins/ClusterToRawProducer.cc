@@ -168,8 +168,8 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        **/
       std::bitset<C_NUM_BITS_BOARD_TYPE> board_type(0);                   // 8 bits  (bits 31-24)
       std::bitset<C_NUM_BITS_BOARD_TYPE_INV> board_type_inv(0);           // 8 bits  (bits 31-24)
-      std::bitset<C_NUM_BITS_VERSION_MAJOR> version_major(VERSION_MAJOR); // 5 bits  (bits 23-19)
-      std::bitset<C_NUM_BITS_VERSION_MINOR> version_minor(VERSION_MINOR); // 3 bits  (bits 18-16)
+      std::bitset<C_NUM_BITS_VERSION_MAJOR> version_major(VERSION_MAJOR_V1_0); // 5 bits  (bits 23-19)
+      std::bitset<C_NUM_BITS_VERSION_MINOR> version_minor(VERSION_MINOR_V1_0); // 3 bits  (bits 18-16)
       std::bitset<C_NUM_BITS_MODE> mode(0);                               // 3 bits  (bits 15-13)
       std::bitset<C_NUM_BITS_ED> ed(0);                                   // 1 bit   (bit 12)
       std::bitset<C_NUM_BITS_BOARD_ID> board_id(0);                       // 8 bits  (bits 11-4)

@@ -155,14 +155,11 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
         int coreID = 0;
 
         // Check if CMSSW can decode the binary.
-        if (Phase2DAQFormatSpecification::VERSION_MAJOR == ExtractedDTCHeader.getVersionMajor() && 
-            Phase2DAQFormatSpecification::VERSION_MINOR == ExtractedDTCHeader.getVersionMinor()) {
-            edm::LogInfo("FormatInspector") << "Found Perfect Match. CMSSW Can Decode the Binary.";
+        if (ExtractedDTCHeader.getVersionMajor() == Phase2DAQFormatSpecification::VERSION_MAJOR_V1_0 && 
+            ExtractedDTCHeader.getVersionMinor() == Phase2DAQFormatSpecification::VERSION_MINOR_V1_0) {
+            edm::LogInfo("RawToClusterProducer") << "Read version from binary that is supported. RawToClusterProducer() can decode the binary.";
         } else {
-          std::cout << "[ERROR] DTC ID: " << dtcID << " and SLink ID: " << iSlink << " (Source ID: " << totID << ")" << std::endl;
-          dumpPacket(dataPtr.data(), fedData.size());
-          ExtractedDTCHeader.printFields();
-          throw cms::Exception("CMSSW Unpacker is Incopatible with the Format Version Found in This Binary. Aborting Processing.");
+          throw cms::Exception("CMSSW Unpacker RawToClusterProducer() is incopatible with the format version found in this binary. Aborting any further processing.");
         }
         coreID = ExtractedDTCHeader.getDAQpathCoreID();
 

@@ -10,6 +10,12 @@
 using namespace Phase2TrackerSpecifications;
 using namespace Phase2DAQFormatSpecification;
 
+/**
+ * @brief: ChannelsMask Object, abstraction of the offset section (see link below)
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=848990903#gid=848990903
+ * for the Phase 2 Outer Tracker DAQ.
+ */
+
 class ChannelsOffset {
 public:
   std::vector<uint64_t> values_;

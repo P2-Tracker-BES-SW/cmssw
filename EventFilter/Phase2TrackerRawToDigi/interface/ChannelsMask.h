@@ -7,6 +7,10 @@
 #include <array>
 #include <cstdio>
 
+/**
+ * @brief: ChannelsMask Object, decodes the mask present in a single FED.
+ */
+
 class ChannelsMask {
 public:
 

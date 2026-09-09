@@ -9,6 +9,11 @@
 
 #include <bitset>
 
+/**
+ * @brief: SensorHybrid Object, emulates bitstreams readout from a
+ * single CIC on a 2S or PS module for the Phase 2 Outer Tracker. 
+ */
+
 class SensorHybrid {
 private:
   void set_sensor_type(const DetId& det_id, const TrackerGeometry& trackerGeometry, const int internal_id);

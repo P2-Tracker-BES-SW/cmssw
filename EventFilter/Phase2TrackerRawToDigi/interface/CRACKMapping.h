@@ -11,6 +11,11 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
+/**
+ * @brief: CRACKMapping Object, used to impose a hardware map between
+ * FED offsets and real detectors in the CRACK Geometry. 
+ */
+
 namespace crack {
 
 class CRACKMapping {

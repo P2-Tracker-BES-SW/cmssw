@@ -254,8 +254,8 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
           }
 
           int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
-          unsigned int numPixelClusters = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) & N_CLUSTER_MASK;
-          unsigned int numStripClusters = (headerWord) & N_CLUSTER_MASK;
+          unsigned int numStripClusters = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS - N_STRIP_CLUSTER_BITS)) & N_CLUSTER_MASK;
+          unsigned int numPixelClusters = (headerWord) & N_CLUSTER_MASK;
           LogTrace("RawToClusterProducer") << "CHANNEL " << iChannel << " HEADER " << std::bitset<32>(headerWord) 
                                            << " (" << channelErrors << " channelErrors, "
                                            << numPixelClusters << " pixel clusters, "

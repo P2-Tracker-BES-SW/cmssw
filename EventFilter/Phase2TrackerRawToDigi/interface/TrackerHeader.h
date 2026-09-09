@@ -5,6 +5,11 @@
 #include <array>
 #include <cstdio>
 
+/**
+ * @brief: Tracker Header Object, decodes Tracker Header described in the link below:
+ * https://docs.google.com/spreadsheets/d/1RHZFqeHCoJhRaAfaKEO1Gx6U6c1Y3tRGhL_aSbZQROY/edit?gid=256168213#gid=256168213
+ */
+
 class TrackerHeader {
 public:
 

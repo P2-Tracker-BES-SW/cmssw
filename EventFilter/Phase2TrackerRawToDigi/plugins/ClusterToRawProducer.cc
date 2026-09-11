@@ -69,24 +69,13 @@ private:
                         std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket);
   void allocateBytesToBinary(const std::vector<Phase2DAQFormatSpecification::Word32Bits>& daqPacket, 
                            std::vector<unsigned char>& binaryBuffer);
-  int getRandomBXID() { return dist_(gen_); }
-
-  std::random_device rd_;                    
-  std::mt19937 gen_;                         
-  std::exponential_distribution<double> dist_;
-
-  uint32_t tmpBunchCrossing_ = 0;
-  uint32_t tmpOrbit_ = 0;
 };
 
 ClusterToRawProducer::ClusterToRawProducer(const edm::ParameterSet& iConfig)
     : clusterCollectionToken_(
       consumes<Phase2TrackerCluster1DCollectionNew>(iConfig.getParameter<edm::InputTag>("Phase2Clusters"))),
       cablingMapToken_(esConsumes()),
-      trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()),
-      rd_(),                                           
-      gen_(rd_()),                                     
-      dist_(Phase2TrackerSpecifications::HL_LHC_L1A_INTER_ARRIVAL_LAMBDA) {
+      trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()) {
       produces<RawDataBuffer>();
 }
 
@@ -105,14 +94,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
   /* Emulate Global Event ID for This Event, will appear in All SLink Fragment Header. */
   unsigned int eventId_ = iEvent.id().event();
-
-  /* Emulate BX in [0, 3563] for This Event, will appear in All SLink Fragment Trailers. */
-  uint32_t globalBunchCrossing_ = tmpBunchCrossing_ + dist_(gen_);
-  if (globalBunchCrossing_ > BX_ID_MAX) {
-    globalBunchCrossing_ = globalBunchCrossing_ - (BX_ID_MAX + 1);
-    tmpOrbit_ += 1;
-  }
-  tmpBunchCrossing_ = globalBunchCrossing_;
 
   // Get input clusters
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
@@ -309,8 +290,8 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        */
       uint16_t slt_status = 0;               // SLink trailer status (0 = OK)
       uint16_t crc = 0;                      // CRC (not computed, set to 0)
-      uint32_t orbit_id = tmpOrbit_;         // Orbit ID (test value from reference)
-      uint16_t bx_id = globalBunchCrossing_; // Bunch crossing ID (test value from reference)
+      uint32_t orbit_id = 0;                 // Orbit ID (test value from reference)
+      uint16_t bx_id = 0;                    // Bunch crossing ID (test value from reference)
       uint32_t fragment_size_words = daq_packet.size() + 4;  // Total fragment size in 32-bit words (including trailer)
       SLinkRocketTrailer_v3 trailer(slt_status, crc, orbit_id, bx_id, fragment_size_words, 0);
       addSLinkTrailer(trailer, daq_packet);

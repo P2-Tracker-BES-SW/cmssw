@@ -153,17 +153,17 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
         auto dataPtr = fedData.payload(slink_header_size, slink_trailer_size);
 
-        TrackerHeader ExtractedDTCHeader = getTrackerHeader(dataPtr);
+        TrackerHeader extractedTrackerHeader = getTrackerHeader(dataPtr);
         int coreID = 0;
 
         // Check if CMSSW can decode the binary.
-        if (ExtractedDTCHeader.getVersionMajor() == Phase2DAQFormatSpecification::VERSION_MAJOR_V1_0 && 
-            ExtractedDTCHeader.getVersionMinor() == Phase2DAQFormatSpecification::VERSION_MINOR_V1_0) {
+        if (extractedTrackerHeader.getVersionMajor() == Phase2DAQFormatSpecification::VERSION_MAJOR_V1_0 && 
+            extractedTrackerHeader.getVersionMinor() == Phase2DAQFormatSpecification::VERSION_MINOR_V1_0) {
             edm::LogInfo("RawToClusterProducer") << "Read version from binary that is supported. RawToClusterProducer() can decode the binary.";
         } else {
           throw cms::Exception("CMSSW Unpacker RawToClusterProducer() is incopatible with the format version found in this binary. Aborting any further processing.");
         }
-        coreID = ExtractedDTCHeader.getDAQpathCoreID();
+        coreID = extractedTrackerHeader.getDAQpathCoreID();
 
         ChannelsMask ExtractedChannelsMask = getChannelMaskingProfile(dataPtr);
 
@@ -230,7 +230,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             continue;
           }
 
-          if (ExtractedDTCHeader.is2S() != is2SModule)
+          if (extractedTrackerHeader.is2S() != is2SModule)
             edm::LogError("RawToClusterProducer") << "ERROR: Header for channel " << iChannel << " expects a different type of module";
 
           // retrieve the channel offset

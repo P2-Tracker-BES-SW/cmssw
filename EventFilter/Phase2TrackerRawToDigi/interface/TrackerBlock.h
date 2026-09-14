@@ -14,11 +14,12 @@ public:
   explicit TrackerBlock(size_t nLines) : values_(nLines, 0) {}
   virtual ~TrackerBlock() = default;
 
-  void setValue(std::vector<uint32_t>& newValues) {
-    values_ = newValues;
-    is2S_ = ((values_[0] >> (N_BITS_PER_WORD - C_NUM_BITS_BOARD_TYPE)) & ((1u << C_NUM_BITS_BOARD_TYPE) - 1)) == DTC_HEADER_OT_2S;
-    setSpecificValue();
-  }
+  void setValue(std::vector<uint32_t> newValues) {
+    assert(!newValues.empty() && "TrackerBlock: setValue() needs at least one word");
+    values_ = std::move(newValues);
+    is2S_ = extractBits(values_[0], N_BITS_PER_WORD - C_NUM_BITS_BOARD_TYPE, C_NUM_BITS_BOARD_TYPE) ==
+            DTC_HEADER_OT_2S;
+  }  
 
   bool is2S() const { return is2S_; }
 
@@ -34,9 +35,12 @@ public:
 protected:
   std::vector<uint32_t> values_;
   bool is2S_{false};
+  
+  static uint32_t extractBits(uint32_t word, unsigned shift, unsigned width) {
+    return (word >> shift) & ((1u << width) - 1u);
+  }  
 
   virtual std::string blockName() const { return "TrackerBlock"; }
-  virtual void setSpecificValue() {} // overridden by sub-classes
 
 };
 
@@ -48,20 +52,17 @@ class TrackerHeader : public TrackerBlock {
 public:
   TrackerHeader() : TrackerBlock(HEADER_N_LINES) {}
 
-  explicit TrackerHeader(const std::vector<uint32_t>& words) : TrackerBlock(HEADER_N_LINES) {
-    std::vector<uint32_t> copy(words);
-    setValue(copy);
-  }
+  explicit TrackerHeader(std::vector<uint32_t> words) : TrackerBlock(HEADER_N_LINES) { setValue(std::move(words)); }
 
-  uint8_t hasExtendedData() const { return hasED_; }
-  ////  FIXME remove numbers 
-  uint32_t getBoardType() const { return (values_[0] >> 24) & 0xFF; }      // bits 31-24 (8 bits)
-  uint32_t getVersionMajor() const { return (values_[0] >> 21) & 0x7; }    // bits 23-21 (3 bits)
-  uint32_t getVersionMinor() const { return (values_[0] >> 16) & 0x1F; }   // bits 20-16 (5 bits)
-  uint32_t getMode() const { return (values_[0] >> 13) & 0x7; }            // bits 15-13 (3 bits)
-  uint32_t getED() const { return (values_[0] >> 12) & 0x1; }              // bit 12 (1 bit)
-  uint32_t getBoardID() const { return (values_[0] >> 4) & 0xFF; }         // bits 11-4 (8 bits)
-  uint32_t getDAQpathCoreID() const { return values_[0] & 0xF; }           // bits 3-0 (4 bits)
+  uint8_t  hasExtendedData() const { return static_cast<uint8_t>(getED()); }
+  uint32_t getBoardType() const { return extractBits(values_[0], kShiftBoardType, C_NUM_BITS_BOARD_TYPE); }
+  uint32_t getVersionMajor() const { return extractBits(values_[0], kShiftVerMajor, C_NUM_BITS_VERSION_MAJOR); }
+  uint32_t getVersionMinor() const { return extractBits(values_[0], kShiftVerMinor, C_NUM_BITS_VERSION_MINOR); }
+  uint32_t getMode() const { return extractBits(values_[0], kShiftMode, C_NUM_BITS_MODE); }
+  uint32_t getED() const { return extractBits(values_[0], kShiftED, C_NUM_BITS_ED); }
+  uint32_t getBoardID() const { return extractBits(values_[0], kShiftBoardID, C_NUM_BITS_BOARD_ID); }
+  uint32_t getDAQpathCoreID() const { return extractBits(values_[0], kShiftCoreID, C_NUM_BITS_CORE_ID); }
+
 
   void printFields() const {
     printf(
@@ -79,12 +80,16 @@ public:
 protected:
   std::string blockName() const override { return "TrackerHeader"; }
 
-  void setSpecificValue() override {
-    hasED_ = static_cast<uint8_t>(getED());
-  }
-
 private: 
-  uint8_t hasED_{0}; // indicates if extended data are present
+  // pre-compute cumulative bit offsets according to TrackerHeader format
+  // DAQpath CoreID | BoardID | ED | Mode | VerMinor | VerMajor | BoardType
+  static constexpr int kShiftCoreID = 0;
+  static constexpr int kShiftBoardID = kShiftCoreID + C_NUM_BITS_CORE_ID;
+  static constexpr int kShiftED = kShiftBoardID + C_NUM_BITS_BOARD_ID;
+  static constexpr int kShiftMode = kShiftED + C_NUM_BITS_ED;
+  static constexpr int kShiftVerMinor = kShiftMode + C_NUM_BITS_MODE;
+  static constexpr int kShiftVerMajor = kShiftVerMinor + C_NUM_BITS_VERSION_MINOR;
+  static constexpr int kShiftBoardType = kShiftVerMajor + C_NUM_BITS_VERSION_MAJOR;
 
 };
 
@@ -94,19 +99,15 @@ class TrackerTrailer : public TrackerBlock {
 public:
   TrackerTrailer() : TrackerBlock(TRAILER_N_LINES) {}
 
-  uint8_t afterExtendedData() const { return endED_; }
+  uint32_t getInvertedBoardType() const { return extractBits(values_[0], kShiftInvertedBoardType, C_NUM_BITS_BOARD_TYPE_INV); }
 
 protected:
   std::string blockName() const override { return "TrackerTrailer"; }
 
-  void setSpecificValue() override {
-    endED_ = (values_[0] >> 24) & 0xFF; // FIXME
-//     endED_ = (values_[0]) & ((1u << TRAILER_ENDED_BITS) - 1);
-  }
-
 private:
-  // indicates if trailer is at end of a normal or extended data
-  uint8_t endED_{0};  
+  // pre-compute cumulative bit offsets according to TrackerTrailer format
+  // Reserved | BoardType
+  static constexpr int kShiftInvertedBoardType = C_NUM_BITS_RESERVED_TRAILER;
   
 };
 

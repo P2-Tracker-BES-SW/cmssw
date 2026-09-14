@@ -24,6 +24,7 @@ namespace Phase2DAQFormatSpecification {
   static const int C_NUM_BITS_ED = 1;
   static const int C_NUM_BITS_BOARD_ID = 8;
   static const int C_NUM_BITS_CORE_ID = 4;
+  static const int C_NUM_BITS_RESERVED_TRAILER = 24;
 
   static const int DTC_HEADER_OT_PS = 0xC5;
   static const int DTC_HEADER_OT_PS_INV = 0x5C;

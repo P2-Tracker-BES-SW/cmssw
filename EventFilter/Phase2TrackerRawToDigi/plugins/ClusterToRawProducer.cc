@@ -128,23 +128,6 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
       std::vector<Word32Bits> daq_packet;
       daq_packet.reserve(SLINK_HEADER_SIZE + TRACKER_HEADER_SIZE + MODULES_PER_SLINK + DTC_MASK_PROFILE_SIZE);
 
-//       bool is_2S_module = false;
-//       bool is_unknown_type = false;
-
-//       // add the tracker header
-//       Word32Bits header_first_word;
-//       try {
-//         auto link_to_module_association = cablingMap.dtcELinkIdToDetId(DTCELinkId(dtc_id, index_first, 0));
-//         const DetId& det_id = link_to_module_association->second;
-//         is_2S_module = (trackerGeometry.getDetectorType(det_id) == TrackerGeometry::ModuleType::Ph2SS);
-//         header_first_word = Word32Bits(
-//             (is_2S_module ? MODULE_TYPE_2S : MODULE_TYPE_PS) << (N_BITS_PER_WORD - MODULE_TYPE_BITS)
-//         );
-//       } catch (const cms::Exception& e) {
-//         is_unknown_type = true;
-//         header_first_word = Word32Bits(DTC_DAQ_HEADER);
-//       }      
-
       /**
        * Configure SLink Rocket Header (Version 3)
        * Following the pattern from TestWriteRawDataBuffer.cc:

@@ -452,10 +452,11 @@ uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> d
                     (static_cast<uint32_t>(data[byteOffset]));
 
     if (debug) {
-        std::cout << "wordIndex= " << wordIndex << std::endl;
-        std::cout << "byteOffset= " << byteOffset << std::endl;
-        std::cout << "word= " << std::bitset<32>(word) << std::endl;
-        printf("word=0x%08X \n", (unsigned int)word);
+        LogTrace("RawToClusterProducer") << "wordIndex = " << wordIndex 
+                                         << "\tbyteOffset = " << byteOffset 
+                                         << "\tword = " << std::bitset<32>(word)
+                                         << "\t 0x" << std::hex << std::setw(8) << std::setfill('0') << word 
+                                         << std::dec;                                         
     }
     return word;
 }
@@ -645,51 +646,49 @@ void RawToClusterProducer::readPayload(std::vector<uint32_t>& clusterWords,
   }
 }
 
+
 void RawToClusterProducer::dumpRawFile(const unsigned char* dataPtr, size_t data_size, bool hexa) {
-
-
+    
   if (hexa) {
+    for (size_t i = 0; i < data_size; i += 16) {
+      std::ostringstream line;
+      line << std::hex
+           << std::setw(7)
+           << std::setfill('0')
+           << std::nouppercase
+           << i
+           << " ";
 
-    for (size_t i = 0; i < data_size; i += 2)
-    {
-        if (i % 16 == 0)
-        {
-            std::cout << std::hex
-                      << std::setw(7)
-                      << std::setfill('0')
-                      << std::nouppercase
-                      << i
-                      << " ";
-        }
-    
-        // Combine two bytes into a 16-bit value (original byte order: high byte first)
-        uint16_t word = static_cast<uint16_t>(static_cast<uint8_t>(dataPtr[i])) << 8;
-        if (i + 1 < data_size)
-            word |= static_cast<uint8_t>(dataPtr[i + 1]);
-    
-        std::cout << std::hex
-                  << std::setw(4)
-                  << std::setfill('0')
-                  << std::nouppercase
-                  << word;
-    
-        if ((i + 2) % 16 == 0 || i + 2 >= data_size)
-            std::cout << "\n";
-        else
-            std::cout <<  std::dec << " ";
+      for (size_t j = i; j < i + 16 && j < data_size; j += 2)
+      {
+        uint16_t word = static_cast<uint16_t>(static_cast<uint8_t>(dataPtr[j])) << 8;
+        if (j + 1 < data_size)
+          word |= static_cast<uint8_t>(dataPtr[j + 1]);
+
+        line << std::hex
+             << std::setw(4)
+             << std::setfill('0')
+             << std::nouppercase
+             << word;
+
+        if (j + 2 < i + 16 && j + 2 < data_size)
+          line << " ";
+      }
+      LogTrace("RawToClusterProducer") << line.str();
     }
-    std::cout << std::dec << std::endl;  
   } else {
-    std::cout << "    " ;
-    for (size_t i = 0; i < data_size; ++i)
-    {
-      std::bitset<8> bits(dataPtr[i]);
-      std::cout << "    " << bits << " ";
-      if ((i + 1) % 8 == 0)
-        std::cout << "\n" << i+1 << "    " ;
+    for (size_t i = 0; i < data_size; i += 8) {
+      std::ostringstream line;
+
+      line << "  ";
+      for (size_t j = i; j < i + 8 && j < data_size; ++j) {
+        std::bitset<8> bits(dataPtr[j]);
+        line << "  " << bits << " ";
+      }
+      line << std::dec << std::min(i + 8, data_size) << "  ";
+      LogTrace("RawToClusterProducer") << line.str();
     }
-    std::cout << std::endl;
-  }    
+  }
 }
 
 

@@ -87,17 +87,11 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
   const auto& cablingMap = iSetup.getData(cablingMapToken_);
 
   // get EventID and RunID
-  /* Emulate Global Event ID for This Event, will appear in All SLink Fragment Header. */ 
-  // FIXME
   unsigned int eventId_ = iEvent.id().event();
 
   // Get input clusters
   edm::Handle<Phase2TrackerCluster1DCollectionNew> clusters_handle;
   iEvent.getByToken(clusterCollectionToken_, clusters_handle);
-
-  // maybe not needed // FIXME
-//   constexpr size_t slink_header_size = sizeof(SLinkRocketHeader_v3);
-//   constexpr size_t slink_trailer_size = sizeof(SLinkRocketTrailer_v3);
 
   // prepare a vector to contain all the slink fragments
   struct SlinkFragment {
@@ -126,7 +120,7 @@ void ClusterToRawProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
        */
 
       std::vector<Word32Bits> daq_packet;
-      daq_packet.reserve(SLINK_HEADER_SIZE + TRACKER_HEADER_SIZE + MODULES_PER_SLINK + DTC_MASK_PROFILE_SIZE);
+      daq_packet.reserve(SLINK_HEADER_SIZE + HEADER_N_LINES + MODULES_PER_SLINK + DTC_MASK_PROFILE_SIZE);
 
       /**
        * Configure SLink Rocket Header (Version 3)

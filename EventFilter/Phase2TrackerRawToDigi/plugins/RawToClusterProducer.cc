@@ -20,21 +20,18 @@
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
-#include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
-#include "Geometry/CommonTopologies/interface/PixelTopology.h"
 #include <unordered_map>
 
-#include "EventFilter/Phase2TrackerRawToDigi/interface/TrackerBlock.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsOffset.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/CRACKMapping.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
-#include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsMask.h"
-#include "EventFilter/Phase2TrackerRawToDigi/interface/CRACKMapping.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/TrackerBlock.h"
 
 using namespace Phase2TrackerSpecifications;
 using namespace Phase2DAQFormatSpecification;
 
-// namespace to be added
 
 class RawToClusterProducer : public edm::stream::EDProducer<> {
 public:
@@ -467,9 +464,9 @@ uint32_t RawToClusterProducer::get32bWordAtByte(std::span<const unsigned char> d
  * @return TrackerHeader Class Object.
  */
 TrackerHeader RawToClusterProducer::getTrackerHeader(std::span<const unsigned char> data) {
-    std::vector<uint32_t> words(Phase2DAQFormatSpecification::DTC_HEADER_SIZE);
+    std::vector<uint32_t> words(Phase2DAQFormatSpecification::HEADER_N_LINES);
     size_t startByte = Phase2DAQFormatSpecification::DTC_HEADER_OFFSET * Phase2DAQFormatSpecification::N_BYTES_PER_WORD;
-    for (int i = 0; i < Phase2DAQFormatSpecification::DTC_HEADER_SIZE; ++i) {
+    for (int i = 0; i < Phase2DAQFormatSpecification::HEADER_N_LINES; ++i) {
         words[i] = get32bWordAtByte(data, 
                                     startByte + (i * Phase2DAQFormatSpecification::N_BYTES_PER_WORD), 
                                     startByte, false);
@@ -543,8 +540,8 @@ Phase2TrackerCluster1D RawToClusterProducer::unpackStripOnPS(uint32_t clusterWor
                    WIDTH_MAX_VALUE;               // 3 bits
   uint32_t mipBit = clusterWord & MIP_BITS_MASK;  // 1 bits
   // see warning above for how to treat the width
-  if (width == 0)
-    width = 8;
+//   if (width == 0)
+//     width = 8;
   LogTrace("RawToClusterProducer") << "\t[unpacking] chipID : " << (chipID) << "\t "
                                    << std::bitset<CHIP_ID_BITS>(chipID) << std::endl;
   LogTrace("RawToClusterProducer") << "\t[unpacking] address : " << (sclusterAddress) << "\t "
@@ -567,9 +564,9 @@ Phase2TrackerCluster1D RawToClusterProducer::unpackPixelOnPS(uint32_t clusterWor
                              SCLUSTER_ADDRESS_PS_MAX_VALUE;  // why not uint16?
   uint32_t width = (clusterWord >> (PX_CLUSTER_BITS - CHIP_ID_BITS - SCLUSTER_ADDRESS_BITS_PS - WIDTH_BITS)) &
                    WIDTH_MAX_VALUE;  // 3 bits
-  // see warning above for how to treat the width
-  if (width == 0)
-    width = 8;
+//   see warning above for how to treat the width
+//   if (width == 0)
+//     width = 8;
   uint32_t z = clusterWord & PS_Z_BITS_MASK;  // 4 bits
 
   LogTrace("RawToClusterProducer") << "\t[unpacking] chipID : " << (chipID) << "\t "

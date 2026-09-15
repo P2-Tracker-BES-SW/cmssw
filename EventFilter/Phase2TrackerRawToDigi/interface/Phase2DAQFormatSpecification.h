@@ -32,16 +32,13 @@ namespace Phase2DAQFormatSpecification {
   static const int DTC_HEADER_OT_2S_INV = 0x4C;
 
   static const int DTC_HEADER_OFFSET = 0; // location where DTC HEADER Starts
-  static const int DTC_HEADER_SIZE = 4;   // in 32bit words
+  static const int DTC_TRAILER_OFFSET = 26;
 
   static const int DTC_CHANNEL_MASK_OFFSET = 22;
   static const int DTC_CHANNEL_MASK_SIZE = 2;
 
-  static const int DTC_TRAILER_OFFSET = 26;
-  static const int DTC_TRAILER_SIZE = 4;
   static const int SLINK_HEADER_SIZE = sizeof(SLinkRocketHeader_v3) * 8 / 32;
   static const int SLINK_TRAILER_SIZE = sizeof(SLinkRocketTrailer_v3) * 8 / 32;
-  static const int TRACKER_HEADER_SIZE = 4; // in 32bit words
   static const int DTC_MASK_PROFILE_SIZE = 2; // in 32bit words
 
   // This CMSSW Version should be compatible against the versioining variables below.

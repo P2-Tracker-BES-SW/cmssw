@@ -13,13 +13,13 @@ process = cms.Process("Analysis")
 # If it is False, then the original clusters will be analyzed.
 ANALYZE_PACKUNPACK = False
 # If this is True, the clusters from the unpacked CRack data will be analyzed.
-ANALYZE_CRACK = False
+ANALYZE_CRACK = True
 
 # Enable summary at the end of the job
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 # Limit the number of events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Define the EDAnalyzer with the correct product label
 process.ClusterAnalyzer = cms.EDAnalyzer('ClusterAnalyzer',
@@ -43,7 +43,7 @@ elif ANALYZE_CRACK:
   
   process.source = cms.Source("PoolSource", 
       fileNames = cms.untracked.vstring(
-          "file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/Unpacker_CRACK_Physics_Run_September_2026.root"
+          "file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/DTH_Decoded_CRACK_Physics_Run_September_2026_CRACK_3_Ladders_Source_7_RECO_COORD_FINAL.root"
       )
   )
   # Update label to match the output from the unpacker process
@@ -61,7 +61,7 @@ else:
 # Create output root file for TTree.
 process.TFileService = cms.Service('TFileService', 
     fileName = cms.string(
-        'ClusterAnalyzer_TTree.root'
+        'ClusterAnalyzer_TTree_' + 'CRACK_September_13_09_2026_Source_7_FINAL' + '.root'
     ), 
     closeFileFast = cms.untracked.bool(True)
 )

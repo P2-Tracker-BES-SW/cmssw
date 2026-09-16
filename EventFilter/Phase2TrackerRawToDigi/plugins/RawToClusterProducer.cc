@@ -248,9 +248,7 @@ void RawToClusterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
             firstEventID = eventID;
             firstEventIDSet = true;
           } else if (eventID != firstEventID) {
-            throw cms::Exception("CIC Event ID Mismatch! This is a serious issue.") 
-                << "CIC Event ID Mismatch Detected! First Event ID: " << firstEventID 
-                << ", Current Event ID: " << eventID;
+            std::cout << "[WARNING] Event ID Mismatch" << std::endl;
           }
 
           int channelErrors = (headerWord >> (N_BITS_PER_WORD - L1ID_BITS - CIC_ERROR_BITS)) & CIC_ERROR_MASK; // 9-bit field
@@ -475,31 +473,92 @@ void RawToClusterProducer::dumpPacket(const unsigned char* data, size_t dataSize
     }
 }
 
-std::pair<Phase2TrackerCluster1D, bool> RawToClusterProducer::unpack2S(uint32_t clusterWord, unsigned int iChannel) {
-  uint32_t chipID = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) & CHIP_ID_MAX_VALUE;  // 3 bits
-  uint32_t sclusterAddress = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS - SCLUSTER_ADDRESS_ONLY_BITS_2S)) &
-                             SCLUSTER_ADDRESS_MASK;  // why not uint16?
-  bool isSeedSensor =
-      (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS - SCLUSTER_ADDRESS_BITS_2S)) & IS_SEED_SENSOR_MASK;  // 8 bits
-  uint32_t width = clusterWord & WIDTH_MAX_VALUE;                                                          // 3 bits
-  // cluster width is truncated during packing (3 bits)
-  // since width = 0 is unphysical, we can at least recover cluster with width == 8
-  // by assuming that clusters packed with width == 0 had in reality width = 8
-  // this is a tmp fix, we should maybe think about how to properly do this.
-  // also, for original widths > 8: again, due to truncation, they get an incorrect width of
-  // cluster.getWidth() & WIDTH_MAX_VALUE. should be probably fixed in the packer
-  // (e.g. if width > 8, pack with width = 0)
-//   if (width == 0)
-//     width = 8;
-  LogTrace("RawToClusterProducer") << "\t[unpacking] chipID : " << (chipID) << "\t " << std::bitset<3>(chipID);
-  LogTrace("RawToClusterProducer") << "\t[unpacking] address : " << (sclusterAddress) << "\t "
-                                   << std::bitset<8>(sclusterAddress);
-  LogTrace("RawToClusterProducer") << "\t[unpacking] width : " << (width) << "\t " << std::bitset<3>(width);
-  LogTrace("RawToClusterProducer") << "";
+std::pair<Phase2TrackerCluster1D, bool>
+RawToClusterProducer::unpack2S(uint32_t clusterWord,
+                               unsigned int iChannel) {
+  const uint32_t chipID =
+      (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) &
+      CHIP_ID_MAX_VALUE;
 
-  unsigned int x = STRIPS_PER_CBC * chipID + sclusterAddress;
-  unsigned int y = iChannel % 2 == 0 ? 0 : 1;
-  Phase2TrackerCluster1D thisCluster = Phase2TrackerCluster1D(x, y, width);
+  const uint32_t sclusterAddress =
+      (clusterWord >>
+       (SS_CLUSTER_BITS -
+        CHIP_ID_BITS -
+        SCLUSTER_ADDRESS_ONLY_BITS_2S)) &
+      SCLUSTER_ADDRESS_MASK;
+
+  const bool isSeedSensor =
+      (clusterWord >>
+       (SS_CLUSTER_BITS -
+        CHIP_ID_BITS -
+        SCLUSTER_ADDRESS_BITS_2S)) &
+      IS_SEED_SENSOR_MASK;
+
+  const uint32_t width =
+      clusterWord & WIDTH_MAX_VALUE;
+
+  const unsigned int y =
+      iChannel % 2 == 0 ? 0 : 1;
+
+  /*
+   * Convert the CIC chip ID to its position in the ordered
+   * sequence:
+   *
+   * 0, 1, 2, 3, 7, 6, 5, 4
+   */
+  static constexpr std::array<unsigned int, 8>
+      chipToPhysicalBlock = {
+          0, 1, 2, 3, 7, 6, 5, 4
+      };
+
+  const unsigned int physicalBlock =
+      chipToPhysicalBlock[chipID];
+
+  const unsigned int baseX =
+      STRIPS_PER_CBC * physicalBlock +
+      sclusterAddress;
+
+  static constexpr unsigned int stripsPerCIC =
+      8 * STRIPS_PER_CBC;  // 1016
+
+  /*
+   * y = 0: use the base coordinate directly.
+   * y = 1: invert the complete coordinate.
+   */
+  const unsigned int x =
+      y == 0
+          ? baseX
+          : stripsPerCIC - 1 - baseX;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] chip ID : " << chipID;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] physical block : "
+      << physicalBlock;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] address : "
+      << sclusterAddress;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] base x : "
+      << baseX;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] final x : "
+      << x;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] y : "
+      << y;
+
+  LogTrace("RawToClusterProducer")
+      << "\t[unpacking] width : "
+      << width;
+
+  Phase2TrackerCluster1D thisCluster(x, y, width + 1);
+
   return std::make_pair(thisCluster, isSeedSensor);
 }
 

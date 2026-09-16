@@ -51,12 +51,14 @@ if UNPACK_CRACK:
  
     from EventFilter.Phase2TrackerRawToDigi.CRACKMapping_cfi import crackMapping    
     inputRawDataTag = 'rawDataCollector'
+    inputFileList = ["file:/eos/project-c/cms-tracker-integration/www/results/CosmicRackData/2026/08/CRACK_VALIDATION_09_09_2026_FED.root"]
 
 else:
     process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
     process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
     process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
     process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
+    inputFileList = ["/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root"]
 
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
@@ -70,14 +72,8 @@ process.PoolDBESSource = cms.ESSource("PoolDBESSource",
 process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
-
 process.source = cms.Source("PoolSource",
-# #    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
-#      fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
-    ## example file from C-Rack
-    fileNames = cms.untracked.vstring(
-      "file:/eos/project-c/cms-tracker-integration/www/results/CosmicRackData/2026/08/CRACK_VALIDATION_09_09_2026_FED.root"
-    )
+   fileNames = cms.untracked.vstring(inputFileList)
 )
 
 

@@ -243,7 +243,7 @@ int TrackerPhase2PlotUtil::savePanelPlots(const std::vector<std::pair<std::strin
 std::unique_ptr<TH1> TrackerPhase2PlotUtil::readHistFromDQMFile(TFile& file,
                                                                 const std::string& folder,
                                                                 const std::string& name) {
-  // 'Phase2IT/RawData/<me>' is stored as 'DQMData/Run N/Phase2IT/Run summary/RawData/<me>'
+  // '<Top>/<sub>/<me>' is stored as 'DQMData/Run N/<Top>/Run summary/<sub>/<me>'
   const size_t slash = folder.find('/');
   const std::string top = folder.substr(0, slash);
   const std::string rest = (slash == std::string::npos) ? "" : "/" + folder.substr(slash + 1);

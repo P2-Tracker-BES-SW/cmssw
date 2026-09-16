@@ -245,7 +245,7 @@ void ElinkOccupancyHarvester::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IG
 
 void ElinkOccupancyHarvester::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
-  desc.add<std::string>("TopFolder", "Phase2IT/RawData");
+  desc.add<std::string>("TopFolder", "InnerTrackerV/ELink");
   desc.add<std::string>("OccupancyMapName", "eLinkOccupancyMap");
   desc.addUntracked<bool>("savePlots", false);
   desc.addUntracked<std::string>("plotDir", ".");

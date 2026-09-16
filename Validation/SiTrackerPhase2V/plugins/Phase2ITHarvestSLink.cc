@@ -165,7 +165,7 @@ void SlinkOccupancyHarvester::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IG
 
 void SlinkOccupancyHarvester::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
-  desc.add<std::string>("TopFolder", "Phase2IT/RawData");
+  desc.add<std::string>("TopFolder", "InnerTrackerV/SLink");
   desc.add<std::string>("OccupancyMapName", "slinkOccupancyMap");
   desc.addUntracked<bool>("savePlots", false);
   desc.addUntracked<std::string>("plotDir", ".");

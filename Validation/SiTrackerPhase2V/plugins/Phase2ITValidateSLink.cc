@@ -86,7 +86,7 @@ Phase2ITValidateSLink::Phase2ITValidateSLink(const edm::ParameterSet& iConfig)
       trigger_rate_(iConfig.getUntrackedParameter<double>("trigger_rate", 750.0e3)),
       slink_bandwidth_(iConfig.getUntrackedParameter<double>("slink_bandwidth", 25.0e9)),
       dataSizeMax_(iConfig.getUntrackedParameter<double>("dataSizeMax", 800.)),
-      folder_(iConfig.getUntrackedParameter<std::string>("folder", "Phase2IT/RawData")) {
+      folder_(iConfig.getUntrackedParameter<std::string>("folder", "InnerTrackerV/SLink")) {
   edm::LogInfo("Phase2ITValidateSLink") << ">>> Construct Phase2ITValidateSLink";
 }
 
@@ -230,7 +230,7 @@ void Phase2ITValidateSLink::fillDescriptions(edm::ConfigurationDescriptions& des
   desc.addUntracked<double>("trigger_rate", 750.0e3);
   desc.addUntracked<double>("slink_bandwidth", 25.0e9);
   desc.addUntracked<double>("dataSizeMax", 800.);
-  desc.addUntracked<std::string>("folder", "Phase2IT/RawData");
+  desc.addUntracked<std::string>("folder", "InnerTrackerV/SLink");
   descriptions.add("Phase2ITValidateSLink", desc);
 }
 

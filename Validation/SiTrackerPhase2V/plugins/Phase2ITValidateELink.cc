@@ -112,7 +112,7 @@ Phase2ITValidateELink::Phase2ITValidateELink(const edm::ParameterSet& iConfig)
       scaleTEPX_(iConfig.getUntrackedParameter<double>("scaleTEPX", 1)),
       trigger_rate_(iConfig.getUntrackedParameter<double>("trigger_rate", 750.0e3)),
       elink_bandwidth_(iConfig.getUntrackedParameter<double>("elink_bandwidth", 1.28e9)),
-      folder_(iConfig.getUntrackedParameter<std::string>("folder", "Phase2IT/RawData")) {
+      folder_(iConfig.getUntrackedParameter<std::string>("folder", "InnerTrackerV/ELink")) {
   edm::LogInfo("Phase2ITValidateELink") << ">>> Construct Phase2ITValidateELink";
 }
 
@@ -448,7 +448,7 @@ void Phase2ITValidateELink::fillDescriptions(edm::ConfigurationDescriptions& des
   desc.addUntracked<double>("scaleTEPX", 1);
   desc.addUntracked<double>("trigger_rate", 750.0e3);
   desc.addUntracked<double>("elink_bandwidth", 1.28e9);
-  desc.addUntracked<std::string>("folder", "Phase2IT/RawData");
+  desc.addUntracked<std::string>("folder", "InnerTrackerV/ELink");
   descriptions.add("Phase2ITValidateELink", desc);
 }
 

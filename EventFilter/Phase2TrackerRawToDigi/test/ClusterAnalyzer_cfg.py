@@ -67,6 +67,7 @@ process.TFileService = cms.Service('TFileService',
 
 # Load the standard sequences for conditions and global tags
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("CondCore.CondDB.CondDB_cfi")
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 if not ANALYZE_CRACK:
@@ -74,35 +75,27 @@ if not ANALYZE_CRACK:
     process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
     # Set the GlobalTag (adjust as necessary for your geometry)
     process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+    ## the following won't be needed anymore once the cabling map generated with the updated TrackerDetToDTCELinkCablingMapRcd class is included in the GT
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
 
 
 else:
     ## customise for C-rack geometry
     process.load('Configuration.Geometry.GeometryExtendedRun4D500Reco_cff')
     process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_0T', '')
-
+    process.CondDB.connect = 'sqlite_file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/crack_cabling_gIDbtFrom0.db'
     process.trackerGeometry.applyAlignment = False
 
-    process.load("CondCore.CondDB.CondDB_cfi")
-    process.CondDB.connect = 'sqlite_file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/crack_cabling_gIDbtFrom0.db'
-    process.PoolDBESSource = cms.ESSource("PoolDBESSource",
-        process.CondDB,
-        toGet = cms.VPSet(cms.PSet(
-            record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
-            tag = cms.string("DTCCablingMapProducerUserRun"))
-        )
-    )
-    process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDBESSource","")
 
-#process.PoolDBESSource = cms.ESSource("PoolDBESSource",
-#    process.CondDB,
-#    DumpStat = cms.untracked.bool(True),
-#    toGet = cms.VPSet(cms.PSet(
-#        record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
-#        tag = cms.string("TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly"),
-#    )),
-#)
-#process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
+## the following lines will be specific of the C-rack customisation once the updated cabling map for the OT is included in the GT
+process.PoolDBESSource = cms.ESSource("PoolDBESSource",
+    process.CondDB,
+    toGet = cms.VPSet(cms.PSet(
+        record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
+        tag = cms.string("DTCCablingMapProducerUserRun"))
+    )
+)
+process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDBESSource","")
 
 
 # Define the path to run the EDAnalyzer

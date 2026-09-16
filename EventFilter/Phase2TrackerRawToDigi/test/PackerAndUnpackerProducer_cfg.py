@@ -73,7 +73,7 @@ process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring(inputFileList)
+   fileNames = cms.untracked.vstring(*inputFileList)
 )
 
 

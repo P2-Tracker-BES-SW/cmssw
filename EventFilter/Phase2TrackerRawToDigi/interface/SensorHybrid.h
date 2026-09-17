@@ -16,15 +16,14 @@
 
 class SensorHybrid {
 private:
-  void set_sensor_type(const DetId& det_id, const TrackerGeometry& trackerGeometry, const int internal_id);
-  std::vector<Phase2TrackerCluster1D*> get_clusters_on_cic(edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator);
+  unsigned int set_sensor_type(const DetId& det_id, const TrackerGeometry& trackerGeometry, const int internal_id);
+  std::vector<Phase2TrackerCluster1D*> get_clusters_on_cic(edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator, const unsigned int);
   void get_channel_cluster_payload(std::vector<Phase2DAQFormatSpecification::Word32Bits>& payload);
   
   unsigned int get_number_of_strip_clusters();
   unsigned int get_number_of_pixel_clusters();
 
   bool cic_id_;
-  unsigned int cic_boundary_in_z_;
 
   std::vector<Phase2TrackerCluster1D*> sensor_1_clusters_;
   TrackerGeometry::ModuleType sensor_type_1;

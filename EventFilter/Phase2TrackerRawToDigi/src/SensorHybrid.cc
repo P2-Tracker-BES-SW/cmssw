@@ -9,23 +9,23 @@ SensorHybrid::SensorHybrid(const DetId& det_id,
                            const TrackerGeometry& trackerGeometry,
                            const unsigned int eventId)
     : cic_id_(cic_id), eventId_(eventId) {
-  set_sensor_type(det_id, trackerGeometry, 1);
-  set_sensor_type(det_id, trackerGeometry, 2);
+  const unsigned int cic_boundary_1 = set_sensor_type(det_id+1, trackerGeometry, 1);
+  const unsigned int cic_boundary_2 = set_sensor_type(det_id+2, trackerGeometry, 2);
   // Sensors containing no clusters are missing from the DetSetVector, so must protect against this.
   if (sensor_1 != nullIter)
-    sensor_1_clusters_ = get_clusters_on_cic(sensor_1);
+    sensor_1_clusters_ = get_clusters_on_cic(sensor_1, cic_boundary_1);
   if (sensor_2 != nullIter)
-    sensor_2_clusters_ = get_clusters_on_cic(sensor_2);
+    sensor_2_clusters_ = get_clusters_on_cic(sensor_2, cic_boundary_2);
 }
 
-void SensorHybrid::set_sensor_type(
+unsigned int SensorHybrid::set_sensor_type(
     const DetId& det_id,
     const TrackerGeometry& trackerGeometry,
     const int internal_id) {
   using namespace Phase2TrackerSpecifications;
 
-  const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(det_id + 1);
-  cic_boundary_in_z_ = CIC_Z_BOUNDARY_STRIPS;
+  const GeomDetUnit* sensor_unit = trackerGeometry.idToDetUnit(det_id);
+  unsigned int cic_boundary_in_z = CIC_Z_BOUNDARY_STRIPS;
 
   if (sensor_unit == nullptr)
     throw cms::Exception("LogicError") << __FILE__ << " " << __LINE__ << "DetUnit not found";
@@ -54,25 +54,28 @@ void SensorHybrid::set_sensor_type(
       } else if (internal_id == 2) {
         sensor_type_2 = TrackerGeometry::ModuleType::Ph2PSP;
       }
-      cic_boundary_in_z_ = CIC_Z_BOUNDARY_PIXEL;
+      cic_boundary_in_z = CIC_Z_BOUNDARY_PIXEL;
       break;
 
     default:
       throw cms::Exception("InvalidModuleType")
           << "Unexpected TrackerGeometry::ModuleType for detId: " << det_id << ".";
   }
+  return cic_boundary_in_z;  
 }
 
 std::vector<Phase2TrackerCluster1D*> SensorHybrid::get_clusters_on_cic(
-    edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator) {
+    edmNew::DetSetVector<Phase2TrackerCluster1D>::const_iterator clusterIterator,
+    const unsigned int cic_boundary_in_z
+    ) {
   using namespace Phase2TrackerSpecifications;
 
   std::vector<Phase2TrackerCluster1D*> filteredClusters;
 
   for (auto& cluster : *clusterIterator) {
-    if (cic_id_ == true && cluster.column() > cic_boundary_in_z_) {
+    if (cic_id_ == true && cluster.column() > cic_boundary_in_z && cluster.size() <=7 ) {
       filteredClusters.push_back(&cluster);
-    } else if (cic_id_ == false && cluster.column() <= cic_boundary_in_z_) {
+    } else if (cic_id_ == false && cluster.column() <= cic_boundary_in_z  && cluster.size() <=7 ) {
       filteredClusters.push_back(&cluster);
     }
   }
@@ -115,6 +118,7 @@ void SensorHybrid::get_channel_cluster_payload(std::vector<Phase2DAQFormatSpecif
 
   if (sensor_type_1 == TrackerGeometry::ModuleType::Ph2PSP || sensor_type_2 == TrackerGeometry::ModuleType::Ph2PSS) {
     // For PS, sensor_2 is always strip and sensor_1 is always pixel
+
     for (auto& cluster : sensor_2_clusters_) {
       // cluster info
       uint32_t chipID = std::div(cluster->firstStrip(), STRIPS_PER_SSA).quot & CHIP_ID_MAX_VALUE;  // 3 bits

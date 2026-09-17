@@ -59,58 +59,89 @@ crackMapping = cms.VPSet(
     # offset 11 (EMP Channel 111) -> GBT 58
     cms.PSet(dtc = cms.int32(1), offset = cms.int32(11), gbtID = cms.int32(58), coreID = cms.int32(1)),
 
-    # CRACK Tray #3
+    # Core #2
+
+    # Ladder #5
+    # offset 0 (EMP Channel 82) -> GBT 17
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(0), gbtID = cms.int32(17), coreID = cms.int32(2)),
+    # offset 1 (EMP Channel 83) -> GBT 21
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(1), gbtID = cms.int32(21), coreID = cms.int32(2)),
+    # offset 2 (EMP Channel 84) -> GBT 23
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(2), gbtID = cms.int32(23), coreID = cms.int32(2)),
+    # offset 3 (EMP Channel 85) -> GBT 15
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(3), gbtID = cms.int32(15), coreID = cms.int32(2)),
+    # offset 4 (EMP Channel 86) -> GBT 19
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(4), gbtID = cms.int32(19), coreID = cms.int32(2)),
+    # offset 5 (EMP Channel 87) -> GBT 22
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(5), gbtID = cms.int32(22), coreID = cms.int32(2)),
+    
+    # Ladder #4
+    # offset 6 (EMP Channel 88) -> GBT 32
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(6), gbtID = cms.int32(32), coreID = cms.int32(2)),
+    # offset 7 (EMP Channel 89) -> GBT 28
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(7), gbtID = cms.int32(28), coreID = cms.int32(2)),
+    # offset 8 (EMP Channel 90) -> GBT 24
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(8), gbtID = cms.int32(24), coreID = cms.int32(2)),
+    # offset 9 (EMP Channel 91) -> GBT 30
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(9), gbtID = cms.int32(30), coreID = cms.int32(2)),
+    # offset 10 (EMP Channel 92) -> GBT 26
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(10), gbtID = cms.int32(26), coreID = cms.int32(2)),
+    # offset 11 (EMP Channel 93) -> GBT 25
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(11), gbtID = cms.int32(25), coreID = cms.int32(2)),
+    # offset 12 (EMP Channel 94) -> GBT 29
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(12), gbtID = cms.int32(29), coreID = cms.int32(2)),
+    # offset 13 (EMP Channel 95) -> GBT 33
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(13), gbtID = cms.int32(33), coreID = cms.int32(2)),
+    # offset 14 (EMP Channel 96) -> GBT 35
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(14), gbtID = cms.int32(35), coreID = cms.int32(2)),
+    # offset 15 (EMP Channel 97) -> GBT 27
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(15), gbtID = cms.int32(27), coreID = cms.int32(2)),
+    # offset 16 (EMP Channel 98) -> GBT 31
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(16), gbtID = cms.int32(31), coreID = cms.int32(2)),
+    # offset 17 (EMP Channel 99) -> GBT 34
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(17), gbtID = cms.int32(34), coreID = cms.int32(2)),
+
+    # Core #3
+    # Ladder #3
 
     # offset 0 (EMP Channel 64) -> GBT 44
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(0), gbtID = cms.int32(44), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(0), gbtID = cms.int32(44), coreID = cms.int32(3)),
     # offset 1 (EMP Channel 65) -> GBT 40
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(1), gbtID = cms.int32(40), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(1), gbtID = cms.int32(40), coreID = cms.int32(3)),
     # offset 2 (EMP Channel 66) -> GBT 36
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(2), gbtID = cms.int32(36), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(2), gbtID = cms.int32(36), coreID = cms.int32(3)),
     # offset 3 (EMP Channel 67) -> GBT 42
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(3), gbtID = cms.int32(42), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(3), gbtID = cms.int32(42), coreID = cms.int32(3)),
     # offset 4 (EMP Channel 68) -> GBT 38
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(4), gbtID = cms.int32(38), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(4), gbtID = cms.int32(38), coreID = cms.int32(3)),
     # offset 5 (EMP Channel 69) -> GBT 37
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(5), gbtID = cms.int32(37), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(5), gbtID = cms.int32(37), coreID = cms.int32(3)),
     # offset 6 (EMP Channel 70) -> GBT 41
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(6), gbtID = cms.int32(41), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(6), gbtID = cms.int32(41), coreID = cms.int32(3)),
     # offset 7 (EMP Channel 71) -> GBT 45
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(7), gbtID = cms.int32(45), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(7), gbtID = cms.int32(45), coreID = cms.int32(3)),
     # offset 8 (EMP Channel 72) -> GBT 47
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(8), gbtID = cms.int32(47), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(8), gbtID = cms.int32(47), coreID = cms.int32(3)),
     # offset 9 (EMP Channel 73) -> GBT 39
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(9), gbtID = cms.int32(39), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(9), gbtID = cms.int32(39), coreID = cms.int32(3)),
     # offset 10 (EMP Channel 74) -> GBT 43
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(10), gbtID = cms.int32(43), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(10), gbtID = cms.int32(43), coreID = cms.int32(3)),
     # offset 11 (EMP Channel 75) -> GBT 46
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(11), gbtID = cms.int32(46), coreID = cms.int32(2)),
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(11), gbtID = cms.int32(46), coreID = cms.int32(3)),
 
-    # CRACK Tray #4
-
-    # offset 0 (EMP Channel 88) -> GBT 32
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(0), gbtID = cms.int32(32), coreID = cms.int32(3)),
-    # offset 1 (EMP Channel 89) -> GBT 28
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(1), gbtID = cms.int32(28), coreID = cms.int32(3)),
-    # offset 2 (EMP Channel 90) -> GBT 24
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(2), gbtID = cms.int32(24), coreID = cms.int32(3)),
-    # offset 3 (EMP Channel 91) -> GBT 30
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(3), gbtID = cms.int32(30), coreID = cms.int32(3)),
-    # offset 4 (EMP Channel 92) -> GBT 26
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(4), gbtID = cms.int32(26), coreID = cms.int32(3)),
-    # offset 5 (EMP Channel 93) -> GBT 25
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(5), gbtID = cms.int32(25), coreID = cms.int32(3)),
-    # offset 6 (EMP Channel 94) -> GBT 29
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(6), gbtID = cms.int32(29), coreID = cms.int32(3)),
-    # offset 7 (EMP Channel 95) -> GBT 33
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(7), gbtID = cms.int32(33), coreID = cms.int32(3)),
-    # offset 8 (EMP Channel 96) -> GBT 35
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(8), gbtID = cms.int32(35), coreID = cms.int32(3)),
-    # offset 9 (EMP Channel 97) -> GBT 27
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(9), gbtID = cms.int32(27), coreID = cms.int32(3)),
-    # offset 10 (EMP Channel 98) -> GBT 31
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(10), gbtID = cms.int32(31), coreID = cms.int32(3)),
-    # offset 11 (EMP Channel 99) -> GBT 34
-    cms.PSet(dtc = cms.int32(1), offset = cms.int32(11), gbtID = cms.int32(34), coreID = cms.int32(3)),
+    # Core #3
+    # Ladder #5
+    # offset 12 (EMP Channel 76) -> GBT 20
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(12), gbtID = cms.int32(20), coreID = cms.int32(3)),
+    # offset 13 (EMP Channel 77) -> GBT 16
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(13), gbtID = cms.int32(16), coreID = cms.int32(3)),
+    # offset 14 (EMP Channel 78) -> GBT 13
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(14), gbtID = cms.int32(12), coreID = cms.int32(3)),
+    # offset 15 (EMP Channel 79) -> GBT 18
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(15), gbtID = cms.int32(18), coreID = cms.int32(3)),
+    # offset 16 (EMP Channel 80) -> GBT 14
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(16), gbtID = cms.int32(14), coreID = cms.int32(3)),
+    # offset 17 (EMP Channel 81) -> GBT 13
+    cms.PSet(dtc = cms.int32(1), offset = cms.int32(17), gbtID = cms.int32(13), coreID = cms.int32(3)),
 
 )

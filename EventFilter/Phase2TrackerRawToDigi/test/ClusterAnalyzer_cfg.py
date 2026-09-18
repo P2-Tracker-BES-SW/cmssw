@@ -12,6 +12,8 @@ process = cms.Process("Analysis")
 # the original clusters will be analyzed.
 # If it is False, then the original clusters will be analyzed.
 ANALYZE_PACKUNPACK = False
+# If this is True, the clusters from the unpacked CRack data will be analyzed.
+ANALYZE_CRACK = False
 
 # Enable summary at the end of the job
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
@@ -33,6 +35,19 @@ if ANALYZE_PACKUNPACK:
   # Update label to match the output from the digi-raw-digi process
   process.ClusterAnalyzer.ProductLabel = cms.InputTag("Unpacker", "", "PACKANDUNPACK")
 
+elif ANALYZE_CRACK:
+
+  print("\n === Analyzing clusters created by CRack unpacker sequence ===\n")
+  
+  process.source = cms.Source("PoolSource", 
+      fileNames = cms.untracked.vstring(
+          "file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/Unpacker_CRACK_Physics_Run_September_2026.root"
+      )
+  )
+  # Update label to match the output from the unpacker process
+  process.ClusterAnalyzer.ProductLabel = cms.InputTag("Unpacker", "", "UNPACK")
+
+
 else:
   print("\n === Analyzing original clusters ===\n")
   # Read original clusters from input dataset
@@ -49,29 +64,38 @@ process.TFileService = cms.Service('TFileService',
     closeFileFast = cms.untracked.bool(True)
 )
 
-## Load Geometry for the D98 configuration
-process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
 
 # Load the standard sequences for conditions and global tags
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("CondCore.CondDB.CondDB_cfi")
 from Configuration.AlCa.GlobalTag import GlobalTag
 
-# Set the GlobalTag (adjust as necessary for your geometry)
-#process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+if not ANALYZE_CRACK:
+    ## Load Geometry for the D110 configuration
+    process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
+    # Set the GlobalTag (adjust as necessary for your geometry)
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+    ## the following won't be needed anymore once the cabling map generated with the updated TrackerDetToDTCELinkCablingMapRcd class is included in the GT
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
 
-process.load("CondCore.CondDB.CondDB_cfi")
-process.CondDB.connect = 'frontier://FrontierProd/CMS_CONDITIONS'
 
-#process.PoolDBESSource = cms.ESSource("PoolDBESSource",
-#    process.CondDB,
-#    DumpStat = cms.untracked.bool(True),
-#    toGet = cms.VPSet(cms.PSet(
-#        record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
-#        tag = cms.string("TrackerDetToDTCELinkCablingMap__OT800_IT711__T33__OTOnly"),
-#    )),
-#)
-#process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
+else:
+    ## customise for C-rack geometry
+    process.load('Configuration.Geometry.GeometryExtendedRun4D500Reco_cff')
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_0T', '')
+    process.CondDB.connect = 'sqlite_file:/home/hep/am2023/sara_crack_july_2026/CMSSW_16_0_8/src/crack_cabling_gIDbtFrom0.db'
+    process.trackerGeometry.applyAlignment = False
+
+
+## the following lines will be specific of the C-rack customisation once the updated cabling map for the OT is included in the GT
+process.PoolDBESSource = cms.ESSource("PoolDBESSource",
+    process.CondDB,
+    toGet = cms.VPSet(cms.PSet(
+        record = cms.string('TrackerDetToDTCELinkCablingMapRcd'),
+        tag = cms.string("DTCCablingMapProducerUserRun"))
+    )
+)
+process.es_prefer_local_TrackerDetToDTCELinkCablingMapRcd = cms.ESPrefer("PoolDBESSource","")
 
 
 # Define the path to run the EDAnalyzer

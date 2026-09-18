@@ -1,13 +1,15 @@
-## cfg file to run the packing and unpacking steps for Phase2 OT clusters
-## optionally, also run EDAnalyzer to dump the FEDRawData into a text file
+## cfg file to run the (packing and) unpacking step(s) for Phase2 OT clusters
 ## outputs an EDM file containing the original FEDRawData and the unpacked clusters
 
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import FWCore.Utilities.FileUtils as FileUtils
-import os
 
 process = cms.Process("PACKANDUNPACK")
+
+# If this is False, then the clusters will be created by running the packer + unpacker chain on the original clusters.
+# If it is True, then the clusters will be unpacked from (C-Rack) raw data (with corresponding geometry).
+UNPACK_CRACK = False
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.EventContent.EventContent_cff')
@@ -31,28 +33,33 @@ process.MessageLogger = cms.Service("MessageLogger",
     ),
 )
 
-process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
-process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
-
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-
-from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
-
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
-
-process.source = cms.Source("PoolSource",
-#    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
-     fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
-)
-
-## in case of local file
 process.load("CondCore.CondDB.CondDB_cfi")
-process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
-#process.load("CondCore.CondDB.CondDB_cfi")
-#process.CondDB.connect = 'frontier://FrontierProd/CMS_CONDITIONS'
+from Configuration.AlCa.GlobalTag import GlobalTag
+
+inputRawDataTag = 'Packer'
+crackMapping = cms.VPSet()
+
+if UNPACK_CRACK:
+    ## customise for C-rack geometry
+    process.load('Configuration.StandardSequences.MagneticField_0T_cff')
+    process.load('Configuration.Geometry.GeometryExtendedRun4D500Reco_cff')
+    process.trackerGeometry.applyAlignment = False
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_0T', '')
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/CRackDTCCablingMap_newClass.db'
+ 
+    from EventFilter.Phase2TrackerRawToDigi.CRACKMapping_cfi import crackMapping    
+    inputRawDataTag = 'rawDataCollector'
+    inputFileList = ["file:/eos/project-c/cms-tracker-integration/www/results/CosmicRackData/2026/08/CRACK_VALIDATION_09_09_2026_FED.root"]
+
+else:
+    process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
+    process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
+    inputFileList = ["/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root"]
+
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
    process.CondDB,
@@ -62,8 +69,14 @@ process.PoolDBESSource = cms.ESSource("PoolDBESSource",
        tag = cms.string("DTCCablingMapProducerUserRun"),
    )),
 )
-
 process.es_prefer_local_cabling = cms.ESPrefer("PoolDBESSource", "")
+
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(50))
+process.source = cms.Source("PoolSource",
+   fileNames = cms.untracked.vstring(*inputFileList)
+)
+
+
 
 # Should not need to remake clusters, unless MC made with out-of-date clusterizer
 #process.load('RecoLocalTracker.SiPhase2Clusterizer.phase2TrackerClusterizer_cfi')
@@ -75,11 +88,10 @@ process.Packer = cms.EDProducer("ClusterToRawProducer",
   #Phase2Clusters = cms.InputTag("siPhase2Clusters", "",  "PACKANDUNPACK")
 )
 
-process.Analyzer = cms.EDAnalyzer("RawAnalyzer",
-    fedDataBuffer = cms.InputTag("Packer")
-)
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedDataBuffer = cms.InputTag("Packer")
+    fedDataBuffer = cms.InputTag(inputRawDataTag),
+    analyzeCRACK = cms.bool(UNPACK_CRACK),
+    crackMapping = crackMapping
 )
 
 process.out = cms.OutputModule("PoolOutputModule",
@@ -101,8 +113,10 @@ process.Timing = cms.Service("Timing",
     useJobReport = cms.untracked.bool(True)  # This will also log timings in the job report.
 )
 
-process.dtc = cms.Path(process.Packer * process.Unpacker)
-#process.dtc = cms.Path(process.Packer * process.Analyzer * process.Unpacker)
-#process.dtc = cms.Path(process.siPhase2Clusters * process.Packer * process.Unpacker)
+if UNPACK_CRACK:
+    process.dtc = cms.Path(process.Unpacker)
+else:
+    process.dtc = cms.Path(process.Packer * process.Unpacker)
+    # process.dtc = cms.Path(process.siPhase2Clusters * process.Packer * process.Unpacker)
 process.output = cms.EndPath(process.out)
 

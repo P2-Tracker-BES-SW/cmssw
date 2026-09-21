@@ -106,5 +106,5 @@ process.Timing = cms.Service("Timing",
 #process.dtc = cms.Path(process.Packer * process.Analyzer * process.Unpacker)
 process.dtc = cms.Path(process.Packer * process.Unpacker)
 # This might cause disk quota issues for large events.
-process.output = cms.EndPath(process.out)
+#process.output = cms.EndPath(process.out)
 

@@ -10,6 +10,12 @@ options.register ('runNumber',
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Run Number")
 
+options.register ('source',
+                  4, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Run Number")
+
 options.register ('daqSourceMode',
                   '', # default value
                   VarParsing.VarParsing.multiplicity.singleton,
@@ -48,6 +54,11 @@ options.register ('numFwkStreams',
 
 
 options.parseArguments()
+
+source = 5
+if (options.source == 0): source = 5
+if (options.source == 1): source = 6
+if (options.source == 2): source = 7
 
 cmsswbase = os.path.expandvars("$CMSSW_BASE/")
 
@@ -100,7 +111,7 @@ process.source = cms.Source("DAQSource",
     maxBufferedFiles = cms.untracked.uint32(2),
     fileListMode = cms.untracked.bool(True),
     fileNames = cms.untracked.vstring(
-        ram_dir_path + "run" + str(options.runNumber) + "_ls0001_index000000.raw"
+        ram_dir_path + "run" + str(options.runNumber) + "_ls0001_index000000_source_" + str(source) + ".raw"
     )
 
 )
@@ -160,7 +171,7 @@ process.streamC = cms.OutputModule("GlobalEvFOutputModule",
 
 process.outRootFile = cms.OutputModule("PoolOutputModule",
     #SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring( 'p1', 'p2' )),
-    fileName = cms.untracked.string('file:DTH_Decoded_CRACK_Physics_Run_September_2026_CRACK_3_Ladders_Source_7.root'),
+    fileName = cms.untracked.string('file:DTH_Decoded_CRACK_Physics_Run_16th_September_2026_5_Ladders_Source_' + str(source) + '.root'),
     outputCommands = cms.untracked.vstring(
         'keep *'
     )

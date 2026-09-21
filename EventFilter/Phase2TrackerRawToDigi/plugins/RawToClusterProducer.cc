@@ -476,29 +476,12 @@ void RawToClusterProducer::dumpPacket(const unsigned char* data, size_t dataSize
 std::pair<Phase2TrackerCluster1D, bool>
 RawToClusterProducer::unpack2S(uint32_t clusterWord,
                                unsigned int iChannel) {
-  const uint32_t chipID =
-      (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) &
-      CHIP_ID_MAX_VALUE;
-
-  const uint32_t sclusterAddress =
-      (clusterWord >>
-       (SS_CLUSTER_BITS -
-        CHIP_ID_BITS -
-        SCLUSTER_ADDRESS_ONLY_BITS_2S)) &
-      SCLUSTER_ADDRESS_MASK;
-
-  const bool isSeedSensor =
-      (clusterWord >>
-       (SS_CLUSTER_BITS -
-        CHIP_ID_BITS -
-        SCLUSTER_ADDRESS_BITS_2S)) &
-      IS_SEED_SENSOR_MASK;
-
-  const uint32_t width =
-      clusterWord & WIDTH_MAX_VALUE;
-
-  const unsigned int y =
-      iChannel % 2 == 0 ? 0 : 1;
+                                
+  const uint32_t chipID = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS)) & CHIP_ID_MAX_VALUE;
+  const uint32_t sclusterAddress = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS - SCLUSTER_ADDRESS_ONLY_BITS_2S)) & SCLUSTER_ADDRESS_MASK;
+  const bool isSeedSensor = (clusterWord >> (SS_CLUSTER_BITS - CHIP_ID_BITS - SCLUSTER_ADDRESS_BITS_2S)) & IS_SEED_SENSOR_MASK;
+  const uint32_t width = clusterWord & WIDTH_MAX_VALUE;
+  const unsigned int y = iChannel % 2 == 0 ? 0 : 1;
 
   /*
    * Convert the CIC chip ID to its position in the ordered
@@ -559,7 +542,7 @@ RawToClusterProducer::unpack2S(uint32_t clusterWord,
 
   Phase2TrackerCluster1D thisCluster(x, y, width + 1);
 
-  return std::make_pair(thisCluster, isSeedSensor);
+  return std::make_pair(thisCluster, !isSeedSensor);
 }
 
 Phase2TrackerCluster1D RawToClusterProducer::unpackStripOnPS(uint32_t clusterWord, unsigned int iChannel) {

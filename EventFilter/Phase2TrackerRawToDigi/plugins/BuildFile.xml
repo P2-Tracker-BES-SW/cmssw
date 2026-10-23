@@ -19,6 +19,8 @@
   <use name="DataFormats/SoATemplate"/>
   <use name="DataFormats/FEDRawData"/>
   <use name="DataFormats/Phase2TrackerCluster"/>
+  <!-- For CRACKMapping -->
+  <use name="EventFilter/Phase2TrackerRawToDigi"/>
 
   <flags ALPAKA_BACKENDS="1"/>
   <flags EDM_PLUGIN="1"/>

@@ -38,11 +38,13 @@
 #include <limits>
 #include "EventFilter/Phase2TrackerRawToDigi/interface/TrackerBlock.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/ChannelsOffset.h"
+#include "EventFilter/Phase2TrackerRawToDigi/interface/CRACKMapping.h"  
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2TrackerSpecifications.h"
 #include "EventFilter/Phase2TrackerRawToDigi/interface/Phase2DAQFormatSpecification.h"
 #include "EventFilter/Phase2TrackerRawToDigi/plugins/alpaka/RawToClusterAlgo.h"
 #include <iomanip>  // for std::setw
 #include <future>
+#include <memory> // std::unique_ptr for the CRACK mapping
 #include "FWCore/Framework/interface/ESWatcher.h"
 #include "HeterogeneousCore/AlpakaCore/interface/alpaka/chooseDevice.h"
 //From the CPU based code
@@ -86,6 +88,10 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
     const TrackerTopology* trackerTopology_ = nullptr;
     std::map<int, std::pair<int, int>> stackMap_;  // detId -> (inner, outer)
 
+    // CRACK mapping
+    bool analyzeCRACK_;
+    std::unique_ptr<crack::CRACKMapping> crackMapping_;
+
     // StreamID data member; populated in beginStream, used in beginRun
     //         to pick the correct device via detail::chooseDevice(sid_)
     //         initialized with invalidStreamID() because StreamID() = delete
@@ -112,7 +118,19 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
             esConsumes<TrackerDetToDTCELinkCablingMap, TrackerDetToDTCELinkCablingMapRcd, edm::Transition::BeginRun>()),
         trackerGeometryToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>()),
         trackerTopologyToken_(esConsumes<TrackerTopology, TrackerTopologyRcd, edm::Transition::BeginRun>()),
-        outputToken_{produces()} {}
+        outputToken_{produces()},
+        analyzeCRACK_(iConfig.getParameter<bool>("analyzeCRACK")) { 
+    if (analyzeCRACK_) {
+      crackMapping_ = std::make_unique<crack::CRACKMapping>();
+      if (iConfig.exists("crackMapping")) {
+        auto mappingVPSet = iConfig.getParameter<std::vector<edm::ParameterSet>>("crackMapping");
+        crackMapping_->loadFromVPSet(mappingVPSet);
+      } else {
+        throw cms::Exception("ConfigurationError") << "analyzeCRACK is true but crackMapping VPSet not found!";
+      }
+      edm::LogInfo("Phase2RawToClusterProducer") << "CRACK mapping loaded successfully";
+    }
+  }
 
   void Phase2RawToClusterProducer::beginRun(edm::Run const&, edm::EventSetup const& iSetup) {
     cablingMap_ = &iSetup.getData(cablingMapToken_);
@@ -139,10 +157,15 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
       }
     }
 
+    // with CRACK the module of a channel depends on (DTC, core ID, channel) instead of
+    // (DTC, S-Link, channel), so the tables have one block per core ID instead of one block per S-Link
+    const unsigned nBlocksPerDTC = analyzeCRACK_ ? N_CORE_IDS : SLINKS_PER_DTC;
+
     // Total number of logical "channels" to initialize:
     // (number of DTCs) *  (number of Slinks per DTC) * (number of CICs per Slink)
     // This defines the maximum flat index space for detId/module mapping
-    const unsigned M = (MAX_DTC_ID - MIN_DTC_ID + 1) * SLINKS_PER_DTC * CICs_PER_SLINK;
+    const unsigned M = (MAX_DTC_ID - MIN_DTC_ID + 1) * nBlocksPerDTC *
+                       CICs_PER_SLINK;  // nBlocksPerDTC instead of SLINKS_PER_DTC
 
     //allocate host buffers
     detIdxModuleTypeMap_ = cms::alpakatools::make_host_buffer<int[], Platform>(M);
@@ -169,12 +192,21 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
 
     // Fill per-flatIdx (module type, inner/outer detIds)
     for (int dtcID = MIN_DTC_ID; dtcID < MAX_DTC_ID + 1; ++dtcID) {
-      for (unsigned iSlink = 0; iSlink < SLINKS_PER_DTC; ++iSlink) {
+      // With CRACK iSlink runs over the core IDs (nBlocksPerDTC)
+      for (unsigned iSlink = 0; iSlink < nBlocksPerDTC; ++iSlink) {
         for (unsigned iChannel = 0; iChannel < CICs_PER_SLINK; ++iChannel) {
-          const unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          unsigned int gbt_id = iSlink * MODULES_PER_SLINK + std::div(iChannel, 2).quot;
+          // In CRACK the gbt link comes from the CRACK mapping, as
+          // crackMapping_->getGbtID(dtcID, coreID, std::div(iChannel, 2).quot) in RawToClusterProducer
+          if (analyzeCRACK_) {
+            if (!crackMapping_->hasMapping(dtcID, iSlink, std::div(iChannel, 2).quot))
+              continue;
+            gbt_id = crackMapping_->getGbtID(dtcID, iSlink, std::div(iChannel, 2).quot);
+          }
           DTCELinkId thisDTCElinkId(dtcID, gbt_id, 0);
           const unsigned flatIdx =
-              iChannel + (CICs_PER_SLINK * iSlink) + (CICs_PER_SLINK * SLINKS_PER_DTC * (dtcID - MIN_DTC_ID));
+              iChannel + (CICs_PER_SLINK * iSlink) +
+              (CICs_PER_SLINK * nBlocksPerDTC * (dtcID - MIN_DTC_ID));  // nBlocksPerDTC
           if (cablingMap_->knowsDTCELinkId(thisDTCElinkId)) {
             auto possibleDetIds = cablingMap_->dtcELinkIdToDetId(thisDTCElinkId);
             const int thisDetId = possibleDetIds->second;
@@ -282,6 +314,7 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
                    *detIdxModuleTypeDevice_,
                    *innerDetIdDevice_,
                    *outerDetIdDevice_,
+                   analyzeCRACK_,  
                    devClusterProp.view(),
                    globalCounter.data());
 
@@ -292,6 +325,13 @@ namespace ALPAKA_ACCELERATOR_NAMESPACE {
   void Phase2RawToClusterProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     edm::ParameterSetDescription desc;
     desc.add<edm::InputTag>("fedRawDataCollection");
+    desc.add<bool>("analyzeCRACK", false);
+    edm::ParameterSetDescription crackMappingDesc;
+    crackMappingDesc.add<int>("dtc");
+    crackMappingDesc.add<int>("offset");
+    crackMappingDesc.add<int>("gbtID");
+    crackMappingDesc.add<int>("coreID");
+    desc.addVPSetOptional("crackMapping", crackMappingDesc);
     descriptions.addWithDefaultLabel(desc);
   }
 

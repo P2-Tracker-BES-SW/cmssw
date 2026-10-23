@@ -11,6 +11,11 @@ import os
 # flag for using the conversion
 Legacy_Format = True
 
+
+# If this is False, then the clusters will be created by running the packer + unpacker chain on the original clusters.
+# If it is True, then the clusters will be unpacked from (C-Rack) raw data (with corresponding geometry).
+UNPACK_CRACK = True
+
 process = cms.Process("PACKANDUNPACK")
 
 # -- alpaka --
@@ -43,8 +48,14 @@ process.MessageLogger = cms.Service("MessageLogger",
     ),
 )
 '''
-process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
-process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
+if UNPACK_CRACK:
+    ## customise for C-rack geometry
+    process.load('Configuration.StandardSequences.MagneticField_0T_cff')
+    process.load('Configuration.Geometry.GeometryExtendedRun4D500Reco_cff')
+    process.trackerGeometry.applyAlignment = False
+else:
+    process.load('Configuration.Geometry.GeometryExtendedRun4D121Reco_cff')  # D121, as the CMSSW_20 MC file
+    process.load('Configuration.Geometry.GeometryExtendedRun4D121_cff')  # D121, as the CMSSW_20 MC file
 
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
@@ -52,13 +63,19 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun4_realistic_v1', '')
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+if UNPACK_CRACK:
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_0T', '')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValTTbar_14TeV_TuneCP5/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_RV269_Run4D110_PU-v2/2590000/0f0bcfd3-dafe-4dda-8d39-9765f6eae68e.root")
+    
+    fileNames = cms.untracked.vstring("/store/relval/CMSSW_20_0_0_pre1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW/PU_150X_mcRun4_realistic_v1_STD_D121_RegeneratedGS_PU_16Aug26-v3/2590000/0438e4bc-b740-48a4-9d02-ff7896522eac.root")
      #fileNames = cms.untracked.vstring("/store/relval/CMSSW_15_1_0_pre5/RelValDoubleMuFlatPt1p5To8/GEN-SIM-DIGI-RAW/150X_mcRun4_realistic_v1_RV269_Run4D110_noPU-v1/2590000/1172421f-823f-420f-8ec9-3de20dd6dda4.root")
      )
+if UNPACK_CRACK:
+    # C-rack raw data
+    process.source.fileNames = cms.untracked.vstring("file:/eos/project-c/cms-tracker-integration/www/results/CosmicRackData/2026/08/CRACK_VALIDATION_09_09_2026_FED.root")
 
 #--------------------------------------------------------
 ## in case of local DB file
@@ -66,6 +83,8 @@ process.source = cms.Source("PoolSource",
 process.load("CondCore.CondDB.CondDB_cfi")
 process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/OTCablingMap_newClass.db'
 #process.CondDB.connect = 'frontier://FrontierProd/CMS_CONDITIONS'
+if UNPACK_CRACK:
+    process.CondDB.connect = 'sqlite_file:/afs/cern.ch/user/f/fiorendi/public/l1tt/unpacker/crack/CRackDTCCablingMap_newClass.db'  
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
    process.CondDB,
@@ -89,18 +108,29 @@ process.Packer = cms.EDProducer("ClusterToRawProducer",
   #Phase2Clusters = cms.InputTag("siPhase2Clusters", "",  "PACKANDUNPACK")
 )
 
+# with CRACK the raw data comes from the input file
+inputRawDataTag = 'Packer'
+crackMapping = cms.VPSet()
+if UNPACK_CRACK:
+    from EventFilter.Phase2TrackerRawToDigi.CRACKMapping_cfi import crackMapping
+    inputRawDataTag = 'rawDataCollector'
+
 process.Analyzer = cms.EDAnalyzer("RawAnalyzer",
     fedDataBuffer = cms.InputTag("Packer")
 )
 process.Unpacker = cms.EDProducer("RawToClusterProducer",
-    fedDataBuffer = cms.InputTag("Packer")
+    fedDataBuffer = cms.InputTag(inputRawDataTag),  
+    analyzeCRACK = cms.bool(UNPACK_CRACK),          
+    crackMapping = crackMapping                     
 )
 # -- alpaka --
 process.alpakaUnpacker = cms.EDProducer("Phase2RawToClusterProducer@alpaka",
 #process.alpakaUnpacker = cms.EDProducer("alpaka_serial_sync::Phase2RawToClusterProducer",
 #process.alpakaUnpacker = cms.EDProducer("alpaka_cuda_async::Phase2RawToClusterProducer",
 #process.alpakaUnpacker = cms.EDProducer("alpaka_rocm_async::Phase2RawToClusterProducer",
-    fedRawDataCollection = cms.InputTag("Packer"),
+    fedRawDataCollection = cms.InputTag(inputRawDataTag),  
+    analyzeCRACK = cms.bool(UNPACK_CRACK),                 
+    crackMapping = crackMapping,                           
 )
 process.ClusterConverter = cms.EDProducer("ClusterPropSoAToLegacyED",
     clusterSoASource = cms.InputTag("alpakaUnpacker")  
@@ -146,6 +176,9 @@ else:
         process.Unpacker *
         process.alpakaUnpacker
     )
+if UNPACK_CRACK:
+    # No packer with CRACK
+    process.dtc.remove(process.Packer)
 
 process.output = cms.EndPath(process.out)
 
